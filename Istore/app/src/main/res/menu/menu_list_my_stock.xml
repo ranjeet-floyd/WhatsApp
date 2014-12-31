@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="in.istore.bitblue.app.listMyStock.ListMyStock">
+    <item
+        android:id="@+id/search"
+        android:title="@string/action_settings"
+        android:icon="@drawable/ic_action_search"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/add"
+        android:title="@string/action_settings"
+        android:icon="@drawable/ic_action_add"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/settings"
+        android:title="@string/action_settings"
+        android:icon="@drawable/ic_action_settings"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+</menu>
