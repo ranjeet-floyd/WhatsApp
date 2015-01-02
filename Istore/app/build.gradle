@@ -22,7 +22,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
-    compile files('D:/Azhar/githubIstore/Istore/.idea/libraries/android-support-v7-recyclerview.jar')
-    compile files('D:/Azhar/githubIstore/Istore/.idea/libraries/android-support-v7-cardview.jar')
-    compile files('D:/Azhar/githubIstore/Istore/.idea/libraries/nineoldandroids-2.4.0.jar')
+    compile 'com.google.android.gms:play-services:6.5.87'
+    compile 'com.facebook.android:facebook-android-sdk:3.21.1'
 }

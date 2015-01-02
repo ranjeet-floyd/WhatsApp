@@ -4,13 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
+
+import com.facebook.widget.LoginButton;
+import com.google.android.gms.common.SignInButton;
 
 import in.istore.bitblue.app.R;
 
 public class LoginPage extends Activity implements View.OnClickListener {
-    private Button bGmail, bFacebook;
-
+    private SignInButton bGmail;
+    private LoginButton bFacebook;
+    private static final int GMAIL = 1;
+    private static final int FACEBOOK = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,23 +24,39 @@ public class LoginPage extends Activity implements View.OnClickListener {
     }
 
     private void initViews() {
-        bGmail = (Button) findViewById(R.id.bGmail);
+        bGmail = (SignInButton) findViewById(R.id.sign_in_button);
         bGmail.setOnClickListener(this);
+        setGooglePlusButtonText(bGmail, "Log in with Google+");
 
-        bFacebook = (Button) findViewById(R.id.bFacebook);
+        bFacebook = (LoginButton) findViewById(R.id.authButton);
         bFacebook.setOnClickListener(this);
+    }
+
+    protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
+        // Find the TextView that is inside of the SignInButton and set its text
+        for (int i = 0; i < signInButton.getChildCount(); i++) {
+            View v = signInButton.getChildAt(i);
+
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+                tv.setText(buttonText);
+                return;
+            }
+        }
     }
 
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
-            case R.id.bGmail:
-                Intent Home1 = new Intent(this, HomePage.class);   //REMOVE THIS WHEN IMPLEMENTING API
-                startActivity(Home1);
+            case R.id.sign_in_button:
+                Intent homePageGmail = new Intent(getApplicationContext(), HomePage.class);
+                homePageGmail.putExtra("gmail",GMAIL);
+                startActivity(homePageGmail);
                 break;
-            case R.id.bFacebook:
-                Intent Home2 = new Intent(this, HomePage.class);   //REMOVE THIS WHEN IMPLEMENTING API
-                startActivity(Home2);
+            case R.id.authButton:
+                Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
+                homePageFacebook.putExtra("facebook",FACEBOOK);
+                startActivity(homePageFacebook);
                 break;
         }
     }
