@@ -1,22 +1,39 @@
 package in.istore.bitblue.app.listMyStock;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
-import in.istore.bitblue.app.R;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
-public class ListMyStock extends ActionBarActivity {
+import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.addItems.AddItems;
+
+public class ListMyStock extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
+    private FloatingActionsMenu addItemMenu;
+    private FloatingActionButton addNewItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_my_stock);
         setToolbar();
+        initViews();
+    }
+
+    private void initViews() {
+        addItemMenu = (FloatingActionsMenu) findViewById(R.id.fab_listmystock_menu);
+        addItemMenu.setOnClickListener(this);
+
+        addNewItem=  (FloatingActionButton) findViewById(R.id.fab_listmystock_additem);
+        addNewItem.setOnClickListener(this);
     }
 
     private void setToolbar() {
@@ -47,5 +64,14 @@ public class ListMyStock extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View button) {
+        switch (button.getId()) {
+            case R.id.fab_listmystock_additem:
+                startActivity(new Intent(this, AddItems.class));
+                break;
+        }
     }
 }

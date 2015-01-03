@@ -34,7 +34,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/b_additems_barcode"
+                    android:id="@+id/b_add_items_barcode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Use BarCode Scanner"/>

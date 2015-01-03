@@ -2,7 +2,6 @@ package in.istore.bitblue.app.loginScreen;
 
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -12,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,24 +22,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Session;
-import com.facebook.android.AsyncFacebookRunner;
-import com.facebook.android.DialogError;
-import com.facebook.android.Facebook;
-import com.facebook.android.FacebookError;
-import com.facebook.android.Util;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +38,7 @@ import in.istore.bitblue.app.listMyStock.ListMyStock;
 import in.istore.bitblue.app.navDrawer.NavDrawAdapter;
 import in.istore.bitblue.app.navDrawer.NavDrawItems;
 import in.istore.bitblue.app.sellItems.SellItems;
+import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.viewSoldItems.ViewSoldItems;
 
 public class HomePage extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -63,20 +51,15 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private ListView navDrawList;
     private List<NavDrawItems> navDrawItemsList;
     private NavDrawAdapter navDrawAdapter;
-    private String personName, email;
+    private String GpersonName, Gemail, FpersonName, Femail;
     private int responseGmail, responseFacebook;
     private boolean intentInProgress, signInClicked;
     private Bundle args;
     private static final int RC_SIGN_IN = 0;
     private static final int PROFILE_PIC_SIZE = 400;
+    private Bitmap bitmap;
+    private GlobalVariables globalVariable;
 
-    // Your Facebook APP ID
-    private static final String APP_ID = "365374323640416";
-
-    // Instance of Facebook Class
-    private Facebook facebook;
-    private AsyncFacebookRunner mAsyncRunner;
-    private SharedPreferences mPrefs;
     // Google client to interact with Google API
     private GoogleApiClient googleApiClient;
 
@@ -91,14 +74,12 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         setToolbar();
-        initViews();
 
+        //Check which button was selected on login page
         responseGmail = getIntent().getIntExtra("gmail", 0);
-        Log.e("responseGmail", String.valueOf(responseGmail));
-
         responseFacebook = getIntent().getIntExtra("facebook", 0);
-        Log.e("responseFacebook", String.valueOf(responseFacebook));
-
+        globalVariable = (GlobalVariables) getApplicationContext();
+        initViews();
         if (responseGmail == 1)
         // Initializing google plus api client
         {
@@ -107,23 +88,19 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                     .addOnConnectionFailedListener(this).addApi(Plus.API)
                     .addScope(Plus.SCOPE_PLUS_LOGIN).build();
             onConnected(args);
-        } else if (responseFacebook == 2)
-        //Initializing facebook sdk
-        {
-                facebook = new Facebook(APP_ID);
-                mAsyncRunner = new AsyncFacebookRunner(facebook);
-                loginFacebook();//this method when called when you required..}
+        } else if (responseFacebook == 2) {
+            //If facebook then get all intents
+            FpersonName = globalVariable.getUserName();
+            Femail = globalVariable.getUserEmail();
+            bitmap = globalVariable.getProfPic();
+            if (FpersonName != null)
+                tvuserName.setText(FpersonName);
+            if (Femail != null)
+                tvuserEmail.setText(Femail);
+            if (bitmap != null)
+                ivuserPic.setImageBitmap(bitmap);
         }
-    }
-
-    private void loginFacebook() {
-        if (!facebook.isSessionValid()) {
-            facebook.authorize(this, new String[] { "email", "publish_stream",
-                    "read_stream" }, new LoginDialogListener());
-        } else {
-            getProfileInformation();
-        }
-
+        //Setup Facebook profile
     }
 
     protected void onStart() {
@@ -141,6 +118,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             }
         }
     }
+
 
     private void signInWithGplus() {
         if (!googleApiClient.isConnecting()) {
@@ -178,7 +156,8 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     @Override
     public void onConnected(Bundle arg0) {
         signInClicked = false;
-        signInWithGplus();
+        if (responseGmail == 1)
+            signInWithGplus();
     }
 
     /**
@@ -189,23 +168,20 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             if (Plus.PeopleApi.getCurrentPerson(googleApiClient) != null) {
                 Person currentPerson = Plus.PeopleApi
                         .getCurrentPerson(googleApiClient);
-                personName = currentPerson.getDisplayName();
+                GpersonName = currentPerson.getDisplayName();
                 String personPhotoUrl = currentPerson.getImage().getUrl();
-                email = Plus.AccountApi.getAccountName(googleApiClient);
+                Gemail = Plus.AccountApi.getAccountName(googleApiClient);
                 // by default the profile url gives 50x50 px image only
                 // we can replace the value with whatever dimension we want by
                 // replacing sz=X
                 personPhotoUrl = personPhotoUrl.substring(0,
                         personPhotoUrl.length() - 2)
                         + PROFILE_PIC_SIZE;
-                tvuserName = (TextView) findViewById(R.id.tv_username);
-                tvuserName.setText(personName);
-
-                tvuserEmail = (TextView) findViewById(R.id.tv_useremail);
-                tvuserEmail.setText(email);
-
-                ivuserPic = (ImageView) findViewById(R.id.iv_prof_image);
-                new LoadProfileImage(ivuserPic).execute(personPhotoUrl);
+                if (responseGmail == 1) {
+                    tvuserName.setText(GpersonName);
+                    tvuserEmail.setText(Gemail);
+                    new LoadProfileImage(ivuserPic).execute(personPhotoUrl);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -266,16 +242,19 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     @Override
     protected void onActivityResult(int requestCode, int responseCode,
                                     Intent intent) {
-        if (requestCode == RC_SIGN_IN) {
-            if (responseCode != RESULT_OK) {
-                signInClicked = false;
+        super.onActivityResult(requestCode, responseCode, intent);
+        if (responseGmail == 1) {
+            Toast.makeText(this, "onactivityresult", Toast.LENGTH_LONG).show();
+            if (requestCode == RC_SIGN_IN) {
+                if (responseCode != RESULT_OK) {
+                    signInClicked = false;
+                }
+                intentInProgress = false;
+                if (!googleApiClient.isConnecting()) {
+                    googleApiClient.connect();
+                }
             }
-            intentInProgress = false;
-            if (!googleApiClient.isConnecting()) {
-                googleApiClient.connect();
-            }
-        } else if (responseFacebook == 2)
-            Session.getActiveSession().onActivityResult(this, requestCode, responseCode, intent);
+        }
     }
 
     private void setToolbar() {
@@ -312,6 +291,11 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
         bSellItems = (Button) findViewById(R.id.b_sell_items);
         bSellItems.setOnClickListener(this);
+
+        tvuserName = (TextView) findViewById(R.id.tv_username);
+        tvuserEmail = (TextView) findViewById(R.id.tv_useremail);
+        ivuserPic = (ImageView) findViewById(R.id.iv_prof_image);
+
     }
 
     private List<NavDrawItems> getListItems() {
@@ -399,76 +383,5 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         } else {
             super.onBackPressed();
         }
-    }
-
-    private class LoginDialogListener implements Facebook.DialogListener {
-
-        public void onComplete(Bundle values) {
-            try {
-
-                getProfileInformation();
-
-            } catch (Exception error) {
-                Toast.makeText(HomePage.this, error.toString(),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-
-        public void onFacebookError(FacebookError error) {
-            Toast.makeText(HomePage.this,
-                    "Something went wrong. Please try again.",
-                    Toast.LENGTH_LONG).show();
-        }
-
-        public void onError(DialogError error) {
-            Toast.makeText(HomePage.this,
-                    "Something went wrong. Please try again.",
-                    Toast.LENGTH_LONG).show();
-        }
-
-        public void onCancel() {
-            Toast.makeText(HomePage.this,
-                    "Something went wrong. Please try again.",
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-    public void getProfileInformation() {
-        try {
-
-            JSONObject profile = Util.parseJson(facebook.request("me"));
-            Log.e("Profile", "" + profile);
-
-            final String mUserId = profile.getString("id");
-            final String mUserToken = facebook.getAccessToken();
-            final String mUserName = profile.getString("name");
-            final String mUserEmail = profile.getString("email");
-
-            runOnUiThread(new Runnable() {
-
-                public void run() {
-
-                    Log.e("FaceBook_Profile",""+mUserId+"\n"+mUserToken+"\n"+mUserName+"\n"+mUserEmail);
-
-                    Toast.makeText(getApplicationContext(),
-                            "Name: " + mUserName + "\nEmail: " + mUserEmail,
-                            Toast.LENGTH_LONG).show();
-                }
-
-            });
-
-        } catch (FacebookError e) {
-
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-
-            e.printStackTrace();
-        } catch (JSONException e) {
-
-            e.printStackTrace();
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-
     }
 }

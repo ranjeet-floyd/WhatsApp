@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer"
     android:layout_width="@dimen/drawerWidth"
     android:layout_height="match_parent"
@@ -31,7 +32,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="@dimen/photoMarginTop"/>
+            android:layout_marginTop="@dimen/photoMarginTop" />
 
         <LinearLayout
             android:id="@+id/gradient"
@@ -50,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:textSize="14sp"
-                android:textColor="#FFFFFF"/>
+                android:textColor="#FFFFFF" />
 
             <TextView
                 android:id="@+id/tv_useremail"
@@ -58,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:textSize="14sp"
-                android:textColor="#FFFFFF"/>
+                android:textColor="#FFFFFF" />
 
         </LinearLayout>
     </RelativeLayout>

@@ -9,12 +9,6 @@
         android:orderInCategory="100"
         app:showAsAction="always" />
     <item
-        android:id="@+id/add"
-        android:title="@string/action_settings"
-        android:icon="@drawable/ic_action_add"
-        android:orderInCategory="100"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/settings"
         android:title="@string/action_settings"
         android:icon="@drawable/ic_action_settings"

@@ -1,22 +1,46 @@
 package in.istore.bitblue.app.addItems;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import in.istore.bitblue.app.R;
 
-public class AddItemForm extends ActionBarActivity {
+public class AddItemForm extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
+    private Button bCaptureImage;
+    private EditText etbarcode;
+    private String scanContent;
+    private ImageView ivProdImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item_form);
+        scanContent = getIntent().getStringExtra("scanContent");
         setToolbar();
+        initViews();
+    }
+
+    private void initViews() {
+        bCaptureImage = (Button) findViewById(R.id.b_additems_captureImage);
+        bCaptureImage.setOnClickListener(this);
+
+        etbarcode = (EditText) findViewById(R.id.et_additems_barcode_prod_id);
+        if (scanContent != null || scanContent != "")
+            etbarcode.setText(scanContent);
+
+        ivProdImage = (ImageView) findViewById(R.id.iv_additems_image);
+        
     }
 
     private void setToolbar() {
@@ -49,4 +73,28 @@ public class AddItemForm extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onClick(View button) {
+        switch (button.getId()) {
+            case R.id.b_additems_captureImage:
+                        captureImage();
+                break;
+
+        }
+    }
+
+    private void captureImage() {
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, 0);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bitmap bp = (Bitmap) data.getExtras().get("data");
+        ivProdImage.setImageBitmap(bp);
+        //Use above image to store in database
+    }
+
+
 }

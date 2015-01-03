@@ -9,6 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import in.istore.bitblue.app.R;
 
@@ -25,7 +29,7 @@ public class AddItems extends ActionBarActivity implements View.OnClickListener 
     }
 
     private void initViews() {
-        bBarcode = (Button) findViewById(R.id.b_additems_barcode);
+        bBarcode = (Button) findViewById(R.id.b_add_items_barcode);
         bBarcode.setOnClickListener(this);
 
         bManual = (Button) findViewById(R.id.b_add_items_manual);
@@ -66,8 +70,10 @@ public class AddItems extends ActionBarActivity implements View.OnClickListener 
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
-            case R.id.b_additems_barcode:
+            case R.id.b_add_items_barcode:
                 //Use Barcode logic
+                IntentIntegrator scanIntegrator = new IntentIntegrator(this);
+                scanIntegrator.initiateScan();
                 break;
             case R.id.b_add_items_manual:
                 Intent additem = new Intent(this, AddItemForm.class);
@@ -76,5 +82,25 @@ public class AddItems extends ActionBarActivity implements View.OnClickListener 
 
         }
 
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        //retrieve scan result
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanningResult != null) {
+            //we have a result
+
+            //scanFormat not used currently
+            String scanFormat = scanningResult.getFormatName();
+
+            String scanContent = scanningResult.getContents();
+            Intent addItemForm = new Intent(this, AddItemForm.class);
+            addItemForm.putExtra("scanContent", scanContent);
+            startActivity(addItemForm);
+        } else {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "No scan data received!", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 }

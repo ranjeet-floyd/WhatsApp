@@ -1,23 +1,37 @@
 package in.istore.bitblue.app.sellItems;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import in.istore.bitblue.app.R;
 
-public class SellItems extends ActionBarActivity {
+public class SellItems extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
+    private Button bSrchBarcode, bManually;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sell_items);
         setToolbar();
+        initViews();
+
     }
+
+    private void initViews() {
+        bSrchBarcode = (Button) findViewById(R.id.b_sell_items_barcode);
+        bSrchBarcode.setOnClickListener(this);
+
+        bManually = (Button) findViewById(R.id.b_sell_items_manual);
+        bManually.setOnClickListener(this);
+    }
+
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
@@ -47,5 +61,15 @@ public class SellItems extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View button) {
+        switch (button.getId()) {
+            case R.id.b_sell_items_barcode:
+                break;
+            case R.id.b_sell_items_manual:
+                break;
+        }
     }
 }
