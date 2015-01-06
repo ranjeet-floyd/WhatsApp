@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.SET_DEBUG_APP"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -36,7 +38,7 @@
         <activity android:name=".loginScreen.HomePage" />
         <activity
             android:name=".listMyStock.ListMyStock"
-            android:parentActivityName=".loginScreen.HomePage"></activity>
+            android:parentActivityName=".loginScreen.HomePage"/>
         <activity
             android:name=".addItems.AddItems"
             android:parentActivityName=".loginScreen.HomePage" />
@@ -48,7 +50,10 @@
             android:parentActivityName=".loginScreen.HomePage" />
         <activity
             android:name=".addItems.AddItemForm"
-            android:parentActivityName=".addItems.AddItems"></activity>
+            android:parentActivityName=".addItems.AddItems"/>
+        <activity
+            android:name=".sellItems.SellItemForm"
+            android:parentActivityName=".listMyStock.ListMyStock"/>
     </application>
 
 </manifest>

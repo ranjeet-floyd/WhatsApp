@@ -71,7 +71,6 @@ public class AddItems extends ActionBarActivity implements View.OnClickListener 
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.b_add_items_barcode:
-                //Use Barcode logic
                 IntentIntegrator scanIntegrator = new IntentIntegrator(this);
                 scanIntegrator.initiateScan();
                 break;
@@ -95,7 +94,7 @@ public class AddItems extends ActionBarActivity implements View.OnClickListener 
 
             String scanContent = scanningResult.getContents();
             Intent addItemForm = new Intent(this, AddItemForm.class);
-            addItemForm.putExtra("scanContent", scanContent);
+            addItemForm.putExtra("scanContentaddItem", scanContent);
             startActivity(addItemForm);
         } else {
             Toast toast = Toast.makeText(getApplicationContext(),

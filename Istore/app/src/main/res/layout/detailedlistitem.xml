@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padd10dp"
+        android:paddingTop="@dimen/padd10dp"
+        android:paddingRight="@dimen/padd10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_list_prod_id"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Product Id:"
+                android:textColor="@color/myPrimaryColor"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_list_id"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:gravity="left"
+                android:textColor="@color/myPrimaryColor"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_list_prod_name"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Product Name:"
+                android:textColor="@color/myPrimaryColor"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_list_name"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="abc"
+                android:gravity="left"
+                android:textColor="@color/myPrimaryColor"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_list_prod_desc"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Description:"
+                android:gravity="left"
+                android:textColor="@color/myPrimaryColor"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_list_desc"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="desc abd"
+                android:textColor="@color/myPrimaryColor"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_list_prod_quantity"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Quantity:"
+                android:textColor="@color/myPrimaryColor"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_list_quantity"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="5"
+                android:textColor="@color/myPrimaryColor"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_list_prod_price"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Price"
+                android:textColor="@color/myPrimaryColor"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_list_price"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Rs: 1 (for 1 item)"
+                android:textColor="@color/myPrimaryColor"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

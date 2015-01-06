@@ -27,7 +27,7 @@
     <string name="price">Price Rs:</string>
     <string name="captureImage">CAPTURE IMAGE</string>
     <string name="submit">SUBMIT</string>
-    <string name="cancel">CANCEL</string>
+    <string name="cancel">BACK</string>
 
     <!-- Navigation Drawer Page -->
     <string name="openDrawer">OpenDrawer</string>
@@ -39,5 +39,10 @@
     <!--FaceBook App Id-->
     <string name="facebook_app_id">365374323640416</string>
     <string name="title_facebook_login">Log in with Facebook</string>
+
+    <!--Sell Item Page-->
+    <string name="sell">SELL</string>
+    <string name="back">BACK</string>
+    <string name="edit">EDIT</string>
 
 </resources>

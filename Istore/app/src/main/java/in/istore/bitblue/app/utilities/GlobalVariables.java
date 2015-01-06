@@ -7,6 +7,7 @@ public class GlobalVariables extends Application {
     private String userName;
     private String userEmail;
     private Bitmap profPic;
+    private static int prodImageCount=1;
 
     public String getUserEmail() {
         return userEmail;
@@ -30,5 +31,17 @@ public class GlobalVariables extends Application {
 
     public void setProfPic(Bitmap profPic) {
         this.profPic = profPic;
+    }
+
+    public int getProdImageCount() {
+        return prodImageCount;
+    }
+
+    public void setProdImageCount(int prodImageCount) {
+        this.prodImageCount = prodImageCount;
+    }
+
+    public void increaseProImgCount() {
+        ++prodImageCount;
     }
 }

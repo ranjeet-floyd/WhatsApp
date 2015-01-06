@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/myWindowBackground">
+    <!--For the List-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padd10dp"
+        android:orientation="vertical">
+        <!--For the imageview and text weight 1-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:background="@color/tertiary_text_material_dark"
+            android:layout_marginLeft="@dimen/padd10dp"
+            android:layout_marginRight="@dimen/padd10dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/padd5dp"
+                android:paddingBottom="@dimen/padd5dp">
+
+                <ImageView
+                    android:id="@+id/iv_listitem_img"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/no_image" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/padd5dp"
+                android:paddingBottom="@dimen/padd5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2"
+                    android:layout_marginBottom="@dimen/padd15dp">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="ID: "
+                        android:layout_weight="1"
+                        android:textColor="@color/myPrimaryColor" />
+
+                    <TextView
+                        android:id="@+id/tv_listitem_id"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+                        android:layout_weight="1"
+                        android:textColor="@color/myPrimaryColor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="Name: "
+                        android:textColor="@color/myPrimaryColor"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tv_listitem_name"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="abc"
+                        android:layout_weight="1"
+                        android:textColor="@color/myPrimaryColor" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

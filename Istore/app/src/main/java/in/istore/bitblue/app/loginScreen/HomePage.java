@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -59,7 +58,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private static final int PROFILE_PIC_SIZE = 400;
     private Bitmap bitmap;
     private GlobalVariables globalVariable;
-
+    private boolean isAlreadyConnected;
     // Google client to interact with Google API
     private GoogleApiClient googleApiClient;
 
@@ -87,7 +86,9 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this).addApi(Plus.API)
                     .addScope(Plus.SCOPE_PLUS_LOGIN).build();
-            onConnected(args);
+            if (!isAlreadyConnected) {
+                onConnected(args);
+            }
         } else if (responseFacebook == 2) {
             //If facebook then get all intents
             FpersonName = globalVariable.getUserName();
@@ -244,11 +245,11 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                                     Intent intent) {
         super.onActivityResult(requestCode, responseCode, intent);
         if (responseGmail == 1) {
-            Toast.makeText(this, "onactivityresult", Toast.LENGTH_LONG).show();
             if (requestCode == RC_SIGN_IN) {
                 if (responseCode != RESULT_OK) {
                     signInClicked = false;
                 }
+                isAlreadyConnected = true;
                 intentInProgress = false;
                 if (!googleApiClient.isConnecting()) {
                     googleApiClient.connect();
