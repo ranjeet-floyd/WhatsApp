@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,7 +27,7 @@ public class ListStockAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private Context context;
     private ViewHolder holder;
-
+    private int lastPosition = -1;
     public ListStockAdapter(Context context, ArrayList<Product> productArrayList) {
         if (context != null && productArrayList != null) {
             this.productArrayList = productArrayList;
@@ -89,6 +91,9 @@ public class ListStockAdapter extends BaseAdapter {
                 }
             }
         });
+        Animation animation = AnimationUtils.loadAnimation(context, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+        listRow.startAnimation(animation);
+        lastPosition = position;
         return listRow;
     }
 
