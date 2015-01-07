@@ -19,11 +19,11 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.adapters.DbCursorAdapter;
+import in.istore.bitblue.app.adapters.ListStockAdapter;
 import in.istore.bitblue.app.addItems.AddItems;
-import in.istore.bitblue.app.utilities.DbCursorAdapter;
-import in.istore.bitblue.app.utilities.ListStockAdapter;
 
-public class ListMyStock extends ActionBarActivity implements View.OnClickListener{
+public class ListMyStock extends ActionBarActivity implements View.OnClickListener {
 
     private TextView tvnodata;
 
@@ -45,6 +45,7 @@ public class ListMyStock extends ActionBarActivity implements View.OnClickListen
     }
 
     private void initViews() {
+
         addItemMenu = (FloatingActionsMenu) findViewById(R.id.fab_listmystock_menu);
         addItemMenu.setOnClickListener(this);
 
@@ -66,6 +67,8 @@ public class ListMyStock extends ActionBarActivity implements View.OnClickListen
             listAdapter = new ListStockAdapter(this, productArrayList);
             lvproductList = (ListView) findViewById(R.id.lv_listmystock_itemlist);
             lvproductList.setAdapter(listAdapter);
+
+
         }
     }
 

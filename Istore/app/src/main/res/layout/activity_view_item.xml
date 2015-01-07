@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.sellItems.SellItemForm"
+    tools:context="in.istore.bitblue.app.soldItems.ViewItem"
     android:background="@color/primary_dark_material_dark">
 
     <LinearLayout
@@ -20,7 +20,7 @@
 
 
     <LinearLayout
-        android:id="@+id/ll_sellitems_form"
+        android:id="@+id/ll_viewitem_form"
         android:layout_below="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -41,29 +41,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center"
                     android:layout_marginTop="@dimen/padd5dp"
                     android:layout_marginLeft="@dimen/padd5dp"
                     android:layout_marginRight="@dimen/padd5dp"
-                    android:weightSum="2">
+                    android:gravity="center">
 
                     <ImageView
-                        android:id="@+id/iv_sellitems_image"
+                        android:id="@+id/iv_viewitem_image"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:src="@drawable/no_image"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/b_sellitems_captureImage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/material_grey_500"
-                        android:background="@color/myPrimaryColor"
-                        android:text="@string/captureImage"
-                        android:textStyle="bold"
-                        android:layout_weight="1"
-                        android:layout_gravity="center"
-                        android:visibility="gone"/>
+                        android:src="@drawable/no_image"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -83,15 +70,13 @@
                         android:layout_weight="1"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/et_sellitems_barcode_prod_id"
+                    <TextView
+                        android:id="@+id/tv_viewitem_barcode_prod_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:layout_weight="1"
-                        android:inputType="number"
-                        android:textColor="@color/material_dark_teal_A400"
-                        android:focusable="false" />
+                        android:textColor="@color/material_dark_teal_A400" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -111,14 +96,13 @@
                         android:layout_weight="1"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/et_sellitems_prod_name"
+                    <TextView
+                        android:id="@+id/tv_viewitem_prod_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:layout_weight="1"
-                        android:textColor="@color/material_dark_teal_A400"
-                        android:focusable="false" />
+                        android:textColor="@color/material_dark_teal_A400"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -138,13 +122,12 @@
                         android:layout_weight="1"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/et_sellitems_prod_desc"
+                    <TextView
+                        android:id="@+id/tv_viewitem_prod_desc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textColor="@color/material_dark_teal_A400"
-                        android:focusable="false" />
+                        android:textColor="@color/material_dark_teal_A400" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -164,15 +147,13 @@
                         android:layout_weight="1"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/et_sellitems_prod_quantity"
+                    <TextView
+                        android:id="@+id/tv_viewitem_prod_quantity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:layout_weight="1"
-                        android:textColor="@color/material_dark_teal_A400"
-                        android:inputType="number"
-                        android:focusable="false" />
+                        android:textColor="@color/material_dark_teal_A400"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -192,73 +173,15 @@
                         android:layout_weight="1"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/et_sellitems_prod_price"
+                    <TextView
+                        android:id="@+id/tv_viewitem_prod_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:layout_weight="1"
-                        android:textColor="@color/material_dark_teal_A400"
-                        android:inputType="numberDecimal"
-                        android:focusable="false" />
+                        android:textColor="@color/material_dark_teal_A400"/>
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        android:layout_marginTop="@dimen/padd5dp"
-        android:background="@color/myWindowBackground"
-        android:layout_alignParentBottom="true">
-
-        <Button
-            android:id="@+id/b_sellitems_cancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/material_blue_300"
-            android:background="@null"
-            android:text="@string/back"
-            android:textStyle="bold"
-            android:layout_weight="1"
-            android:layout_gravity="center" />
-        <Button
-            android:id="@+id/b_sellitems_update"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/material_blue_300"
-            android:background="@null"
-            android:text="@string/update"
-            android:textStyle="bold"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:visibility="gone"/>
-        <Button
-            android:id="@+id/b_sellitems_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/material_blue_300"
-            android:background="@null"
-            android:text="@string/edit"
-            android:textStyle="bold"
-            android:layout_weight="1"
-            android:layout_gravity="center" />
-
-        <Button
-            android:id="@+id/b_sellitems_submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/material_blue_300"
-            android:background="@null"
-            android:text="@string/sell"
-            android:textStyle="bold"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:visibility="visible"/>
-    </LinearLayout>
-
 </RelativeLayout>

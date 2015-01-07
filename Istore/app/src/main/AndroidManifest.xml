@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.istore.bitblue.app">
+    package="in.istore.bitblue.app" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.SET_DEBUG_APP"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".utilities.GlobalVariables"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:name=".utilities.GlobalVariables"
-
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -28,7 +26,7 @@
             android:label="@string/title_facebook_login" />
         <activity
             android:name=".loginScreen.LoginPage"
-            android:label="@string/title_activity_login_page">
+            android:label="@string/title_activity_login_page" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,7 +36,7 @@
         <activity android:name=".loginScreen.HomePage" />
         <activity
             android:name=".listMyStock.ListMyStock"
-            android:parentActivityName=".loginScreen.HomePage"/>
+            android:parentActivityName=".loginScreen.HomePage" />
         <activity
             android:name=".addItems.AddItems"
             android:parentActivityName=".loginScreen.HomePage" />
@@ -46,14 +44,17 @@
             android:name=".sellItems.SellItems"
             android:parentActivityName=".loginScreen.HomePage" />
         <activity
-            android:name=".viewSoldItems.ViewSoldItems"
+            android:name=".soldItems.SoldItems"
             android:parentActivityName=".loginScreen.HomePage" />
         <activity
             android:name=".addItems.AddItemForm"
-            android:parentActivityName=".addItems.AddItems"/>
+            android:parentActivityName=".addItems.AddItems" />
         <activity
             android:name=".sellItems.SellItemForm"
-            android:parentActivityName=".listMyStock.ListMyStock"/>
+            android:parentActivityName=".listMyStock.ListMyStock" />
+        <activity
+            android:name=".soldItems.ViewItem">
+        </activity>
     </application>
 
 </manifest>

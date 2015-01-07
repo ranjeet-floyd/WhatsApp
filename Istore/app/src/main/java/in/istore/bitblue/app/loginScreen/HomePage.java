@@ -34,11 +34,11 @@ import java.util.List;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.addItems.AddItems;
 import in.istore.bitblue.app.listMyStock.ListMyStock;
-import in.istore.bitblue.app.navDrawer.NavDrawAdapter;
-import in.istore.bitblue.app.navDrawer.NavDrawItems;
 import in.istore.bitblue.app.sellItems.SellItems;
+import in.istore.bitblue.app.soldItems.SoldItems;
+import in.istore.bitblue.app.adapters.NavDrawAdapter;
+import in.istore.bitblue.app.navDrawer.NavDrawItems;
 import in.istore.bitblue.app.utilities.GlobalVariables;
-import in.istore.bitblue.app.viewSoldItems.ViewSoldItems;
 
 public class HomePage extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Toolbar toolbar;
@@ -58,7 +58,6 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private static final int PROFILE_PIC_SIZE = 400;
     private Bitmap bitmap;
     private GlobalVariables globalVariable;
-    private boolean isAlreadyConnected;
     // Google client to interact with Google API
     private GoogleApiClient googleApiClient;
 
@@ -86,9 +85,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this).addApi(Plus.API)
                     .addScope(Plus.SCOPE_PLUS_LOGIN).build();
-            if (!isAlreadyConnected) {
-                onConnected(args);
-            }
+
         } else if (responseFacebook == 2) {
             //If facebook then get all intents
             FpersonName = globalVariable.getUserName();
@@ -249,7 +246,6 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 if (responseCode != RESULT_OK) {
                     signInClicked = false;
                 }
-                isAlreadyConnected = true;
                 intentInProgress = false;
                 if (!googleApiClient.isConnecting()) {
                     googleApiClient.connect();
@@ -361,7 +357,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 startActivity(ListStock);
                 break;
             case R.id.b_view_sold_items:
-                Intent ViewSoldItem = new Intent(this, ViewSoldItems.class);
+                Intent ViewSoldItem = new Intent(this, SoldItems.class);
                 startActivity(ViewSoldItem);
                 break;
             case R.id.b_add_items:

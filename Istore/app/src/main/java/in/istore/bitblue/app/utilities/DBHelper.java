@@ -16,17 +16,19 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_PROD_DESC = "desc";
     public static final String COL_PROD_QUANTITY = "quantity";
     public static final String COL_PROD_PRICE = "price";
+    public static final String COL_PROD_STATUS = "status";
 
-    public static final String[] COLUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_PRICE};
+    public static final String[] COLUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_PRICE, COL_PROD_STATUS};
 
     public static final String CREATE_DATABASE =
             "CREATE TABLE " + DATABASE_TABLE + "(" +
-                    COL_PROD_ID + " integer PRIMARY KEY," +
+                    COL_PROD_ID + " text PRIMARY KEY," +
                     COL_PROD_IMAGE + " text," +
                     COL_PROD_NAME + " text," +
                     COL_PROD_DESC + " text," +
                     COL_PROD_QUANTITY + " text," +
-                    COL_PROD_PRICE + " text)";
+                    COL_PROD_PRICE + " text," +
+                    COL_PROD_STATUS + " text)";
 
     public DBHelper(Context context, String name,
                     SQLiteDatabase.CursorFactory factory, int version) {

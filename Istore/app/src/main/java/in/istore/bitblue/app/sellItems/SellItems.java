@@ -15,11 +15,11 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.addItems.AddItemForm;
+import in.istore.bitblue.app.listMyStock.ListMyStock;
 
 public class SellItems extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
-    private Button bBarcode, bManually;
+    private Button bBarcode, bFromList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +34,8 @@ public class SellItems extends ActionBarActivity implements View.OnClickListener
         bBarcode = (Button) findViewById(R.id.b_sell_items_barcode);
         bBarcode.setOnClickListener(this);
 
-        bManually = (Button) findViewById(R.id.b_sell_items_manual);
-        bManually.setOnClickListener(this);
+        bFromList = (Button) findViewById(R.id.b_sell_items_fromlist);
+        bFromList.setOnClickListener(this);
     }
 
     private void setToolbar() {
@@ -76,8 +76,8 @@ public class SellItems extends ActionBarActivity implements View.OnClickListener
                 IntentIntegrator scanIntegrator = new IntentIntegrator(this);
                 scanIntegrator.initiateScan();
                 break;
-            case R.id.b_sell_items_manual:
-                Intent sellitem = new Intent(this, SellItemForm.class);
+            case R.id.b_sell_items_fromlist:
+                Intent sellitem = new Intent(this, ListMyStock.class);
                 startActivity(sellitem);
                 break;
         }
@@ -92,9 +92,9 @@ public class SellItems extends ActionBarActivity implements View.OnClickListener
             String scanFormat = scanningResult.getFormatName();
 
             String scanContent = scanningResult.getContents();
-            Intent addItemForm = new Intent(this, AddItemForm.class);
-            addItemForm.putExtra("scanContentsellitem", scanContent);
-            startActivity(addItemForm);
+            Intent sellItemForm = new Intent(this, SellItemForm.class);
+            sellItemForm.putExtra("scanContentsellitem", scanContent);
+            startActivity(sellItemForm);
         } else {
             Toast toast = Toast.makeText(getApplicationContext(),
                     "No scan data received!", Toast.LENGTH_SHORT);

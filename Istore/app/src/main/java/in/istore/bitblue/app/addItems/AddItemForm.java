@@ -31,7 +31,7 @@ import java.io.IOException;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.listMyStock.ListMyStock;
 import in.istore.bitblue.app.utilities.Check;
-import in.istore.bitblue.app.utilities.DbCursorAdapter;
+import in.istore.bitblue.app.adapters.DbCursorAdapter;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class AddItemForm extends ActionBarActivity implements View.OnClickListener {
@@ -43,7 +43,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     private static final int CAPTURE_PIC_REQ = 1111;
     private GlobalVariables globalVariable;
     private int proImgCount = 1;
-    private String imagePath, barcode, name, desc, quantity, price;
+    private String imagePath, id, name, desc, quantity, price;
     private byte[] byteImage;
     private DbCursorAdapter cursorAdapter;
 
@@ -59,6 +59,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         setToolbar();
         initViews();
     }
+
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
@@ -127,7 +128,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 startActivity(new Intent(this, AddItems.class));
                 break;
             case R.id.b_additems_submit:
-                barcode = etbarcode.getText().toString();
+                id = etbarcode.getText().toString();
                 name = etname.getText().toString();
                 desc = etdesc.getText().toString();
                 quantity = etquantity.getText().toString();
@@ -146,11 +147,14 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     Toast.makeText(this, "Capture Product Image", Toast.LENGTH_LONG).show();
                     break;
                 }
-                if (Check.ifNull(barcode)) {
+                if (Check.ifNull(id)) {
                     etbarcode.setHint("Field Required");
                     etbarcode.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
 
+                } else if (cursorAdapter.idAlreadyPresent(id)) {
+                    Toast.makeText(this, "\tId " + id + " ALREADY EXISTS\n please enter unique id ", Toast.LENGTH_LONG).show();
+                    break;
                 } else if (Check.ifNull(name)) {
                     etname.setHint("Field Required");
                     etname.setHintTextColor(getResources().getColor(R.color.material_red_A400));
@@ -172,9 +176,10 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     break;
 
                 } else {
-                    long ret = cursorAdapter.insertProductDetails(barcode, byteImage, name, desc, quantity, price);
+                    long ret = cursorAdapter.insertProductDetails(id, byteImage, name, desc, quantity, price);
                     if (ret < 0) {
                     } else {
+                        Toast.makeText(this, "Record Added", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(this, ListMyStock.class));
                     }
                 }
@@ -256,7 +261,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     private String getRealPathFromURI(Uri contentURI) {
         String result;
         Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) { // Source is Dropbox or other similar local file path
+        if (cursor == null) {
             result = contentURI.getPath();
         } else {
             cursor.moveToFirst();
