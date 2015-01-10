@@ -34,7 +34,9 @@ public class SoldItems extends ActionBarActivity {
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         toolTitle.setText("SOLD ITEMS");
     }

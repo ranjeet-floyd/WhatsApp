@@ -48,4 +48,7 @@
     <string name="title_activity_sold_items">SoldItems</string>
     <string name="title_activity_view_item">ViewItem</string>
 
+
+    <!--Home Page Menu Items-->
+    <string name="exit">EXIT</string>
 </resources>

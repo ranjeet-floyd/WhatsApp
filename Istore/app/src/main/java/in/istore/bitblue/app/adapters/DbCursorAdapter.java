@@ -49,7 +49,7 @@ public class DbCursorAdapter {
     public Product getProductDetails(String Id) {
         openWritableDatabase();
         Cursor c = sqLiteDb.query(DBHelper.DATABASE_TABLE, DBHelper.COLUMNS,
-                DBHelper.COL_PROD_ID + "=" + Id, null, null, null, null);
+                DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
             String id = c.getString(c.getColumnIndexOrThrow("id"));
             byte[] image = c.getBlob(1);
@@ -64,11 +64,15 @@ public class DbCursorAdapter {
         }
     }
 
-    public ArrayList<Product> getAllProducts() {
+    public ArrayList<Product> getAllProducts(String status, int limit ,int rowCount) {
         ArrayList<Product> productArrayList = new ArrayList<Product>();
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.DATABASE_TABLE, DBHelper.COLUMNS,
-                null, null, null, null, null);
+        String RAW_QUERY = "SELECT *" +
+                " FROM " + DBHelper.DATABASE_TABLE +
+                " WHERE " + DBHelper.COL_PROD_STATUS + "='" + status + "'" +
+                " LIMIT "+limit +
+                " OFFSET " + rowCount;
+        Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
         if (c != null && c.moveToFirst()) {
             do {
                 Product product = new Product();
@@ -96,7 +100,7 @@ public class DbCursorAdapter {
         row.put(DBHelper.COL_PROD_QUANTITY, Quantity);
         row.put(DBHelper.COL_PROD_PRICE, Price);
         openWritableDatabase();
-        long result = sqLiteDb.update(DBHelper.DATABASE_TABLE, row, DBHelper.COL_PROD_ID + "=" + Id, null);
+        long result = sqLiteDb.update(DBHelper.DATABASE_TABLE, row, DBHelper.COL_PROD_ID + "='" + Id + "'", null);
         closeDatabase();
         return result;
     }
@@ -104,7 +108,7 @@ public class DbCursorAdapter {
     public int deleteProduct(String Id) {
         openWritableDatabase();
         int result = sqLiteDb.delete(DBHelper.DATABASE_TABLE,
-                DBHelper.COL_PROD_ID + "=" + Id, null);
+                DBHelper.COL_PROD_ID + "='" + Id + "'", null);
         closeDatabase();
         return result;
     }
@@ -134,7 +138,7 @@ public class DbCursorAdapter {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_STATUS, "sold");
         openWritableDatabase();
-        long result = sqLiteDb.update(DBHelper.DATABASE_TABLE, row, DBHelper.COL_PROD_ID + "=" + Id, null);
+        long result = sqLiteDb.update(DBHelper.DATABASE_TABLE, row, DBHelper.COL_PROD_ID + "='" + Id + "'", null);
         closeDatabase();
         return result;
     }
@@ -160,5 +164,61 @@ public class DbCursorAdapter {
         } else {
             return null;
         }
+    }
+
+    public ArrayList<Product> sortBy(String column) {
+        ArrayList<Product> productArrayList = new ArrayList<Product>();
+        openWritableDatabase();
+        String orderBy = getColumnName(column);
+        String status = "not sold";
+        Cursor c = sqLiteDb.query(DBHelper.DATABASE_TABLE, DBHelper.COLUMNS,
+                DBHelper.COL_PROD_STATUS + "='" + status + "'", null, null, null, orderBy);
+        if (c != null && c.moveToFirst()) {
+            do {
+                Product product = new Product();
+                product.setId(c.getString(c.getColumnIndexOrThrow("id")));
+                product.setImage((c.getBlob(1)));
+                product.setName(c.getString(c.getColumnIndexOrThrow("name")));
+                product.setDesc(c.getString(c.getColumnIndexOrThrow("desc")));
+                product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
+                product.setPrice(c.getString(c.getColumnIndexOrThrow("price")));
+                productArrayList.add(product);
+            } while (c.moveToNext());
+            closeDatabase();
+            return productArrayList;
+        } else {
+            return null;
+        }
+    }
+
+    public String getColumnName(String col) {
+        String COLUMN = null;
+        switch (col) {
+            case "id":
+                COLUMN = DBHelper.COL_PROD_ID;
+                break;
+            case "name":
+                COLUMN = DBHelper.COL_PROD_NAME;
+                break;
+            case "desc":
+                COLUMN = DBHelper.COL_PROD_DESC;
+                break;
+            case "quantity":
+                COLUMN = DBHelper.COL_PROD_QUANTITY;
+                break;
+            case "price":
+                COLUMN = DBHelper.COL_PROD_PRICE;
+                break;
+        }
+        return COLUMN;
+    }
+
+    public int getRowCount() {
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.DATABASE_TABLE, DBHelper.COLUMNS,
+                null, null, null, null, null);
+        int rowCount = c.getCount();
+        closeDatabase();
+        return rowCount;
     }
 }

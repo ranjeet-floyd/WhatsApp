@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +17,7 @@ import in.istore.bitblue.app.listMyStock.Product;
 public class ViewItem extends ActionBarActivity {
     private Toolbar toolbar;
 
-    private TextView tvbarcode, tvname, tvdesc, tvquantity, tvprice;
+    private EditText tvbarcode, tvname, tvdesc, tvquantity, tvprice;
     private ImageView ivProdImage;
 
     private String id, name, desc, quantity, price;
@@ -37,7 +38,7 @@ public class ViewItem extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         toolTitle.setText("VIEW SOLD ITEM");
     }
@@ -57,21 +58,21 @@ public class ViewItem extends ActionBarActivity {
             ivProdImage.setImageBitmap(bitmap);
         }
 
-        tvbarcode = (TextView) findViewById(R.id.tv_viewitem_barcode_prod_id);
+        tvbarcode = (EditText) findViewById(R.id.et_viewitem_barcode_prod_id);
         if (id != null) {
             tvbarcode.setText(id);
         } else Toast.makeText(this, "Id not found", Toast.LENGTH_SHORT).show();
 
-        tvname = (TextView) findViewById(R.id.tv_viewitem_prod_name);
+        tvname = (EditText) findViewById(R.id.et_viewitem_prod_name);
         tvname.setText(name);
 
-        tvdesc = (TextView) findViewById(R.id.tv_viewitem_prod_desc);
+        tvdesc = (EditText) findViewById(R.id.et_viewitem_prod_desc);
         tvdesc.setText(desc);
 
-        tvquantity = (TextView) findViewById(R.id.tv_viewitem_prod_quantity);
+        tvquantity = (EditText) findViewById(R.id.et_viewitem_prod_quantity);
         tvquantity.setText(quantity);
 
-        tvprice = (TextView) findViewById(R.id.tv_viewitem_prod_price);
+        tvprice = (EditText) findViewById(R.id.et_viewitem_prod_price);
         tvprice.setText(price);
     }
 

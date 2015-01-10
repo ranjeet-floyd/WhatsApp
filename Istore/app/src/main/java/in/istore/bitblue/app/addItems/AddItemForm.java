@@ -64,7 +64,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         toolTitle.setText("ADD ITEMS");
     }

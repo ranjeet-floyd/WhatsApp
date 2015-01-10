@@ -13,8 +13,6 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,11 +29,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.adapters.DbCursorAdapter;
 import in.istore.bitblue.app.listMyStock.ListMyStock;
 import in.istore.bitblue.app.listMyStock.Product;
 import in.istore.bitblue.app.soldItems.SoldItems;
 import in.istore.bitblue.app.utilities.Check;
-import in.istore.bitblue.app.adapters.DbCursorAdapter;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class SellItemForm extends ActionBarActivity implements View.OnClickListener {
@@ -69,9 +67,9 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        toolTitle.setText("SELL ITEMS");
+        toolTitle.setText("VIEW ITEM");
     }
 
     private void initViews() {
@@ -151,7 +149,8 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
             price = product.getPrice();
             byteImage = product.getImage();
             BitmapFactory.Options options = new BitmapFactory.Options();
-            bitmap = BitmapFactory.decodeByteArray(byteImage, 0, byteImage.length, options);
+            if (byteImage != null)
+                bitmap = BitmapFactory.decodeByteArray(byteImage, 0, byteImage.length, options);
         }
     }
 
@@ -320,7 +319,7 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
         return result;
     }
 
-    @Override
+/*    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_add_items, menu);
@@ -340,7 +339,7 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     private void adjustlayoutEDIT() {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(

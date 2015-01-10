@@ -32,12 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.adapters.NavDrawAdapter;
 import in.istore.bitblue.app.addItems.AddItems;
 import in.istore.bitblue.app.listMyStock.ListMyStock;
+import in.istore.bitblue.app.navDrawer.NavDrawItems;
 import in.istore.bitblue.app.sellItems.SellItems;
 import in.istore.bitblue.app.soldItems.SoldItems;
-import in.istore.bitblue.app.adapters.NavDrawAdapter;
-import in.istore.bitblue.app.navDrawer.NavDrawItems;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class HomePage extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -85,7 +85,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this).addApi(Plus.API)
                     .addScope(Plus.SCOPE_PLUS_LOGIN).build();
-
+            onConnected(savedInstanceState);
         } else if (responseFacebook == 2) {
             //If facebook then get all intents
             FpersonName = globalVariable.getUserName();
@@ -99,6 +99,47 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 ivuserPic.setImageBitmap(bitmap);
         }
         //Setup Facebook profile
+    }
+
+    private void setToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_drawer);
+        toolbar.setLogo(R.drawable.istore_title_remback);
+    }
+
+    private void initViews() {
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer);
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+        navDrawItemsList = new ArrayList<NavDrawItems>();
+        navDrawItemsList = getListItems();
+        navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsList);
+
+        navDrawList = (ListView) findViewById(R.id.lv_nav_drawer);
+        navDrawList.setAdapter(navDrawAdapter);
+        navDrawList.setOnItemClickListener(new DrawerItemClickListener());
+
+        blistStock = (Button) findViewById(R.id.b_list_my_stock);
+        blistStock.setOnClickListener(this);
+
+        bviewSoldItems = (Button) findViewById(R.id.b_view_sold_items);
+        bviewSoldItems.setOnClickListener(this);
+
+        bAddItems = (Button) findViewById(R.id.b_add_items);
+        bAddItems.setOnClickListener(this);
+
+        bSellItems = (Button) findViewById(R.id.b_sell_items);
+        bSellItems.setOnClickListener(this);
+
+        tvuserName = (TextView) findViewById(R.id.tv_username);
+        tvuserEmail = (TextView) findViewById(R.id.tv_useremail);
+        ivuserPic = (ImageView) findViewById(R.id.iv_prof_image);
+
     }
 
     protected void onStart() {
@@ -254,47 +295,6 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         }
     }
 
-    private void setToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_drawer);
-        toolbar.setLogo(R.drawable.istore_title_remback);
-    }
-
-    private void initViews() {
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer);
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
-        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-
-        navDrawItemsList = new ArrayList<NavDrawItems>();
-        navDrawItemsList = getListItems();
-        navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsList);
-
-        navDrawList = (ListView) findViewById(R.id.lv_nav_drawer);
-        navDrawList.setAdapter(navDrawAdapter);
-        navDrawList.setOnItemClickListener(new DrawerItemClickListener());
-
-        blistStock = (Button) findViewById(R.id.b_list_my_stock);
-        blistStock.setOnClickListener(this);
-
-        bviewSoldItems = (Button) findViewById(R.id.b_view_sold_items);
-        bviewSoldItems.setOnClickListener(this);
-
-        bAddItems = (Button) findViewById(R.id.b_add_items);
-        bAddItems.setOnClickListener(this);
-
-        bSellItems = (Button) findViewById(R.id.b_sell_items);
-        bSellItems.setOnClickListener(this);
-
-        tvuserName = (TextView) findViewById(R.id.tv_username);
-        tvuserEmail = (TextView) findViewById(R.id.tv_useremail);
-        ivuserPic = (ImageView) findViewById(R.id.iv_prof_image);
-
-    }
-
     private List<NavDrawItems> getListItems() {
         ArrayList<NavDrawItems> drawerList = new ArrayList<NavDrawItems>();
         drawerList.add(new NavDrawItems("Import Data", R.drawable.importdata));
@@ -343,8 +343,9 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_exit) {
+            finish();
+            return false;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -378,7 +379,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
             drawerLayout.closeDrawer(Gravity.LEFT);
         } else {
-            super.onBackPressed();
+
         }
     }
 }

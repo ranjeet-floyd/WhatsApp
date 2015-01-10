@@ -33,6 +33,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
     private static final int FACEBOOK = 2;
     private String userName, userEmail;
     private GlobalVariables globalVariable;
+
     //For Facebook
     private UiLifecycleHelper uiHelper;
     private Session.StatusCallback callback = new Session.StatusCallback() {

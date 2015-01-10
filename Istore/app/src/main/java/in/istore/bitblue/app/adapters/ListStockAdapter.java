@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,13 +23,15 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.listMyStock.Product;
 import in.istore.bitblue.app.sellItems.SellItemForm;
 
-public class ListStockAdapter extends BaseAdapter {
+public class ListStockAdapter extends BaseAdapter implements Filterable {
 
     private ArrayList<Product> productArrayList = new ArrayList<Product>();
     private LayoutInflater mInflater;
     private Context context;
     private ViewHolder holder;
     private int lastPosition = -1;
+    public ArrayList<Product> origproductArrayList;
+
     public ListStockAdapter(Context context, ArrayList<Product> productArrayList) {
         if (context != null && productArrayList != null) {
             this.productArrayList = productArrayList;
@@ -60,7 +64,6 @@ public class ListStockAdapter extends BaseAdapter {
             holder.image = (ImageView) listRow.findViewById(R.id.iv_listitem_img);
             holder.name = (TextView) listRow.findViewById(R.id.tv_listitem_name);
             listRow.setTag(holder);
-
         } else {
             holder = (ViewHolder) listRow.getTag();
         }
@@ -76,6 +79,7 @@ public class ListStockAdapter extends BaseAdapter {
 
         holder.name.setText(product.getName());
 
+        //This is used to select clicked listItem and get its details
         listRow.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -91,10 +95,51 @@ public class ListStockAdapter extends BaseAdapter {
                 }
             }
         });
+        //Animation when listview is scrolled
         Animation animation = AnimationUtils.loadAnimation(context, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+      //  Animation animation = AnimationUtils.loadAnimation(context, R.anim.up_from_bottom);
         listRow.startAnimation(animation);
         lastPosition = position;
         return listRow;
+    }
+
+
+    //This filter is used to get the searchText from SearchView
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence textToFilter) {
+                final FilterResults filterResults = new FilterResults();
+                final ArrayList<Product> results = new ArrayList<Product>();
+                if (origproductArrayList == null)
+                    origproductArrayList = productArrayList;
+                if (textToFilter != null) {
+                    if (origproductArrayList != null && origproductArrayList.size() > 0) {
+                        for (final Product product : origproductArrayList) {
+                            if (product.getName().toLowerCase().contains(textToFilter.toString()))
+                                results.add(product);
+                            else if (product.getId().toLowerCase().contains(textToFilter.toString()))
+                                results.add(product);
+                        }
+                    }
+
+                    //'values' contains all the values computed by the filtering operation
+                    filterResults.values = results;
+                }
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence filterText, FilterResults results) {
+                productArrayList = (ArrayList<Product>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
     }
 
     private static class ViewHolder {

@@ -3,12 +3,17 @@ package in.istore.bitblue.app.utilities;
 import android.app.Application;
 import android.graphics.Bitmap;
 
+import java.util.ArrayList;
+
+import in.istore.bitblue.app.listMyStock.Product;
+
 public class GlobalVariables extends Application {
     private String userName;
     private String userEmail;
     private Bitmap profPic;
     private static int prodImageCount = 1;
     private String imagePath;
+    private ArrayList<Product> productsList;
 
     public String getUserEmail() {
         return userEmail;
@@ -39,7 +44,7 @@ public class GlobalVariables extends Application {
     }
 
     public void setProdImageCount(int prodImageCount) {
-        this.prodImageCount = prodImageCount;
+        GlobalVariables.prodImageCount = prodImageCount;
     }
 
     public void increaseProImgCount() {
@@ -52,5 +57,13 @@ public class GlobalVariables extends Application {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public ArrayList<Product> getProductsList() {
+        return productsList;
+    }
+
+    public void setProductsList(ArrayList<Product> productsList) {
+        this.productsList = productsList;
     }
 }
