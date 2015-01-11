@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -92,6 +93,31 @@ public class DbCursorAdapter {
 
     }
 
+    public ArrayList<Product> getAllProducts(String status) {
+        ArrayList<Product> productArrayList = new ArrayList<Product>();
+        openWritableDatabase();
+        String RAW_QUERY = "SELECT *" +
+                " FROM " + DBHelper.DATABASE_TABLE +
+                " WHERE " + DBHelper.COL_PROD_STATUS + "='" + status + "'";
+        Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                Product product = new Product();
+                product.setId(c.getString(c.getColumnIndexOrThrow("id")));
+                product.setImage((c.getBlob(1)));
+                product.setName(c.getString(c.getColumnIndexOrThrow("name")));
+                product.setDesc(c.getString(c.getColumnIndexOrThrow("desc")));
+                product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
+                product.setPrice(c.getString(c.getColumnIndexOrThrow("price")));
+                productArrayList.add(product);
+            } while (c.moveToNext());
+            closeDatabase();
+            return productArrayList;
+        } else {
+            return null;
+        }
+
+    }
     public long updateProductDetails(String Id, byte[] ImagePath, String Name, String Desc, String Quantity, String Price) {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_IMAGE, ImagePath);

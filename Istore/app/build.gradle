@@ -28,4 +28,5 @@ dependencies {
     compile 'com.getbase:floatingactionbutton:1.5.1'
     compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
+    compile 'net.sf.opencsv:opencsv:2.3'
 }

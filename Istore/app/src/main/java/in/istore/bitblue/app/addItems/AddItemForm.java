@@ -185,7 +185,6 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 }
                 break;
         }
-
     }
 
     private void captureImage() {

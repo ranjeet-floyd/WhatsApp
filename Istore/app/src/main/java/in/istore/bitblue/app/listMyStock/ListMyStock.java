@@ -52,7 +52,7 @@ public class ListMyStock extends ActionBarActivity
 
     private boolean loadingMoreItems;
     private int offset = 0;
-    private int limit = 5;
+    private int limit = 10;
     private String available = "not sold";
 
     @Override
@@ -96,14 +96,15 @@ public class ListMyStock extends ActionBarActivity
         lvproductList.addFooterView(footerView);
 
         dbAdapter = new DbCursorAdapter(this);
-        productArrayList = dbAdapter.getAllProducts(available, limit, offset);
+        productArrayList = dbAdapter.getAllProducts(available);
+        listAdapter = new ListStockAdapter(this, productArrayList);
+        lvproductList.setAdapter(listAdapter);
 
+        //This condition becomes true on run and false on debug
         if (productArrayList == null || productArrayList.size() == 0) {
             tvnodata.setVisibility(View.VISIBLE);
         } else {
             tvnodata.setVisibility(View.GONE);
-            listAdapter = new ListStockAdapter(this, productArrayList);
-            lvproductList.setAdapter(listAdapter);
         }
 
         searchView = (SearchView) findViewById(R.id.sv_listmystock_search);
@@ -186,14 +187,14 @@ public class ListMyStock extends ActionBarActivity
                 break;
 
             case R.id.fab_listmystock_delallitem:
-                if (productArrayList.size() == 0) {
+                if (productArrayList == null || productArrayList.size() == 0) {
                     Toast.makeText(this, "No Items to Delete", Toast.LENGTH_SHORT).show();
                 } else {
                     showDialogForDelete();
                 }
                 break;
             case R.id.fab_listmystock_sortitem:
-                if (productArrayList.size() == 0) {
+                if (productArrayList == null || productArrayList.size() == 0) {
                     Toast.makeText(this, "No Items to Sort", Toast.LENGTH_SHORT).show();
                 } else {
                     showDialogForSort();
@@ -242,11 +243,16 @@ public class ListMyStock extends ActionBarActivity
                 .setNegativeButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
-
+                        productArrayList.clear();
+                        listAdapter = new ListStockAdapter(getApplicationContext(), productArrayList);
+                        lvproductList.setAdapter(listAdapter);
+                        tvnodata.setVisibility(View.VISIBLE);
+                        itemMenu.toggle();
                     }
                 });
         AlertDialog alert = builder.create();
         alert.show();
+
     }
 
     private void showDialogForSort() {
@@ -301,18 +307,20 @@ public class ListMyStock extends ActionBarActivity
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView absListView, int scrollState) {}
+    public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+    }
 
     private class LoadMoreItems extends AsyncTask<String, String, ArrayList<Product>> {
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
 
         @Override
         protected ArrayList<Product> doInBackground(String... strings) {
             ArrayList<Product> productsList;
             loadingMoreItems = true;
-            offset += 5 ;
+            offset += 10;
             if (dbAdapter != null) {
                 productsList = dbAdapter.getAllProducts(available, limit, offset);
                 return productsList;
