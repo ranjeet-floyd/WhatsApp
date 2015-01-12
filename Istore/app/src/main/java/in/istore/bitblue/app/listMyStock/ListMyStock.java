@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +24,10 @@ import android.widget.Toast;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
@@ -92,13 +97,15 @@ public class ListMyStock extends ActionBarActivity
 
         footerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.listfooter, null, false);
-
         lvproductList.addFooterView(footerView);
 
         dbAdapter = new DbCursorAdapter(this);
-        productArrayList = dbAdapter.getAllProducts(available);
+        offset = 0;
+        limit = 10;
+        productArrayList = dbAdapter.getAllProducts(available, limit, offset);
         listAdapter = new ListStockAdapter(this, productArrayList);
         lvproductList.setAdapter(listAdapter);
+
 
         //This condition becomes true on run and false on debug
         if (productArrayList == null || productArrayList.size() == 0) {
@@ -221,6 +228,12 @@ public class ListMyStock extends ActionBarActivity
                                 if (productArrayList.size() == 0) {
                                     Toast.makeText(getApplicationContext(), "Nothing to delete", Toast.LENGTH_SHORT).show();
                                 } else {
+                                    File dir = new File(getExternalFilesDir(""), "/Istore");
+                                    try {
+                                        FileUtils.deleteDirectory(dir);
+                                    } catch (IOException e) {
+                                        Log.e("Unable to delete Directory: ", "Istore");
+                                    }
                                     int ret = dbAdapter.deleteAllProduct();
                                     if (ret < 0) {
                                         Toast.makeText(getApplicationContext(), "Error : When Deleting", Toast.LENGTH_SHORT).show();

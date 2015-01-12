@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -20,6 +22,9 @@ import com.facebook.widget.LoginButton;
 import com.facebook.widget.ProfilePictureView;
 import com.google.android.gms.common.SignInButton;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 import in.istore.bitblue.app.R;
@@ -95,6 +100,8 @@ public class LoginPage extends Activity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != -1)
+            Toast.makeText(getApplicationContext(), "Login Failed. Check Network", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -131,7 +138,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
     }
 
     // METHODS FACEBOOK
-    public void onSessionStateChanged(final Session session, final SessionState state, Exception exception) {
+    public void onSessionStateChanged(final Session session, final SessionState state, final Exception exception) {
         if (session != null && session.isOpened()) {
             Log.e("Script", "Connection success");
             Request.newMeRequest(session, new Request.GraphUserCallback() {
@@ -140,15 +147,23 @@ public class LoginPage extends Activity implements View.OnClickListener {
                     if (user != null) {
                         userName = user.getFirstName() + " " + user.getLastName();
                         userEmail = user.getProperty("email").toString();
+
                         globalVariable.setUserName(userName);
                         globalVariable.setUserEmail(userEmail);
+
                         ProfilePictureView ppv = (ProfilePictureView) findViewById(R.id.fbImg);
                         ppv.setProfileId(user.getId());
                         userImage = ((ImageView) ppv.getChildAt(0));
                         Bitmap bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
-                        globalVariable.setProfPic(bitmap);
+
+
+                        ppv.setDefaultProfilePicture(bitmap);
+                       // globalVariable.setProfPic(bitmap);
+
+                        String filePath = createImageFromBitmap(bitmap);
                         Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
                         homePageFacebook.putExtra("facebook", FACEBOOK);
+                        homePageFacebook.putExtra("filePath", filePath);
                         startActivity(homePageFacebook);
                     }
                 }
@@ -156,5 +171,21 @@ public class LoginPage extends Activity implements View.OnClickListener {
         } else {
             Log.e("Script", "Connection fail");
         }
+    }
+
+    public String createImageFromBitmap(Bitmap bitmap) {
+        String filename = "fbimage.png";
+        File f = new File(Environment.getExternalStorageDirectory(), filename);
+        if (f.exists())
+            f.delete();
+        try {
+            FileOutputStream fos = new FileOutputStream(f);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+            fos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return f.getAbsolutePath();
     }
 }

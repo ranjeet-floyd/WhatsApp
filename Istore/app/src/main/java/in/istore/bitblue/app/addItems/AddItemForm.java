@@ -7,13 +7,10 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,9 +26,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.adapters.DbCursorAdapter;
 import in.istore.bitblue.app.listMyStock.ListMyStock;
 import in.istore.bitblue.app.utilities.Check;
-import in.istore.bitblue.app.adapters.DbCursorAdapter;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class AddItemForm extends ActionBarActivity implements View.OnClickListener {
@@ -95,29 +92,6 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
 
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_items, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
@@ -135,6 +109,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 price = etprice.getText().toString();
                 if (imagePath != null) {
                     try {
+
                         //Convert Image path to byte array
                         FileInputStream instream = new FileInputStream(imagePath);
                         BufferedInputStream bif = new BufferedInputStream(instream);
@@ -206,14 +181,17 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 
-                    File dir = new File(Environment.getExternalStorageDirectory(), "/Istore");
+
+                    //getExternalFilesDir("") will locate the storage for this app
+                    // Path is: storage/emulated/0/Android/data/in.istore.bitblue.app/files/Istore
+                    File dir = new File(getExternalFilesDir(""), "/Istore");
                     if (dir.mkdir()) {
                         Log.e("App", "created directory, Istore");
                     } else {
                         Log.e("App", "Already created directory, Istore");
                     }
                     try {
-                        file = new File(Environment.getExternalStorageDirectory() + "/Istore", "product " + proImgCount + ".png");
+                        file = new File(getExternalFilesDir("/Istore"), "product " + proImgCount + ".png");
                         file.createNewFile();
                         FileOutputStream fo = new FileOutputStream(file);
                         fo.write(bytes.toByteArray());
@@ -234,6 +212,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         }
     }
 
+    //Get the URI of Image
     public static Uri getImageContentUri(Context context, File imageFile) {
         String filePath = imageFile.getAbsolutePath();
         Cursor cursor = context.getContentResolver().query(
@@ -257,6 +236,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         }
     }
 
+    //Get location of image in the storage
     private String getRealPathFromURI(Uri contentURI) {
         String result;
         Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);

@@ -2,13 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.addItems.AddItems"
-    android:background="@color/primary_dark_material_dark">
+    android:background="@color/primary_dark_material_dark"
+    tools:context="in.istore.bitblue.app.addItems.AddItems">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linearLayout"
         android:orientation="vertical">
 
         <include
@@ -21,11 +21,11 @@
 
     <LinearLayout
         android:id="@+id/ll_additems_form"
-        android:layout_below="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/myWindowBackground"
-        android:layout_marginBottom="50dp">
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginBottom="50dp"
+        android:background="@color/myWindowBackground">
 
         <ScrollView
             android:id="@+id/ll_one"
@@ -40,99 +40,99 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/padd5dp"
                     android:layout_marginLeft="@dimen/padd5dp"
                     android:layout_marginRight="@dimen/padd5dp"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="horizontal"
                     android:weightSum="2">
 
                     <ImageView
                         android:id="@+id/iv_additems_image"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:src="@drawable/no_image"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:src="@drawable/no_image" />
 
                     <Button
                         android:id="@+id/b_additems_captureImage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/material_grey_500"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
                         android:background="@color/myPrimaryColor"
                         android:text="@string/captureImage"
-                        android:textStyle="bold"
-                        android:layout_weight="1"
-                        android:layout_gravity="center" />
+                        android:textColor="@color/material_grey_500"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:weightSum="2"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd15dp">
+                    android:layout_marginTop="@dimen/padd15dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/barcodenoorproductID"
                         android:textColor="@color/primary_material_dark"
-                        android:layout_weight="1"
                         android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/et_additems_barcode_prod_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
                         android:layout_weight="1"
                         android:inputType="number"
+                        android:singleLine="true"
                         android:textColor="@color/material_dark_teal_A400" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:weightSum="2"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd5dp">
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/productName"
                         android:textColor="@color/primary_material_dark"
-                        android:layout_weight="1"
                         android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/et_additems_prod_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
                         android:layout_weight="1"
+                        android:singleLine="true"
                         android:textColor="@color/material_dark_teal_A400" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:weightSum="2"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd5dp">
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/description"
                         android:textColor="@color/primary_material_dark"
-                        android:layout_weight="1"
                         android:textStyle="bold" />
 
                     <EditText
@@ -140,95 +140,97 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:singleLine="true"
                         android:textColor="@color/material_dark_teal_A400" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:weightSum="2"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd5dp">
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/quantity"
                         android:textColor="@color/primary_material_dark"
-                        android:layout_weight="1"
                         android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/et_additems_prod_quantity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
                         android:layout_weight="1"
-                        android:textColor="@color/material_dark_teal_A400"
-                        android:inputType="number" />
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:weightSum="2"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd5dp">
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/price"
                         android:textColor="@color/primary_material_dark"
-                        android:layout_weight="1"
                         android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/et_additems_prod_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
                         android:layout_weight="1"
-                        android:textColor="@color/material_dark_teal_A400"
-                        android:inputType="numberDecimal" />
+                        android:inputType="numberDecimal"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/padd5dp"
         android:background="@color/myWindowBackground"
-        android:layout_alignParentBottom="true">
+        android:orientation="horizontal"
+        android:weightSum="2">
 
         <Button
             android:id="@+id/b_additems_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/material_blue_300"
+            android:layout_gravity="center"
+            android:layout_weight="1"
             android:background="@null"
             android:text="@string/cancel"
-            android:textStyle="bold"
-            android:layout_weight="1"
-            android:layout_gravity="center" />
+            android:textColor="@color/material_blue_300"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/b_additems_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/material_blue_300"
+            android:layout_gravity="center"
+            android:layout_weight="1"
             android:background="@null"
             android:text="@string/submit"
-            android:textStyle="bold"
-            android:layout_weight="1"
-            android:layout_gravity="center" />
+            android:textColor="@color/material_blue_300"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </RelativeLayout>

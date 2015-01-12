@@ -13,8 +13,8 @@
 
         <com.facebook.widget.ProfilePictureView
             android:id="@+id/fbImg"
-            android:layout_width="1dp"
-            android:layout_height="1dp"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
             android:layout_marginTop="@dimen/photoMarginTop"
             facebook:preset_size="normal"
             android:visibility="visible"

@@ -144,7 +144,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textColor="@color/material_dark_teal_A400"
-                        android:focusable="false" />
+                        android:focusable="false"
+                        android:singleLine="true"/>
                 </LinearLayout>
 
                 <LinearLayout
