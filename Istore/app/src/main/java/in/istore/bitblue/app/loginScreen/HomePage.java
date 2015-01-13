@@ -1,12 +1,9 @@
 package in.istore.bitblue.app.loginScreen;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -34,25 +31,20 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.DbCursorAdapter;
 import in.istore.bitblue.app.adapters.NavDrawAdapter;
 import in.istore.bitblue.app.addItems.AddItems;
+import in.istore.bitblue.app.data.ExportData;
+import in.istore.bitblue.app.data.ImportData;
 import in.istore.bitblue.app.listMyStock.ListMyStock;
 import in.istore.bitblue.app.navDrawer.NavDrawItems;
 import in.istore.bitblue.app.sellItems.SellItems;
 import in.istore.bitblue.app.soldItems.SoldItems;
-import in.istore.bitblue.app.utilities.DBHelper;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class HomePage extends ActionBarActivity implements View.OnClickListener,
@@ -305,7 +297,6 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 resolveSignInError();
             }
         }
-
     }
 
     private List<NavDrawItems> getListItems() {
@@ -321,222 +312,21 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             selectItem(position);
-
         }
     }
 
     private void selectItem(int position) {
         switch (position) {
             case 0:  //IMPORT DATA
-                new AlertDialog.Builder(HomePage.this)
-                        .setTitle("IMPORT DATA").setIcon(getResources().getDrawable(R.drawable.successicon))
-                        .setMessage("Do you want to Import csv file into DB?")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                                new ImportData().execute();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        }).create().show();
+                startActivity(new Intent(this, ImportData.class));
                 break;
 
             case 1:  //EXPORT DATA
-                new AlertDialog.Builder(HomePage.this)
-                        .setTitle("EXPORT DATA").setIcon(getResources().getDrawable(R.drawable.successicon))
-                        .setMessage("Do you want to export DB to csv file?")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                                new ExportData().execute();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        }).create().show();
+                startActivity(new Intent(this, ExportData.class));
                 break;
         }
         navDrawList.setItemChecked(position, true);
         drawer.closeDrawer(Gravity.LEFT);
-    }
-
-    private class ImportData extends AsyncTask<String, String, String> {
-
-        private final ProgressDialog dialog = new ProgressDialog(HomePage.this);
-        private File fileNoImage, istoreData, file;
-
-        @Override
-        protected void onPreExecute() {
-            dialog.setMessage("Importing Database...");
-            dialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            CSVReader csvReader;
-            String[] row;
-            String id, image, name, desc, quantity, price;
-            long result = 0;
-            byte[] imageByteValue;
-
-            // File dbFile = getDatabasePath(DBHelper.DATABASE_NAME);
-            //getExternalFilesDir("") will locate the storage for this app
-            // Path is: storage/emulated/0/Android/data/in.istore.bitblue.app/files/IstoreData
-            istoreData = new File(getExternalFilesDir(""), "/IstoreData");
-            if (!istoreData.exists()) {
-                return "FileNotExists";
-            } else {
-                fileNoImage = new File(istoreData, DBHelper.DATABASE_TABLE + ".csv");
-                file = new File(fileNoImage.getPath());
-            }
-            try {
-                csvReader = new CSVReader(new FileReader(file));
-                while ((row = csvReader.readNext()) != null) {
-                    id = row[0];
-                    image = row[1];
-                    imageByteValue = convertStringtoByteArray(image);
-                    name = row[2];
-                    desc = row[3];
-                    quantity = row[4];
-                    price = row[5];
-                    if (dbAdapter.idAlreadyPresent(id))
-                        continue;
-                    else
-                        result = dbAdapter.insertProductDetails(id, imageByteValue, name, desc, quantity, price);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (result < 0) {
-                return "ErrorReadingFile";
-            } else
-                return "Success";
-
-        }
-
-        private byte[] convertStringtoByteArray(String image) {
-            String[] byteValues = image.substring(1, image.length() - 1).split(",");
-
-            byte[] bytes = new byte[byteValues.length];
-            int len = bytes.length;
-            for (int i = 0; i < len; i++) {
-                bytes[i] = Byte.parseByte(byteValues[i].trim());
-            }
-            return bytes;
-        }
-
-        @Override
-        protected void onPostExecute(String status) {
-            dialog.dismiss();
-            if (status.equals("FileNotExists")) {
-                showAlertDialog("Error", "\tFile Does Not Exists", R.drawable.erroricon);
-            } else if (status.equals("Success")) {
-                showAlertDialog("Success", "\tCopied from csv to database", R.drawable.successicon);
-            }
-        }
-    }
-
-    private class ExportData extends AsyncTask<String, String, Boolean> {
-        private SQLiteDatabase sqLiteDb;
-        private DBHelper dbHelper;
-        private File fileNoImage, fileImage;
-        private File istoreData;
-        private final ProgressDialog dialog = new ProgressDialog(HomePage.this);
-
-        @Override
-        protected void onPreExecute() {
-            dialog.setMessage("Exporting Database...");
-            dialog.show();
-
-            dbHelper = new DBHelper(HomePage.this,
-                    DBHelper.DATABASE_NAME, null, DBHelper.DATABASE_VERSION);
-            sqLiteDb = dbHelper.getReadableDatabase();
-        }
-
-        @Override
-        protected Boolean doInBackground(String... strings) {
-
-            // File dbFile = getDatabasePath(DBHelper.DATABASE_NAME);
-            //getExternalFilesDir("") will locate the storage for this app
-            // Path is: storage/emulated/0/Android/data/in.istore.bitblue.app/files/IstoreData
-            istoreData = new File(getExternalFilesDir(""), "/IstoreData");
-            if (!istoreData.exists()) {
-                istoreData.mkdirs();
-            }
-
-            fileNoImage = new File(istoreData, "exportIstore.csv");
-            fileImage = new File(istoreData, DBHelper.DATABASE_TABLE + ".csv");
-
-            try {
-                fileNoImage.createNewFile();
-                fileImage.createNewFile();
-
-                CSVWriter csvWriteNoImage = new CSVWriter(new FileWriter(fileNoImage));
-                CSVWriter csvWriteImage = new CSVWriter(new FileWriter(fileImage));
-
-                Cursor c = sqLiteDb.query(DBHelper.DATABASE_TABLE, DBHelper.COLUMNS, null, null, null, null, null);
-
-                //Do not write column header to csv files
-               /* csvWriteNoImage.writeNext(c.getColumnNames());
-                csvWriteImage.writeNext(c.getColumnNames());*/
-
-                while (c.moveToNext()) {
-
-                    String noImage[] = {c.getString(c.getColumnIndexOrThrow("id")),
-                            c.getString(c.getColumnIndexOrThrow("name")),
-                            c.getString(c.getColumnIndexOrThrow("desc")).trim(),
-                            c.getString(c.getColumnIndexOrThrow("quantity")),
-                            c.getString(c.getColumnIndexOrThrow("price"))};
-                    csvWriteNoImage.writeNext(noImage);
-
-                    String image[] = {c.getString(c.getColumnIndexOrThrow("id")),
-                            Arrays.toString((c.getBlob(1))),
-                            c.getString(c.getColumnIndexOrThrow("name")),
-                            c.getString(c.getColumnIndexOrThrow("desc")).trim(),
-                            c.getString(c.getColumnIndexOrThrow("quantity")),
-                            c.getString(c.getColumnIndexOrThrow("price"))};
-                    csvWriteImage.writeNext(image);
-                }
-                csvWriteNoImage.close();
-                csvWriteImage.close();
-                dbHelper.close();
-                return true;
-            } catch (Exception sqlEx) {
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean status) {
-            dialog.dismiss();
-            if (status) {
-                showAlertDialog("Success", "\tDatabase was Exported Successfully." +
-                        "\n The location of file is: " + fileNoImage.getAbsolutePath(), R.drawable.successicon);
-            } else {
-                showAlertDialog("Error", "\tDatabase Export Error", R.drawable.erroricon);
-            }
-        }
-    }
-
-    private void showAlertDialog(String Title, String Message, int ResId) {
-        new AlertDialog.Builder(HomePage.this)
-                .setTitle(Title).setIcon(getResources().getDrawable(ResId))
-                .setMessage(Message)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                }).create().show();
     }
 
     @Override

@@ -27,13 +27,12 @@
     <string name="price">Price Rs:</string>
     <string name="captureImage">CAPTURE IMAGE</string>
     <string name="submit">SUBMIT</string>
-    <string name="cancel">BACK</string>
+    <string name="cancell">BACK</string>
 
     <!-- Navigation Drawer Page -->
     <string name="openDrawer">OpenDrawer</string>
     <string name="closeDrawer">CloseDrawer</string>
     <string name="title_activity_add_item_form">AddItemForm</string>
-    <string name="hello_world">Hello world!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- FaceBook App Id -->
@@ -48,7 +47,25 @@
     <string name="title_activity_sold_items">SoldItems</string>
     <string name="title_activity_view_item">ViewItem</string>
 
-
-    <!--Home Page Menu Items-->
+    <!-- Home Page Menu Items -->
     <string name="exit">EXIT</string>
+    <string name="title_activity_import_data">ImportData</string>
+    <string name="title_activity_export_data">ExportData</string>
+
+    <!-- FILE DIALOG -->
+    <string name="location">Location</string>
+    <string name="cant_read_folder">folder can\'t be read!</string>
+    <string name="nnew">New</string>
+    <string name="select">Select</string>
+    <string name="file_name">File name:</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Save</string>
+    <string name="no_data">No Data</string>
+
+    <color name="gray">#ffff0000</color>
+
+    <string name="err">Error</string>
+    <string name="title_activity_file_dialog">FileDialog</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>
