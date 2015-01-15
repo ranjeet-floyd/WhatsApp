@@ -27,10 +27,9 @@
         <activity
             android:name=".loginScreen.LoginPage"
             android:label="@string/name">
-
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -66,6 +65,9 @@
         <activity
             android:name=".listMyStock.ViewStockItems"
             android:parentActivityName=".addItems.AddItems" />
+        <activity
+            android:name=".sellItems.EditItemForm"
+            android:parentActivityName=".listMyStock.ListMyStock" />
     </application>
 
 </manifest>

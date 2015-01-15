@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.listMyStock.Product;
 import in.istore.bitblue.app.sellItems.SellItemForm;
 import in.istore.bitblue.app.utilities.DateUtil;
@@ -33,14 +34,14 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
     private ViewHolder holder;
     private int lastPosition = -1;
     private ArrayList<Product> origproductArrayList;
-    private DbCursorAdapter dbAdapter;
+    private DbProductAdapter dbAdapter;
 
     public ListStockAdapter(Context context, ArrayList<Product> productArrayList) {
         if (context != null && productArrayList != null) {
             this.productArrayList = productArrayList;
             this.context = context;
             mInflater = LayoutInflater.from(context);
-            dbAdapter = new DbCursorAdapter(context);
+            dbAdapter = new DbProductAdapter(context);
         }
     }
 
@@ -85,12 +86,6 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
 
         holder.name.setText(product.getName());
         holder.date.setText(DateUtil.getStringDate(product.getDate()));
-        /*if (product.getFavorite() == 1) {
-            holder.favorite.setBackgroundResource(R.drawable.ic_action_important);
-        } else if (product.getFavorite() == 0) {
-            holder.favorite.setBackgroundResource(R.drawable.ic_action_not_important);
-
-        }*/
         if (product.getFavorite() == 1) {
             holder.favorite.setChecked(true);
         } else if (product.getFavorite() == 0) {

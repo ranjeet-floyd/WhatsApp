@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary_dark_material_dark"
-    tools:context="in.istore.bitblue.app.listMyStock.ViewStockItems">
+    tools:context="in.istore.bitblue.app.sellItems.EditItemForm">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -20,7 +20,7 @@
 
 
     <LinearLayout
-        android:id="@+id/ll_viewstockitem_form"
+        android:id="@+id/ll_additems_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/linearLayout"
@@ -43,24 +43,26 @@
                     android:layout_marginLeft="@dimen/padd5dp"
                     android:layout_marginRight="@dimen/padd5dp"
                     android:layout_marginTop="@dimen/padd5dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
                     <ImageView
-                        android:id="@+id/iv_viewstockitem_image"
+                        android:id="@+id/iv_edititems_image"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
+                        android:layout_weight="1"
                         android:src="@drawable/no_image" />
-                    <!--                    <Button
-                                            android:id="@+id/b_viewstockitem_captureImage"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:layout_weight="1"
-                                            android:background="@color/myPrimaryColor"
-                                            android:text="@string/captureImage"
-                                            android:textColor="@color/material_grey_500"
-                                            android:textStyle="bold" />-->
+
+                    <Button
+                        android:id="@+id/b_edititems_captureImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@color/myPrimaryColor"
+                        android:text="@string/captureImage"
+                        android:textColor="@color/material_grey_500"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -81,7 +83,7 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/et_viewstockitem_barcode_prod_id"
+                        android:id="@+id/et_edititems_barcode_prod_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -110,12 +112,36 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/et_viewstockitem_prod_name"
+                        android:id="@+id/et_edititems_prod_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd15dp"
+                    android:layout_marginRight="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/description"
+                        android:textColor="@color/primary_material_dark"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_edititems_prod_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:singleLine="true"
                         android:textColor="@color/material_dark_teal_A400" />
                 </LinearLayout>
@@ -138,7 +164,7 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/et_viewstockitem_prod_quantity"
+                        android:id="@+id/et_edititems_prod_quantity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -146,32 +172,33 @@
                         android:singleLine="true"
                         android:textColor="@color/material_dark_teal_A400" />
                 </LinearLayout>
-                <!--                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/padd15dp"
-                                    android:layout_marginRight="@dimen/padd15dp"
-                                    android:layout_marginTop="@dimen/padd5dp"
-                                    android:orientation="vertical"
-                                    android:weightSum="2">
 
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:text="@string/price"
-                                        android:textColor="@color/primary_material_dark"
-                                        android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd15dp"
+                    android:layout_marginRight="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
 
-                                    <EditText
-                                        android:id="@+id/et_viewstockitem_prod_price"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:inputType="numberDecimal"
-                                        android:singleLine="true"
-                                        android:textColor="@color/material_dark_teal_A400" />
-                                </LinearLayout>-->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/price"
+                        android:textColor="@color/primary_material_dark"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_edititems_prod_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
@@ -186,7 +213,7 @@
         android:weightSum="2">
 
         <Button
-            android:id="@+id/b_viewstockitem_back"
+            android:id="@+id/b_edititems_back"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -197,7 +224,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/b_viewstockitem_update"
+            android:id="@+id/b_edititems_update"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

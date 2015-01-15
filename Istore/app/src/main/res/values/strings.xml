@@ -71,8 +71,12 @@
     <string name="hello_world">Hello world!</string>
 
     <!-- Rupee Symbol -->
-    <string name="Rs">\u20B9</string>
-    <string name="rs">\u20A8</string>
+    <string name="rs">\u20B9</string>
+    <string name="Rs">\u20A8</string>
     <string name="title_activity_view_stock_items">ViewStockItems</string>
+
+    <!-- View Item -->
+    <string name="changeImage">Change Image</string>
+    <string name="title_activity_edit_item_form">EditItemForm</string>
 
 </resources>

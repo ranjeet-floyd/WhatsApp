@@ -32,7 +32,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.adapters.DbCursorAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.adapters.ListStockAdapter;
 import in.istore.bitblue.app.addItems.AddItems;
 import in.istore.bitblue.app.utilities.DBHelper;
@@ -50,7 +50,7 @@ public class ListMyStock extends ActionBarActivity
     private FloatingActionButton addNewItem, delAllItem, sortItems;
     private MenuItem sortBy;
     
-    private DbCursorAdapter dbAdapter;
+    private DbProductAdapter dbAdapter;
     private ListStockAdapter listAdapter;
     private ListView lvproductList;
     private ArrayList<Product> productArrayList;
@@ -100,7 +100,7 @@ public class ListMyStock extends ActionBarActivity
                 .inflate(R.layout.listfooter, null, false);
         lvproductList.addFooterView(footerView);
 
-        dbAdapter = new DbCursorAdapter(this);
+        dbAdapter = new DbProductAdapter(this);
         offset = 0;
         limit = 10;
         productArrayList = dbAdapter.getAllProducts(available, limit, offset);

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.adapters.DbCursorAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.listMyStock.Product;
 
 public class ViewItem extends ActionBarActivity {
@@ -24,7 +24,7 @@ public class ViewItem extends ActionBarActivity {
     private byte[] byteImage;
     private Bitmap bitmap;
 
-    private DbCursorAdapter cursorAdapter;
+    private DbProductAdapter cursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class ViewItem extends ActionBarActivity {
     private void initViews() {
 
         id = getIntent().getStringExtra("id");  //Obtained when list item is selected
-        cursorAdapter = new DbCursorAdapter(this);
+        cursorAdapter = new DbProductAdapter(this);
         if (id != null) {
             getProductfor(id);
         } else {

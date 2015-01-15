@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.adapters.DbCursorAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.adapters.NavDrawAdapter;
 import in.istore.bitblue.app.addItems.AddItems;
 import in.istore.bitblue.app.data.ExportData;
@@ -68,7 +68,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
     private static final int PROFILE_PIC_SIZE = 400;
     private Bitmap bitmap;
-    private DbCursorAdapter dbAdapter;
+    private DbProductAdapter dbAdapter;
     private GlobalVariables globalVariable;
 
     // Google client to interact with Google API
@@ -138,7 +138,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
     private void initViews() {
 
-        dbAdapter = new DbCursorAdapter(this);
+        dbAdapter = new DbProductAdapter(this);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer);

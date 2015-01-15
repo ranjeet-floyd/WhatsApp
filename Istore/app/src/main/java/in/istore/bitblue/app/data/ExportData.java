@@ -123,7 +123,7 @@ public class ExportData extends ActionBarActivity {
             fileImage = new File(filePath, fileName[0]);
             try {
                 CSVWriter csvWriteImage = new CSVWriter(new FileWriter(fileImage));
-                Cursor c = sqLiteDb.query(DBHelper.DATABASE_TABLE, DBHelper.COLUMNS, null, null, null, null, null);
+                Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS, null, null, null, null, null);
                 int columnCount = c.getColumnCount();
                 while (c.moveToNext()) {
                     total += columnCount;

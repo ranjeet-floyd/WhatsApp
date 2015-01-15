@@ -6,9 +6,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
+
     public static final String DATABASE_NAME = "istore.db";
-    public static final String DATABASE_TABLE = "product";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 1;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
+
+    public static final String TABLE_PRODUCT = "product";
+    public static final String TABLE_QUANTITY_HISTORY = "quantityhistory";
 
     public static final String COL_PROD_ID = "id";
     public static final String COL_PROD_IMAGE = "image";
@@ -19,10 +22,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_PROD_STATUS = "status";
     public static final String COL_PROD_DATE = "date";
     public static final String COL_PROD_FAVORITE = "isfavorite";
-    public static final String[] COLUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_PRICE, COL_PROD_STATUS, COL_PROD_DATE, COL_PROD_FAVORITE};
+    public static final String[] PRODUCT_COLUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_PRICE, COL_PROD_STATUS, COL_PROD_DATE, COL_PROD_FAVORITE};
+    public static final String[] QUANTITY_DATE_COLUMNS = {COL_PROD_ID, COL_PROD_QUANTITY, COL_PROD_DATE};
 
-    public static final String CREATE_DATABASE =
-            "CREATE TABLE " + DATABASE_TABLE + "(" +
+
+    //Product table to store Product Details
+    public static final String CREATE_TABLE_PRODUCT =
+            "CREATE TABLE " + TABLE_PRODUCT + "(" +
                     COL_PROD_ID + " TEXT PRIMARY KEY," +
                     COL_PROD_IMAGE + " TEXT," +
                     COL_PROD_NAME + " TEXT," +
@@ -33,6 +39,13 @@ public class DBHelper extends SQLiteOpenHelper {
                     COL_PROD_DATE + " INTEGER," +
                     COL_PROD_FAVORITE + " INTEGER )";
 
+    //Used to store the quantity of product added on some particular date
+    public static final String CREATE_TABLE_QUANTITY_HISTORY =
+            "CREATE TABLE " + TABLE_QUANTITY_HISTORY + "(" +
+                    COL_PROD_ID + " TEXT," +
+                    COL_PROD_QUANTITY + " TEXT," +
+                    COL_PROD_DATE + " INTEGER)";
+
     public DBHelper(Context context, String name,
                     SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -42,13 +55,17 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(CREATE_DATABASE);
+        sqLiteDatabase.execSQL(CREATE_TABLE_PRODUCT);
+        sqLiteDatabase.execSQL(CREATE_TABLE_QUANTITY_HISTORY);
+
         Log.e("Success:", "Database Created");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldversion, int newversion) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCT);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_QUANTITY_HISTORY);
+
         onCreate(sqLiteDatabase);
     }
 }

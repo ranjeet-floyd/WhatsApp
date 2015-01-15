@@ -23,20 +23,20 @@ import au.com.bytecode.opencsv.CSVReader;
 import in.istore.bitblue.app.FileChooser.FileDialog;
 import in.istore.bitblue.app.FileChooser.SelectionMode;
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.adapters.DbCursorAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 
 public class ImportData extends ActionBarActivity {
 
     private final static int REQUEST_LOAD = 200;
     private Button bBrowse;
     private String path, filePath, fileName;
-    private DbCursorAdapter dbAdapter;
+    private DbProductAdapter dbAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_data);
-        dbAdapter = new DbCursorAdapter(this);
+        dbAdapter = new DbProductAdapter(this);
         bBrowse = (Button) findViewById(R.id.b_import_browse);
         bBrowse.setOnClickListener(new View.OnClickListener() {
             @Override

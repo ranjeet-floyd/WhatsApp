@@ -1,4 +1,4 @@
-package in.istore.bitblue.app.addItems;
+package in.istore.bitblue.app.sellItems;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -27,40 +27,31 @@ import java.io.IOException;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
-import in.istore.bitblue.app.listMyStock.ListMyStock;
-import in.istore.bitblue.app.listMyStock.ViewStockItems;
 import in.istore.bitblue.app.utilities.Check;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
-public class AddItemForm extends ActionBarActivity implements View.OnClickListener {
+public class EditItemForm extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
-    private Button bCaptureImage, bSubmit, bCancel;
+    private Button bCaptureImage, bUpdate, bBack;
     private EditText etbarcode, etname, etdesc, etquantity, etprice;
     private ImageView ivProdImage;
 
-    private GlobalVariables globalVariable;
-    private int proImgCount = 1;
-    private String imagePath, id, name, desc, quantity, price;
+    private static final int CAPTURE_PIC_REQ = 2222;
+    private String id, name, desc, quantity, price;
+    private String imagePath;
     private byte[] byteImage;
-    private String scanContent;
-    private static final int CAPTURE_PIC_REQ = 1111;
-
+    private int proImgCount = 1;
     private DbProductAdapter dbAdapter;
-
+    private GlobalVariables globalVariable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_item_form);
-
-        scanContent = getIntent().getStringExtra("scanContentaddItem");
+        setContentView(R.layout.activity_edit_item_form);
         globalVariable = (GlobalVariables) getApplicationContext();
-        proImgCount = globalVariable.getProdImageCount();
-
         setToolbar();
         initViews();
     }
-
 
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
@@ -68,57 +59,48 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        toolTitle.setText("ADD ITEMS");
+        toolTitle.setText("EDIT ITEM");
     }
 
     private void initViews() {
-        boolean isProductExisting = false;
 
         dbAdapter = new DbProductAdapter(this);
 
-        bCaptureImage = (Button) findViewById(R.id.b_additems_captureImage);
+        id = getIntent().getStringExtra("prodid");
+        ivProdImage = (ImageView) findViewById(R.id.iv_edititems_image);
+
+        etbarcode = (EditText) findViewById(R.id.et_edititems_barcode_prod_id);
+        if ((id != null) && (!id.equals(""))) {
+            etbarcode.setText(id);
+        } else {
+            Toast.makeText(this, "ID NOT FOUND", Toast.LENGTH_SHORT).show();
+        }
+        etname = (EditText) findViewById(R.id.et_edititems_prod_name);
+        etdesc = (EditText) findViewById(R.id.et_edititems_prod_desc);
+        etquantity = (EditText) findViewById(R.id.et_edititems_prod_quantity);
+        etprice = (EditText) findViewById(R.id.et_edititems_prod_price);
+
+        bCaptureImage = (Button) findViewById(R.id.b_edititems_captureImage);
         bCaptureImage.setOnClickListener(this);
 
-        bSubmit = (Button) findViewById(R.id.b_additems_submit);
-        bSubmit.setOnClickListener(this);
+        bUpdate = (Button) findViewById(R.id.b_edititems_update);
+        bUpdate.setOnClickListener(this);
 
-        bCancel = (Button) findViewById(R.id.b_additems_cancel);
-        bCancel.setOnClickListener(this);
-
-        etbarcode = (EditText) findViewById(R.id.et_additems_barcode_prod_id);
-        if (scanContent != null || scanContent != "")
-            isProductExisting = checkForExistingBarcode(scanContent);
-        if (isProductExisting) {
-            Intent viewStockItem = new Intent(this, ViewStockItems.class);
-            viewStockItem.putExtra("barcode", scanContent);
-            startActivity(viewStockItem);
-        } else {
-            etbarcode.setText(scanContent);
-
-            ivProdImage = (ImageView) findViewById(R.id.iv_additems_image);
-            etname = (EditText) findViewById(R.id.et_additems_prod_name);
-            etdesc = (EditText) findViewById(R.id.et_additems_prod_desc);
-            etquantity = (EditText) findViewById(R.id.et_additems_prod_quantity);
-            etprice = (EditText) findViewById(R.id.et_additems_prod_price);
-
-        }
-
+        bBack = (Button) findViewById(R.id.b_edititems_back);
+        bBack.setOnClickListener(this);
     }
 
-    private boolean checkForExistingBarcode(String id) {
-        return dbAdapter.idAlreadyPresent(id);
-    }
 
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
-            case R.id.b_additems_captureImage:
+            case R.id.b_edititems_back:
+                startActivity(new Intent(this, SellItemForm.class));
+                break;
+            case R.id.b_edititems_captureImage:
                 captureImage();
                 break;
-            case R.id.b_additems_cancel:
-                startActivity(new Intent(this, AddItems.class));
-                break;
-            case R.id.b_additems_submit:
+            case R.id.b_edititems_update:
                 id = etbarcode.getText().toString();
                 name = etname.getText().toString();
                 desc = etdesc.getText().toString();
@@ -126,7 +108,6 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 price = etprice.getText().toString();
                 if (imagePath != null) {
                     try {
-
                         //Convert Image path to byte array
                         FileInputStream instream = new FileInputStream(imagePath);
                         BufferedInputStream bif = new BufferedInputStream(instream);
@@ -136,18 +117,10 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                         Toast.makeText(this, "Error:Unable to get the Image Location", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Toast.makeText(this, "Capture Product Image", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Error: Update Product Image", Toast.LENGTH_LONG).show();
                     break;
                 }
-                if (Check.ifNull(id)) {
-                    etbarcode.setHint("Field Required");
-                    etbarcode.setHintTextColor(getResources().getColor(R.color.material_red_A400));
-                    break;
-
-                } else if (dbAdapter.idAlreadyPresent(id)) {
-                    Toast.makeText(this, "\tId " + id + " ALREADY EXISTS\n please enter unique id ", Toast.LENGTH_LONG).show();
-                    break;
-                } else if (Check.ifNull(name)) {
+                if (Check.ifNull(name)) {
                     etname.setHint("Field Required");
                     etname.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
@@ -168,11 +141,11 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     break;
 
                 } else {
-                    long ret = dbAdapter.insertProductDetails(id, byteImage, name, desc, quantity, price);
+                    long ret = dbAdapter.updateProductDetails(id, byteImage, name, desc, quantity, price, 0);
                     if (ret < 0) {
+                        Toast.makeText(this, "Record Not Updated: " + ret, Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "Record Added", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, ListMyStock.class));
+                        Toast.makeText(this, "Record Updated", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -198,17 +171,14 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 
-
-                    //getExternalFilesDir("") will locate the storage for this app
-                    // Path is: storage/emulated/0/Android/data/in.istore.bitblue.app/files/Istore
-                    File dir = new File(getExternalFilesDir(""), "/Istore");
+                    File dir = new File(getExternalFilesDir(""), "/IstoreEditItem");
                     if (dir.mkdir()) {
-                        Log.e("App", "created directory, Istore");
+                        Log.e("App", "created directory, IstoreEditItem");
                     } else {
-                        Log.e("App", "Already created directory, Istore");
+                        Log.e("App", "Already created directory, IstoreEditItem");
                     }
                     try {
-                        file = new File(getExternalFilesDir("/Istore"), "product " + proImgCount + ".png");
+                        file = new File(getExternalFilesDir("/IstoreEditItem"), "product " + proImgCount + ".png");
                         file.createNewFile();
                         FileOutputStream fo = new FileOutputStream(file);
                         fo.write(bytes.toByteArray());
@@ -229,7 +199,6 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         }
     }
 
-    //Get the URI of Image
     public static Uri getImageContentUri(Context context, File imageFile) {
         String filePath = imageFile.getAbsolutePath();
         Cursor cursor = context.getContentResolver().query(
@@ -253,7 +222,6 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         }
     }
 
-    //Get location of image in the storage
     private String getRealPathFromURI(Uri contentURI) {
         String result;
         Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);

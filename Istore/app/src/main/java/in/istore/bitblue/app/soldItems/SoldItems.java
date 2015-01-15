@@ -10,14 +10,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.adapters.DbCursorAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.adapters.SoldItemAdapter;
 import in.istore.bitblue.app.listMyStock.Product;
 
 public class SoldItems extends ActionBarActivity {
     private TextView tvnodata;
     private Toolbar toolbar;
-    private DbCursorAdapter dbAdapter;
+    private DbProductAdapter dbAdapter;
     private ListView lvproductList;
     private SoldItemAdapter listAdapter;
     private ArrayList<Product> soldproductArrayList;
@@ -42,7 +42,7 @@ public class SoldItems extends ActionBarActivity {
     }
 
     private void initViews() {
-        dbAdapter = new DbCursorAdapter(this);
+        dbAdapter = new DbProductAdapter(this);
         soldproductArrayList = dbAdapter.getAllSoldProducts(STATUS);
 
         tvnodata = (TextView) findViewById(R.id.tv_soldItem_nodata);
