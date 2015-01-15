@@ -25,6 +25,7 @@ import java.util.Arrays;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import in.istore.bitblue.app.FileChooser.FileDialog;
+import in.istore.bitblue.app.FileChooser.SelectionMode;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.utilities.DBHelper;
 
@@ -44,11 +45,10 @@ public class ExportData extends ActionBarActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), FileDialog.class);
                 intent.putExtra(FileDialog.START_PATH, Environment.getExternalStorageDirectory());
-                //can user select directories or not
-                //no directory selection
+
                 intent.putExtra(FileDialog.CAN_SELECT_DIR, false);
-                //alternatively you can set file filter
-                //intent.putExtra(FileDialog.FORMAT_FILTER, new String[] { "png" });
+
+                intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_CREATE);
                 startActivityForResult(intent, REQUEST_SAVE);
             }
         });
@@ -110,6 +110,7 @@ public class ExportData extends ActionBarActivity {
         @Override
         protected void onPreExecute() {
             dialog.setMessage("Exporting Database...");
+            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             dialog.show();
             dbHelper = new DBHelper(ExportData.this,
                     DBHelper.DATABASE_NAME, null, DBHelper.DATABASE_VERSION);
@@ -118,11 +119,15 @@ public class ExportData extends ActionBarActivity {
 
         @Override
         protected Boolean doInBackground(String... fileName) {
+            long total = 0;
             fileImage = new File(filePath, fileName[0]);
             try {
                 CSVWriter csvWriteImage = new CSVWriter(new FileWriter(fileImage));
                 Cursor c = sqLiteDb.query(DBHelper.DATABASE_TABLE, DBHelper.COLUMNS, null, null, null, null, null);
+                int columnCount = c.getColumnCount();
                 while (c.moveToNext()) {
+                    total += columnCount;
+                    publishProgress("" + total);
                     String image[] = {c.getString(c.getColumnIndexOrThrow("id")),
                             Arrays.toString((c.getBlob(1))),
                             c.getString(c.getColumnIndexOrThrow("name")),
@@ -137,6 +142,12 @@ public class ExportData extends ActionBarActivity {
             } catch (Exception sqlEx) {
                 return false;
             }
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            dialog.setProgress(Integer.parseInt(values[0]));
         }
 
         @Override

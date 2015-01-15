@@ -25,7 +25,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         public ViewHolder(View view) {
             super(view);
-            id = (TextView) view.findViewById(R.id.tv_listitem_id);
+           // id = (TextView) view.findViewById(R.id.tv_listitem_id);
             name = (TextView) view.findViewById(R.id.tv_listitem_name);
             image = (ImageView) view.findViewById(R.id.iv_listitem_img);
         }

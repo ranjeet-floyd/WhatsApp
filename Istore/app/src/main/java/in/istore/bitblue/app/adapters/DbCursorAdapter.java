@@ -4,9 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import in.istore.bitblue.app.listMyStock.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
@@ -33,6 +33,8 @@ public class DbCursorAdapter {
     }
 
     public long insertProductDetails(String Id, byte[] ImagePath, String Name, String Desc, String Quantity, String Price) {
+        Date date = new Date();
+        long todayDate = date.getTime();
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_ID, Id);
         row.put(DBHelper.COL_PROD_IMAGE, ImagePath);
@@ -41,11 +43,14 @@ public class DbCursorAdapter {
         row.put(DBHelper.COL_PROD_QUANTITY, Quantity);
         row.put(DBHelper.COL_PROD_PRICE, Price);
         row.put(DBHelper.COL_PROD_STATUS, "not sold");
+        row.put(DBHelper.COL_PROD_DATE, todayDate);   //Insert current date in Unix Time format.
+
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.DATABASE_TABLE, null, row);
         closeDatabase();
         return result;
     }
+
 
     public Product getProductDetails(String Id) {
         openWritableDatabase();
@@ -65,13 +70,33 @@ public class DbCursorAdapter {
         }
     }
 
-    public ArrayList<Product> getAllProducts(String status, int limit ,int rowCount) {
+    public Product getExistingProductDetails(String Id) {
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.DATABASE_TABLE, DBHelper.COLUMNS,
+                DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            String id = c.getString(c.getColumnIndexOrThrow("id"));
+            byte[] image = c.getBlob(1);
+            String name = c.getString(c.getColumnIndexOrThrow("name"));
+            String desc = c.getString(c.getColumnIndexOrThrow("desc"));
+            String quantity = c.getString(c.getColumnIndexOrThrow("quantity"));
+            String price = c.getString(c.getColumnIndexOrThrow("price"));
+            long date = c.getLong(c.getColumnIndexOrThrow("date"));
+            int favorite = c.getInt(c.getColumnIndexOrThrow("isfavorite"));
+            Product product = new Product(id, image, name, desc, quantity, price, date, favorite);
+            return product;
+        } else {
+            return null;
+        }
+    }
+
+    public ArrayList<Product> getAllProducts(String status, int limit, int rowCount) {
         ArrayList<Product> productArrayList = new ArrayList<Product>();
         openWritableDatabase();
         String RAW_QUERY = "SELECT *" +
                 " FROM " + DBHelper.DATABASE_TABLE +
                 " WHERE " + DBHelper.COL_PROD_STATUS + "='" + status + "'" +
-                " LIMIT "+limit +
+                " LIMIT " + limit +
                 " OFFSET " + rowCount;
         Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
         if (c != null && c.moveToFirst()) {
@@ -83,6 +108,8 @@ public class DbCursorAdapter {
                 product.setDesc(c.getString(c.getColumnIndexOrThrow("desc")));
                 product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
                 product.setPrice(c.getString(c.getColumnIndexOrThrow("price")));
+                product.setDate(c.getLong(c.getColumnIndexOrThrow("date")));
+                product.setFavorite(c.getInt(c.getColumnIndexOrThrow("isfavorite")));
                 productArrayList.add(product);
             } while (c.moveToNext());
             closeDatabase();
@@ -118,13 +145,27 @@ public class DbCursorAdapter {
         }
 
     }
-    public long updateProductDetails(String Id, byte[] ImagePath, String Name, String Desc, String Quantity, String Price) {
+
+    public long updateProductDetails(String Id, byte[] ImagePath, String Name, String Desc, String Quantity, String Price, int isFavorite) {
+        Date date = new Date();
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_IMAGE, ImagePath);
         row.put(DBHelper.COL_PROD_NAME, Name);
         row.put(DBHelper.COL_PROD_DESC, Desc);
         row.put(DBHelper.COL_PROD_QUANTITY, Quantity);
         row.put(DBHelper.COL_PROD_PRICE, Price);
+        row.put(DBHelper.COL_PROD_DATE, date.getTime());
+        row.put(DBHelper.COL_PROD_FAVORITE, isFavorite);
+
+        openWritableDatabase();
+        long result = sqLiteDb.update(DBHelper.DATABASE_TABLE, row, DBHelper.COL_PROD_ID + "='" + Id + "'", null);
+        closeDatabase();
+        return result;
+    }
+
+    public long updateFavoriteProductDetails(String Id, int isFavorite) {
+        ContentValues row = new ContentValues();
+        row.put(DBHelper.COL_PROD_FAVORITE, isFavorite);
         openWritableDatabase();
         long result = sqLiteDb.update(DBHelper.DATABASE_TABLE, row, DBHelper.COL_PROD_ID + "='" + Id + "'", null);
         closeDatabase();
@@ -183,6 +224,7 @@ public class DbCursorAdapter {
                 product.setDesc(c.getString(c.getColumnIndexOrThrow("desc")));
                 product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
                 product.setPrice(c.getString(c.getColumnIndexOrThrow("price")));
+                product.setDate(c.getLong(c.getColumnIndexOrThrow("date")));
                 productArrayList.add(product);
             } while (c.moveToNext());
             closeDatabase();
@@ -192,11 +234,10 @@ public class DbCursorAdapter {
         }
     }
 
-    public ArrayList<Product> sortBy(String column) {
+    public ArrayList<Product> sortBy(String column, String status) {
         ArrayList<Product> productArrayList = new ArrayList<Product>();
         openWritableDatabase();
         String orderBy = getColumnName(column);
-        String status = "not sold";
         Cursor c = sqLiteDb.query(DBHelper.DATABASE_TABLE, DBHelper.COLUMNS,
                 DBHelper.COL_PROD_STATUS + "='" + status + "'", null, null, null, orderBy);
         if (c != null && c.moveToFirst()) {
@@ -208,6 +249,7 @@ public class DbCursorAdapter {
                 product.setDesc(c.getString(c.getColumnIndexOrThrow("desc")));
                 product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
                 product.setPrice(c.getString(c.getColumnIndexOrThrow("price")));
+                product.setDate(c.getLong(c.getColumnIndexOrThrow("date")));
                 productArrayList.add(product);
             } while (c.moveToNext());
             closeDatabase();
@@ -234,6 +276,9 @@ public class DbCursorAdapter {
                 break;
             case "price":
                 COLUMN = DBHelper.COL_PROD_PRICE;
+                break;
+            case "date":
+                COLUMN = DBHelper.COL_PROD_DATE;
                 break;
         }
         return COLUMN;

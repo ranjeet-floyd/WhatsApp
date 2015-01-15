@@ -8,14 +8,22 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/abc_action_bar_default_height_material"
         android:background="@color/button_material_light"
-        android:orientation="horizontal">
-
+        android:orientation="horizontal"
+        android:weightSum="2">
+        <include
+            android:id="@+id/toolbar_actionbar"
+            layout="@layout/toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.99"/>
         <SearchView
             android:id="@+id/sv_listmystock_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.01"
+            android:layout_gravity="end"/>
 
     </LinearLayout>
 
@@ -52,9 +60,9 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        fab:fab_addButtonColorNormal="@color/white"
+        fab:fab_addButtonColorNormal="@color/material_red_700"
         fab:fab_addButtonColorPressed="@color/material_red_100"
-        fab:fab_addButtonPlusIconColor="@color/myPrimaryColor"
+        fab:fab_addButtonPlusIconColor="@color/white"
         fab:fab_labelStyle="@style/menu_labels_style">
 
         <com.getbase.floatingactionbutton.FloatingActionButton

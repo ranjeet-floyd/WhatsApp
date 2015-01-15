@@ -56,7 +56,7 @@ public class SoldItemAdapter extends BaseAdapter {
         if (listRow == null) {
             listRow = mInflater.inflate(R.layout.listitem, null);
             holder = new ViewHolder();
-            holder.id = (TextView) listRow.findViewById(R.id.tv_listitem_id);
+            holder.id = (TextView) listRow.findViewById(R.id.tv_listitem_category);
             holder.image = (ImageView) listRow.findViewById(R.id.iv_listitem_img);
             holder.name = (TextView) listRow.findViewById(R.id.tv_listitem_name);
             listRow.setTag(holder);
@@ -80,7 +80,7 @@ public class SoldItemAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View view) {
-                holder.id = (TextView) view.findViewById(R.id.tv_listitem_id);
+                holder.id = (TextView) view.findViewById(R.id.tv_listitem_category);
                 String id = holder.id.getText().toString();
                 Intent viewItem = new Intent(context, ViewItem.class);
                 if (id != null) {

@@ -4,6 +4,7 @@
     <!-- App Level -->
     <string name="app_name"></string>
     <string name="action_settings"></string>
+    <string name="name">Istore</string>
 
     <!-- Login Page -->
     <string name="title_activity_login_page">LoginPage</string>
@@ -18,6 +19,8 @@
 
     <!-- ListMyStock Page -->
     <string name="noitems">There are no items in the Stock.</string>
+    <string name="sortBy">Sort Items</string>
+    <string name="search">Search Items</string>
 
     <!-- Add Item Page -->
     <string name="barcodenoorproductID">Barcode Number/Product ID:</string>
@@ -33,7 +36,6 @@
     <string name="openDrawer">OpenDrawer</string>
     <string name="closeDrawer">CloseDrawer</string>
     <string name="title_activity_add_item_form">AddItemForm</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- FaceBook App Id -->
     <string name="facebook_app_id">365374323640416</string>
@@ -67,5 +69,10 @@
     <string name="err">Error</string>
     <string name="title_activity_file_dialog">FileDialog</string>
     <string name="hello_world">Hello world!</string>
+
+    <!-- Rupee Symbol -->
+    <string name="Rs">\u20B9</string>
+    <string name="rs">\u20A8</string>
+    <string name="title_activity_view_stock_items">ViewStockItems</string>
 
 </resources>

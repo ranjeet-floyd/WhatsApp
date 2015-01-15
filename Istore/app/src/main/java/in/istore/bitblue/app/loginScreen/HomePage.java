@@ -101,7 +101,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                     .addOnConnectionFailedListener(this).addApi(Plus.API)
                     .addScope(Plus.SCOPE_PLUS_LOGIN).build();
             if (!googleApiClient.isConnected()) {
-                onConnected(savedInstanceState);
+               // onConnected(savedInstanceState);
             }
 
         } else if (responseFacebook == 2) {

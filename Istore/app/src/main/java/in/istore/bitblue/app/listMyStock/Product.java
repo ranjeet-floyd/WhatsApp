@@ -7,6 +7,8 @@ public class Product {
     private String Desc;
     private String Quantity;
     private String Price;
+    private long Date;
+    private int IsFavorite;
 
     public Product() {
     }
@@ -18,6 +20,17 @@ public class Product {
         Desc = desc;
         Quantity = quantity;
         Price = price;
+    }
+
+    public Product(String id, byte[] image, String name, String desc, String quantity, String price, long date, int isFavorite) {
+        Id = id;
+        Image = image;
+        Name = name;
+        Desc = desc;
+        Quantity = quantity;
+        Price = price;
+        Date = date;
+        IsFavorite = isFavorite;
     }
 
     public Product(String id, byte[] image, String name) {
@@ -72,5 +85,21 @@ public class Product {
 
     public void setPrice(String price) {
         Price = price;
+    }
+
+    public long getDate() {
+        return Date;
+    }
+
+    public void setDate(long date) {
+        this.Date = date;
+    }
+
+    public int getFavorite() {
+        return IsFavorite;
+    }
+
+    public void setFavorite(int isFavorite) {
+        IsFavorite = isFavorite;
     }
 }

@@ -43,12 +43,13 @@ public class ListMyStock extends ActionBarActivity
         FloatingActionsMenu.OnFloatingActionsMenuUpdateListener,
         AbsListView.OnScrollListener {
 
-    private TextView tvnodata;
+    private TextView tvnodata, toolTitle;
     private Toolbar toolbar;
     private View footerView;
     private FloatingActionsMenu itemMenu;
     private FloatingActionButton addNewItem, delAllItem, sortItems;
-
+    private MenuItem sortBy;
+    
     private DbCursorAdapter dbAdapter;
     private ListStockAdapter listAdapter;
     private ListView lvproductList;
@@ -64,7 +65,7 @@ public class ListMyStock extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_my_stock);
-        // setToolbar();
+        setToolbar();
         initViews();
     }
 
@@ -123,7 +124,7 @@ public class ListMyStock extends ActionBarActivity
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(this);
         searchView.setSubmitButtonEnabled(false);
-        searchView.setQueryHint("Search Item by Name");
+        searchView.setQueryHint("Search Item");
         try {
             //Set Custom icon For SearchView
             Field searchField = SearchView.class
@@ -156,8 +157,10 @@ public class ListMyStock extends ActionBarActivity
 
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
+        toolTitle.setText("LIST STOCK");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -166,6 +169,7 @@ public class ListMyStock extends ActionBarActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_list_my_stock, menu);
+        sortBy = menu.findItem(R.id.sortBy);
         return true;
     }
 
@@ -177,7 +181,12 @@ public class ListMyStock extends ActionBarActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.sortBy) {
+            if (productArrayList == null || productArrayList.size() == 0) {
+                Toast.makeText(this, "No Items to Sort", Toast.LENGTH_SHORT).show();
+            } else {
+                showDialogForSort();
+            }
             return true;
         }
 
@@ -201,11 +210,11 @@ public class ListMyStock extends ActionBarActivity
                 }
                 break;
             case R.id.fab_listmystock_sortitem:
-                if (productArrayList == null || productArrayList.size() == 0) {
+               /* if (productArrayList == null || productArrayList.size() == 0) {
                     Toast.makeText(this, "No Items to Sort", Toast.LENGTH_SHORT).show();
                 } else {
                     showDialogForSort();
-                }
+                }*/
                 break;
         }
     }
@@ -269,9 +278,10 @@ public class ListMyStock extends ActionBarActivity
     }
 
     private void showDialogForSort() {
-        final String[] items = {DBHelper.COL_PROD_ID, DBHelper.COL_PROD_NAME};
+        final String[] items = {DBHelper.COL_PROD_ID, DBHelper.COL_PROD_NAME, DBHelper.COL_PROD_DATE};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Sort Items by");
+
         //Setting single choice item show a dialog box with radio buttons each item in item array is radio button
         builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
             @Override
@@ -280,6 +290,8 @@ public class ListMyStock extends ActionBarActivity
                     sortItemsBy(items[0]);
                 } else if ("name".equals(items[property])) {
                     sortItemsBy(items[1]);
+                } else if ("date".equals(items[property])) {
+                    sortItemsBy(items[2]);
                 }
                 dialog.dismiss();
                 itemMenu.toggle();
@@ -289,7 +301,8 @@ public class ListMyStock extends ActionBarActivity
     }
 
     private void sortItemsBy(String column) {
-        productArrayList = dbAdapter.sortBy(column);
+        String status = "not sold";
+        productArrayList = dbAdapter.sortBy(column, status);
         if (productArrayList != null) {
             listAdapter = new ListStockAdapter(this, productArrayList);
             lvproductList.setAdapter(listAdapter);

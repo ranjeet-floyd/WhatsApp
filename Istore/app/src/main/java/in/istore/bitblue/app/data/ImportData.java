@@ -21,6 +21,7 @@ import java.io.FileReader;
 
 import au.com.bytecode.opencsv.CSVReader;
 import in.istore.bitblue.app.FileChooser.FileDialog;
+import in.istore.bitblue.app.FileChooser.SelectionMode;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.DbCursorAdapter;
 
@@ -47,6 +48,7 @@ public class ImportData extends ActionBarActivity {
                 intent.putExtra(FileDialog.CAN_SELECT_DIR, false);
                 //alternatively you can set file filter
                 //intent.putExtra(FileDialog.FORMAT_FILTER, new String[] { "png" });
+                intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_OPEN);
                 startActivityForResult(intent, REQUEST_LOAD);
             }
         });
@@ -84,11 +86,12 @@ public class ImportData extends ActionBarActivity {
     private class importdata extends AsyncTask<String, String, String> {
 
         private final ProgressDialog dialog = new ProgressDialog(ImportData.this);
-        private File fileNoImage, istoreData, file;
+        private File file;
 
         @Override
         protected void onPreExecute() {
             dialog.setMessage("Importing Database...");
+            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             dialog.show();
         }
 
@@ -97,12 +100,14 @@ public class ImportData extends ActionBarActivity {
             CSVReader csvReader;
             String[] row;
             String id, image, name, desc, quantity, price;
-            long result = 0;
+            long result = 0, total = 0;
             byte[] imageByteValue;
             file = new File(filePath, fileName[0]);
             try {
                 csvReader = new CSVReader(new FileReader(file));
                 while ((row = csvReader.readNext()) != null) {
+                    total += row.length;
+                    publishProgress("" + total);
                     id = row[0];
                     image = row[1];
                     imageByteValue = convertStringtoByteArray(image);
@@ -123,6 +128,12 @@ public class ImportData extends ActionBarActivity {
                 return "ErrorReadingFile";
             } else
                 return "Success";
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            dialog.setProgress(Integer.parseInt(values[0]));
         }
 
         private byte[] convertStringtoByteArray(String image) {

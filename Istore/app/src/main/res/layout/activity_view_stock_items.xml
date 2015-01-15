@@ -1,0 +1,241 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_dark_material_dark"
+    tools:context="in.istore.bitblue.app.listMyStock.ViewStockItems">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar_actionbar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_viewstockitem_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginBottom="50dp"
+        android:background="@color/myWindowBackground">
+
+        <ScrollView
+            android:id="@+id/ll_one"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd5dp"
+                    android:layout_marginRight="@dimen/padd5dp"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/iv_viewstockitem_image"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/no_image" />
+                    <!--                    <Button
+                                            android:id="@+id/b_viewstockitem_captureImage"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="1"
+                                            android:background="@color/myPrimaryColor"
+                                            android:text="@string/captureImage"
+                                            android:textColor="@color/material_grey_500"
+                                            android:textStyle="bold" />-->
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd15dp"
+                    android:layout_marginRight="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd15dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/barcodenoorproductID"
+                        android:textColor="@color/primary_material_dark"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_viewstockitem_barcode_prod_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd15dp"
+                    android:layout_marginRight="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/productName"
+                        android:textColor="@color/primary_material_dark"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_viewstockitem_prod_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd15dp"
+                    android:layout_marginRight="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/description"
+                        android:textColor="@color/primary_material_dark"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_viewstockitem_prod_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd15dp"
+                    android:layout_marginRight="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/quantity"
+                        android:textColor="@color/primary_material_dark"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_viewstockitem_prod_quantity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
+                </LinearLayout>
+                <!--                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/padd15dp"
+                                    android:layout_marginRight="@dimen/padd15dp"
+                                    android:layout_marginTop="@dimen/padd5dp"
+                                    android:orientation="vertical"
+                                    android:weightSum="2">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="@string/price"
+                                        android:textColor="@color/primary_material_dark"
+                                        android:textStyle="bold" />
+
+                                    <EditText
+                                        android:id="@+id/et_viewstockitem_prod_price"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:inputType="numberDecimal"
+                                        android:singleLine="true"
+                                        android:textColor="@color/material_dark_teal_A400" />
+                                </LinearLayout>-->
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/padd5dp"
+        android:background="@color/myWindowBackground"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/b_additems_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="@string/cancell"
+            android:textColor="@color/material_blue_300"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/b_additems_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="@string/submit"
+            android:textColor="@color/material_blue_300"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</RelativeLayout>

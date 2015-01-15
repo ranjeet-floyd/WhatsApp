@@ -28,6 +28,7 @@ import java.io.IOException;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.DbCursorAdapter;
 import in.istore.bitblue.app.listMyStock.ListMyStock;
+import in.istore.bitblue.app.listMyStock.ViewStockItems;
 import in.istore.bitblue.app.utilities.Check;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
@@ -35,14 +36,17 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     private Toolbar toolbar;
     private Button bCaptureImage, bSubmit, bCancel;
     private EditText etbarcode, etname, etdesc, etquantity, etprice;
-    private String scanContent;
     private ImageView ivProdImage;
-    private static final int CAPTURE_PIC_REQ = 1111;
+
     private GlobalVariables globalVariable;
     private int proImgCount = 1;
     private String imagePath, id, name, desc, quantity, price;
     private byte[] byteImage;
-    private DbCursorAdapter cursorAdapter;
+    private String scanContent;
+    private static final int CAPTURE_PIC_REQ = 1111;
+
+    private DbCursorAdapter dbAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         initViews();
     }
 
+
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
@@ -67,6 +72,10 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     }
 
     private void initViews() {
+        boolean isProductExisting = false;
+
+        dbAdapter = new DbCursorAdapter(this);
+
         bCaptureImage = (Button) findViewById(R.id.b_additems_captureImage);
         bCaptureImage.setOnClickListener(this);
 
@@ -78,18 +87,28 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
 
         etbarcode = (EditText) findViewById(R.id.et_additems_barcode_prod_id);
         if (scanContent != null || scanContent != "")
+            isProductExisting = checkForExistingBarcode(scanContent);
+        if (isProductExisting) {
+            Intent viewStockItem = new Intent(this, ViewStockItems.class);
+            viewStockItem.putExtra("barcode", scanContent);
+            startActivity(viewStockItem);
+        } else {
             etbarcode.setText(scanContent);
 
-        ivProdImage = (ImageView) findViewById(R.id.iv_additems_image);
+            ivProdImage = (ImageView) findViewById(R.id.iv_additems_image);
 
-        etbarcode = (EditText) findViewById(R.id.et_additems_barcode_prod_id);
-        etname = (EditText) findViewById(R.id.et_additems_prod_name);
-        etdesc = (EditText) findViewById(R.id.et_additems_prod_desc);
-        etquantity = (EditText) findViewById(R.id.et_additems_prod_quantity);
-        etprice = (EditText) findViewById(R.id.et_additems_prod_price);
+            etbarcode = (EditText) findViewById(R.id.et_additems_barcode_prod_id);
+            etname = (EditText) findViewById(R.id.et_additems_prod_name);
+            etdesc = (EditText) findViewById(R.id.et_additems_prod_desc);
+            etquantity = (EditText) findViewById(R.id.et_additems_prod_quantity);
+            etprice = (EditText) findViewById(R.id.et_additems_prod_price);
 
-        cursorAdapter = new DbCursorAdapter(this);
+        }
 
+    }
+
+    private boolean checkForExistingBarcode(String id) {
+        return dbAdapter.idAlreadyPresent(id);
     }
 
     @Override
@@ -127,7 +146,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     etbarcode.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
 
-                } else if (cursorAdapter.idAlreadyPresent(id)) {
+                } else if (dbAdapter.idAlreadyPresent(id)) {
                     Toast.makeText(this, "\tId " + id + " ALREADY EXISTS\n please enter unique id ", Toast.LENGTH_LONG).show();
                     break;
                 } else if (Check.ifNull(name)) {
@@ -151,7 +170,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     break;
 
                 } else {
-                    long ret = cursorAdapter.insertProductDetails(id, byteImage, name, desc, quantity, price);
+                    long ret = dbAdapter.insertProductDetails(id, byteImage, name, desc, quantity, price);
                     if (ret < 0) {
                     } else {
                         Toast.makeText(this, "Record Added", Toast.LENGTH_SHORT).show();

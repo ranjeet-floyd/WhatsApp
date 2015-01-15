@@ -313,7 +313,7 @@ public class FileDialog extends ListActivity {
                 }
             } else {
                 new AlertDialog.Builder(this).setIcon(R.drawable.icon)
-                        .setTitle("[" + file.getName() + "] " + getText(R.string.cant_read_folder))
+                        .setTitle("[ " + file.getName() + " ] " + getText(R.string.cant_read_folder))
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
                             @Override

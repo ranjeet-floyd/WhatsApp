@@ -69,7 +69,7 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        toolTitle.setText("VIEW ITEM");
+        toolTitle.setText("SELL ITEM FORM");
     }
 
     private void initViews() {
@@ -214,7 +214,7 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
                     break;
 
                 } else {
-                    long ret = cursorAdapter.updateProductDetails(id, byteImage, name, desc, quantity, price);
+                    long ret = cursorAdapter.updateProductDetails(id, byteImage, name, desc, quantity, price,0);
                     if (ret < 0) {
                         Toast.makeText(this, "Record Not Updated: " + ret, Toast.LENGTH_SHORT).show();
                     } else {

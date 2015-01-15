@@ -1,83 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        android:background="@drawable/list_item_shadow"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padd10dp"
         android:layout_marginRight="@dimen/padd10dp"
-        android:layout_marginTop="@dimen/padd10dp">
+        android:layout_marginTop="@dimen/padd10dp"
+        android:background="@drawable/list_item_shadow"
+        android:orientation="horizontal"
+        android:weightSum="2">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:paddingTop="@dimen/padd5dp"
-            android:paddingBottom="@dimen/padd5dp"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/padd10dp">
 
             <ImageView
                 android:id="@+id/iv_listitem_img"
-                android:layout_width="100dp"
+                android:layout_width="70dp"
                 android:layout_height="100dp"
                 android:src="@drawable/no_image" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:paddingTop="@dimen/padd5dp"
-            android:paddingBottom="@dimen/padd5dp"
-            android:paddingRight="@dimen/padd5dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="2">
+                android:layout_marginLeft="@dimen/padd5dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/padd5dp"
+                android:paddingRight="@dimen/padd5dp"
+                android:paddingTop="@dimen/padd5dp">
 
-                <TextView
-                    android:layout_width="50dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="ID: "
-                    android:layout_weight="1"
-                    android:textColor="@color/myPrimaryColor" />
+                    android:weightSum="2">
 
-                <TextView
-                    android:id="@+id/tv_listitem_id"
-                    android:layout_width="50dp"
+                    <TextView
+                        android:id="@+id/tv_listitem_name"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="Name"
+                        android:textAllCaps="true"
+                        android:textColor="@color/myPrimaryColor"
+                        android:textSize="20sp"
+                        android:textStyle="bold|italic" />
+
+
+                    <ToggleButton
+                        android:id="@+id/ib_listitem_favorite"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="0"
+                        android:background="@drawable/favorite"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:gravity="right"
+                        android:layout_gravity="right"
+                        android:textColor="@color/myPrimaryColor"
+                        android:textOff=""
+                        android:textOn="" />
+                </LinearLayout>
+
+                <!--<LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1"
-                    android:layout_weight="1"
-                    android:textColor="@color/myPrimaryColor" />
-            </LinearLayout>
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:weightSum="2">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="2">
+                    <TextView
+                        android:id="@+id/tv_listitem_id"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="1"
+                        android:textColor="@color/myPrimaryColor" />
+                </LinearLayout>-->
 
-                <TextView
-                    android:layout_width="50dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Name: "
-                    android:textColor="@color/myPrimaryColor"
-                    android:layout_weight="1" />
+                    android:layout_marginTop="@dimen/padd15dp"
+                    android:weightSum="2">
 
-                <TextView
-                    android:id="@+id/tv_listitem_name"
-                    android:layout_width="50dp"
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Category: "
+                        android:textColor="@color/myPrimaryColor" />
+
+                    <TextView
+                        android:id="@+id/tv_listitem_category"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="book"
+                        android:textColor="@color/myPrimaryColor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="abc"
-                    android:layout_weight="1"
-                    android:textColor="@color/myPrimaryColor" />
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Added on: "
+                        android:textColor="@color/myPrimaryColor" />
+
+                    <TextView
+                        android:id="@+id/tv_listitem_date"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="date"
+                        android:textColor="@color/myPrimaryColor" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

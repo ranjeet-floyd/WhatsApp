@@ -15,6 +15,7 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.listMyStock.Product;
 import in.istore.bitblue.app.sellItems.SellItemForm;
+import in.istore.bitblue.app.utilities.DateUtil;
 
 public class ListStockAdapter extends BaseAdapter implements Filterable {
 
@@ -30,13 +32,15 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
     private Context context;
     private ViewHolder holder;
     private int lastPosition = -1;
-    public ArrayList<Product> origproductArrayList;
+    private ArrayList<Product> origproductArrayList;
+    private DbCursorAdapter dbAdapter;
 
     public ListStockAdapter(Context context, ArrayList<Product> productArrayList) {
         if (context != null && productArrayList != null) {
             this.productArrayList = productArrayList;
             this.context = context;
             mInflater = LayoutInflater.from(context);
+            dbAdapter = new DbCursorAdapter(context);
         }
     }
 
@@ -60,14 +64,16 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
         if (listRow == null) {
             listRow = mInflater.inflate(R.layout.listitem, null);
             holder = new ViewHolder();
-            holder.id = (TextView) listRow.findViewById(R.id.tv_listitem_id);
+            holder.id = (TextView) listRow.findViewById(R.id.tv_listitem_category);
             holder.image = (ImageView) listRow.findViewById(R.id.iv_listitem_img);
             holder.name = (TextView) listRow.findViewById(R.id.tv_listitem_name);
+            holder.date = (TextView) listRow.findViewById(R.id.tv_listitem_date);
+            holder.favorite = (ToggleButton) listRow.findViewById(R.id.ib_listitem_favorite);
             listRow.setTag(holder);
         } else {
             holder = (ViewHolder) listRow.getTag();
         }
-        Product product = productArrayList.get(position);
+        final Product product = productArrayList.get(position);
 
         holder.id.setText(product.getId());
         byte[] outImage = product.getImage();
@@ -78,13 +84,35 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
         }
 
         holder.name.setText(product.getName());
+        holder.date.setText(DateUtil.getStringDate(product.getDate()));
+        /*if (product.getFavorite() == 1) {
+            holder.favorite.setBackgroundResource(R.drawable.ic_action_important);
+        } else if (product.getFavorite() == 0) {
+            holder.favorite.setBackgroundResource(R.drawable.ic_action_not_important);
 
+        }*/
+        if (product.getFavorite() == 1) {
+            holder.favorite.setChecked(true);
+        } else if (product.getFavorite() == 0) {
+            holder.favorite.setChecked(false);
+        }
+        holder.favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (holder.favorite.isChecked()) {
+                    product.setFavorite(1);
+                } else {
+                    product.setFavorite(0);
+                }
+                dbAdapter.updateFavoriteProductDetails(product.getId(), product.getFavorite());
+            }
+        });
         //This is used to select clicked listItem and get its details
         listRow.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                holder.id = (TextView) view.findViewById(R.id.tv_listitem_id);
+                holder.id = (TextView) view.findViewById(R.id.tv_listitem_category);
                 String id = holder.id.getText().toString();
                 Intent viewItem = new Intent(context, SellItemForm.class);
                 if (id != null) {
@@ -95,9 +123,11 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
                 }
             }
         });
+
         //Animation when listview is scrolled
         Animation animation = AnimationUtils.loadAnimation(context, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-      //  Animation animation = AnimationUtils.loadAnimation(context, R.anim.up_from_bottom);
+
+        //  Animation animation = AnimationUtils.loadAnimation(context, R.anim.up_from_bottom);
         listRow.startAnimation(animation);
         lastPosition = position;
         return listRow;
@@ -143,7 +173,8 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
     }
 
     private static class ViewHolder {
-        TextView id, name;
+        TextView id, name, date;
         ImageView image;
+        ToggleButton favorite;
     }
 }
