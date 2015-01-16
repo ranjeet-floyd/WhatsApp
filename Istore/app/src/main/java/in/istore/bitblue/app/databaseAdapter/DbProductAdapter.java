@@ -90,6 +90,36 @@ public class DbProductAdapter {
         }
     }
 
+    public ArrayList<Product> getAllSoldProducts(String status, int limit, int rowCount) {
+        ArrayList<Product> productArrayList = new ArrayList<Product>();
+        openWritableDatabase();
+        String RAW_QUERY = "SELECT *" +
+                " FROM " + DBHelper.TABLE_PRODUCT +
+                " WHERE " + DBHelper.COL_PROD_STATUS + "='" + status + "'" +
+                " LIMIT " + limit +
+                " OFFSET " + rowCount;
+        Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                Product product = new Product();
+                product.setId(c.getString(c.getColumnIndexOrThrow("id")));
+                product.setImage((c.getBlob(1)));
+                product.setName(c.getString(c.getColumnIndexOrThrow("name")));
+                product.setDesc(c.getString(c.getColumnIndexOrThrow("desc")));
+                product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
+                product.setPrice(c.getString(c.getColumnIndexOrThrow("price")));
+                product.setDate(c.getLong(c.getColumnIndexOrThrow("date")));
+                product.setFavorite(c.getInt(c.getColumnIndexOrThrow("isfavorite")));
+                productArrayList.add(product);
+            } while (c.moveToNext());
+            closeDatabase();
+            return productArrayList;
+        } else {
+            return null;
+        }
+    }
+
+
     public ArrayList<Product> getAllProducts(String status, int limit, int rowCount) {
         ArrayList<Product> productArrayList = new ArrayList<Product>();
         openWritableDatabase();
@@ -203,9 +233,9 @@ public class DbProductAdapter {
         }
     }
 
-    public int deleteAllProduct() {
+    public int deleteAllProduct(String status) {
         openWritableDatabase();
-        int result = sqLiteDb.delete(DBHelper.TABLE_PRODUCT, null, null);
+        int result = sqLiteDb.delete(DBHelper.TABLE_PRODUCT, DBHelper.COL_PROD_ID + "='" + status + "'", null);
         closeDatabase();
         return result;
 
@@ -213,36 +243,14 @@ public class DbProductAdapter {
     }
 
     public long updateSoldProductDetails(String Id) {
+        Date date = new Date();
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_STATUS, "sold");
+        row.put(DBHelper.COL_PROD_DATE, date.getTime());
         openWritableDatabase();
         long result = sqLiteDb.update(DBHelper.TABLE_PRODUCT, row, DBHelper.COL_PROD_ID + "='" + Id + "'", null);
         closeDatabase();
         return result;
-    }
-
-    public ArrayList<Product> getAllSoldProducts(String status) {
-        ArrayList<Product> productArrayList = new ArrayList<Product>();
-        openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
-                DBHelper.COL_PROD_STATUS + "='" + status + "'", null, null, null, null);
-        if (c != null && c.moveToFirst()) {
-            do {
-                Product product = new Product();
-                product.setId(c.getString(c.getColumnIndexOrThrow("id")));
-                product.setImage((c.getBlob(1)));
-                product.setName(c.getString(c.getColumnIndexOrThrow("name")));
-                product.setDesc(c.getString(c.getColumnIndexOrThrow("desc")));
-                product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
-                product.setPrice(c.getString(c.getColumnIndexOrThrow("price")));
-                product.setDate(c.getLong(c.getColumnIndexOrThrow("date")));
-                productArrayList.add(product);
-            } while (c.moveToNext());
-            closeDatabase();
-            return productArrayList;
-        } else {
-            return null;
-        }
     }
 
     public ArrayList<Product> sortBy(String column, String status) {

@@ -1,9 +1,8 @@
-package in.istore.bitblue.app.listMyStock;
+package in.istore.bitblue.app.soldItems;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -32,93 +31,82 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.adapters.ListStockAdapter;
-import in.istore.bitblue.app.addItems.AddItems;
+import in.istore.bitblue.app.adapters.SoldItemAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
+import in.istore.bitblue.app.listMyStock.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
 
-public class ListMyStock extends ActionBarActivity
-        implements View.OnClickListener,
+public class ListSoldItems extends ActionBarActivity implements View.OnClickListener,
         SearchView.OnQueryTextListener,
         FloatingActionsMenu.OnFloatingActionsMenuUpdateListener,
         AbsListView.OnScrollListener {
-
     private TextView tvnodata, toolTitle;
     private Toolbar toolbar;
+    private ListView lvsoldproductList;
     private View footerView;
-    private FloatingActionsMenu itemMenu;
-    private FloatingActionButton addNewItem, delAllItem, sortItems;
+    private SearchView searchView;
     private MenuItem sortBy;
 
     private DbProductAdapter dbAdapter;
-    private ListStockAdapter listAdapter;
-    private ListView lvproductList;
-    private ArrayList<Product> productArrayList;
-    private SearchView searchView;
-
+    private SoldItemAdapter listAdapter;
+    private ArrayList<Product> soldproductArrayList;
+    private String sold = "sold";
     private boolean loadingMoreItems;
     private int offset = 0;
     private int limit = 10;
-    private String available = "not sold";
+
+    private FloatingActionsMenu itemMenu;
+    private FloatingActionButton delAllItem, sortItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_my_stock);
+        setContentView(R.layout.activity_sold_items);
         setToolbar();
         initViews();
     }
 
-    @Override
-    public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        int lastInScreen = firstVisibleItem + visibleItemCount;
-        if ((lastInScreen == totalItemCount) && !(loadingMoreItems)) {
-            new LoadMoreItems().execute();
-        }
+
+    private void setToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
+        toolTitle.setText("SOLD ITEMS");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initViews() {
-
-        itemMenu = (FloatingActionsMenu) findViewById(R.id.fab_listmystock_menu);
+        itemMenu = (FloatingActionsMenu) findViewById(R.id.fab_solditems_menu);
         itemMenu.setOnFloatingActionsMenuUpdateListener(this);
 
-        addNewItem = (FloatingActionButton) findViewById(R.id.fab_listmystock_additem);
-        addNewItem.setOnClickListener(this);
-
-        delAllItem = (FloatingActionButton) findViewById(R.id.fab_listmystock_delallitem);
+        delAllItem = (FloatingActionButton) findViewById(R.id.fab_solditems_delallitem);
         delAllItem.setOnClickListener(this);
 
-        sortItems = (FloatingActionButton) findViewById(R.id.fab_listmystock_sortitem);
+        sortItems = (FloatingActionButton) findViewById(R.id.fab_solditems_sortitem);
         sortItems.setOnClickListener(this);
 
-        tvnodata = (TextView) findViewById(R.id.tv_listmystock_nodata);
-
-        lvproductList = (ListView) findViewById(R.id.lv_listmystock_itemlist);
-        lvproductList.setOnScrollListener(this);
-
+        lvsoldproductList = (ListView) findViewById(R.id.lv_soldItem_itemlist);
+        lvsoldproductList.setOnScrollListener(this);
+        tvnodata = (TextView) findViewById(R.id.tv_soldItem_nodata);
         footerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.listfooter, null, false);
-        lvproductList.addFooterView(footerView);
-
         dbAdapter = new DbProductAdapter(this);
+        lvsoldproductList.addFooterView(footerView);
         offset = 0;
         limit = 10;
-        productArrayList = dbAdapter.getAllProducts(available, limit, offset);
-        listAdapter = new ListStockAdapter(this, productArrayList);
-        lvproductList.setAdapter(listAdapter);
-
-
-        //This condition becomes true on run and false on debug
-        if (productArrayList == null || productArrayList.size() == 0) {
+        soldproductArrayList = dbAdapter.getAllSoldProducts(sold, limit, offset);
+        if (soldproductArrayList == null || soldproductArrayList.size() == 0) {
             tvnodata.setVisibility(View.VISIBLE);
         } else {
             tvnodata.setVisibility(View.GONE);
+            listAdapter = new SoldItemAdapter(this, soldproductArrayList);
+            lvsoldproductList.setAdapter(listAdapter);
         }
 
-
-        //SearchView for List Stock
-        searchView = (SearchView) findViewById(R.id.sv_listmystock_search);
-        lvproductList.setTextFilterEnabled(true);
+        searchView = (SearchView) findViewById(R.id.sv_solditems_search);
+        lvsoldproductList.setTextFilterEnabled(true);
         setupSearchView();
     }
 
@@ -146,77 +134,46 @@ public class ListMyStock extends ActionBarActivity
     @Override
     public boolean onQueryTextChange(String searchText) {
         if (TextUtils.isEmpty(searchText)) {
-            lvproductList.clearTextFilter();
+            lvsoldproductList.clearTextFilter();
         } else {
             if (itemMenu.isExpanded()) {
                 itemMenu.toggle();
                 onMenuCollapsed();
             }
-            lvproductList.setFilterText(searchText);
+            lvsoldproductList.setFilterText(searchText);
         }
         return true;
     }
 
-    private void setToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
-        toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
-        toolTitle.setText("LIST STOCK");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    @Override
+    public void onScrollStateChanged(AbsListView absListView, int i) {
+
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list_my_stock, menu);
-        sortBy = menu.findItem(R.id.sortBy);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.sortBy) {
-            if (productArrayList == null || productArrayList.size() == 0) {
-                Toast.makeText(this, "No Items to Sort", Toast.LENGTH_SHORT).show();
-            } else {
-                showDialogForSort();
-            }
-            return true;
+    public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        int lastInScreen = firstVisibleItem + visibleItemCount;
+        if ((lastInScreen == totalItemCount) && !(loadingMoreItems)) {
+            new LoadMoreItems().execute();
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
-            case R.id.fab_listmystock_additem:
-                Intent addItem = new Intent(this, AddItems.class);
-                addItem.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(addItem);
-                break;
-
-            case R.id.fab_listmystock_delallitem:
-                if (productArrayList == null || productArrayList.size() == 0) {
+            case R.id.fab_solditems_delallitem:
+                if (soldproductArrayList == null || soldproductArrayList.size() == 0) {
                     Toast.makeText(this, "No Items to Delete", Toast.LENGTH_SHORT).show();
                 } else {
                     showDialogForDelete();
                 }
                 break;
-            case R.id.fab_listmystock_sortitem:
-               /* if (productArrayList == null || productArrayList.size() == 0) {
+            case R.id.fab_solditems_sortitem:
+                if (soldproductArrayList == null || soldproductArrayList.size() == 0) {
                     Toast.makeText(this, "No Items to Sort", Toast.LENGTH_SHORT).show();
                 } else {
                     showDialogForSort();
-                }*/
+                }
                 break;
         }
     }
@@ -236,7 +193,7 @@ public class ListMyStock extends ActionBarActivity
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
                                 dialog.dismiss();
-                                if (productArrayList.size() == 0) {
+                                if (soldproductArrayList.size() == 0) {
                                     Toast.makeText(getApplicationContext(), "Nothing to delete", Toast.LENGTH_SHORT).show();
                                 } else {
                                     File dir = new File(getExternalFilesDir(""), "/Istore");
@@ -245,7 +202,7 @@ public class ListMyStock extends ActionBarActivity
                                     } catch (IOException e) {
                                         Log.e("Unable to delete Directory: ", "Istore");
                                     }
-                                    int ret = dbAdapter.deleteAllProduct(available);
+                                    int ret = dbAdapter.deleteAllProduct(sold);
                                     if (ret < 0) {
                                         Toast.makeText(getApplicationContext(), "Error : When Deleting", Toast.LENGTH_SHORT).show();
                                     } else {
@@ -267,9 +224,9 @@ public class ListMyStock extends ActionBarActivity
                 .setNegativeButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
-                        productArrayList.clear();
-                        listAdapter = new ListStockAdapter(getApplicationContext(), productArrayList);
-                        lvproductList.setAdapter(listAdapter);
+                        soldproductArrayList.clear();
+                        listAdapter = new SoldItemAdapter(getApplicationContext(), soldproductArrayList);
+                        lvsoldproductList.setAdapter(listAdapter);
                         tvnodata.setVisibility(View.VISIBLE);
                         itemMenu.toggle();
                     }
@@ -304,38 +261,22 @@ public class ListMyStock extends ActionBarActivity
 
     private void sortItemsBy(String column) {
         String status = "not sold";
-        productArrayList = dbAdapter.sortBy(column, status);
-        if (productArrayList != null) {
-            listAdapter = new ListStockAdapter(this, productArrayList);
-            lvproductList.setAdapter(listAdapter);
+        soldproductArrayList = dbAdapter.sortBy(column, status);
+        if (soldproductArrayList != null) {
+            listAdapter = new SoldItemAdapter(this, soldproductArrayList);
+            lvsoldproductList.setAdapter(listAdapter);
             Toast.makeText(getApplicationContext(), "Items sorted by " + column, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void onBackPressed() {
-        if (itemMenu.isExpanded()) {
-            itemMenu.toggle();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public void onMenuExpanded() {/*
-        lvproductList.setAlpha(0.1f);
-        lvproductList.setVisibility(View.INVISIBLE);*/
-    }
-
-    @Override
-    public void onMenuCollapsed() {/*
-        lvproductList.setAlpha(1.0f);
-        lvproductList.setVisibility(View.VISIBLE);*/
+    public void onMenuExpanded() {
 
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+    public void onMenuCollapsed() {
+
     }
 
     private class LoadMoreItems extends AsyncTask<String, String, ArrayList<Product>> {
@@ -350,7 +291,7 @@ public class ListMyStock extends ActionBarActivity
             loadingMoreItems = true;
             offset += 10;
             if (dbAdapter != null) {
-                productsList = dbAdapter.getAllProducts(available, limit, offset);
+                productsList = dbAdapter.getAllSoldProducts(sold, limit, offset);
                 return productsList;
             } else
                 return null;
@@ -359,10 +300,38 @@ public class ListMyStock extends ActionBarActivity
         @Override
         protected void onPostExecute(ArrayList<Product> productsList) {
             if (productsList != null && productsList.size() > 0) {
-                productArrayList.addAll(productsList);
+                soldproductArrayList.addAll(productsList);
                 listAdapter.notifyDataSetChanged();
             } else footerView.setVisibility(View.GONE);
             loadingMoreItems = false;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_sold_items, menu);
+        sortBy = menu.findItem(R.id.mi_sortBy);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.mi_sortBy) {
+            if (soldproductArrayList == null || soldproductArrayList.size() == 0) {
+                Toast.makeText(this, "No Items to Sort", Toast.LENGTH_SHORT).show();
+            } else {
+                showDialogForSort();
+            }
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

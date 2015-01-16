@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.listMyStock.Product;
-import in.istore.bitblue.app.soldItems.ViewItem;
+import in.istore.bitblue.app.soldItems.ViewSoldItem;
 
 public class SoldItemAdapter extends BaseAdapter {
     private ArrayList<Product> productArrayList = new ArrayList<Product>();
@@ -82,7 +82,7 @@ public class SoldItemAdapter extends BaseAdapter {
             public void onClick(View view) {
                 holder.id = (TextView) view.findViewById(R.id.tv_listitem_category);
                 String id = holder.id.getText().toString();
-                Intent viewItem = new Intent(context, ViewItem.class);
+                Intent viewItem = new Intent(context, ViewSoldItem.class);
                 if (id != null) {
                     viewItem.putExtra("id", id);
                     context.startActivity(viewItem);

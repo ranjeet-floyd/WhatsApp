@@ -10,24 +10,31 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
+import java.util.ArrayList;
+
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.adapters.QuantityAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbQuantityAdapter;
 import in.istore.bitblue.app.listMyStock.Product;
-import in.istore.bitblue.app.soldItems.SoldItems;
+import in.istore.bitblue.app.soldItems.SoldItemForm;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class SellItemForm extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
 
-    private Button bEdit, bSell, bCaptureImage;
-    private TextView tvbarcode, tvname, tvprice;
+    private Button bEdit, bSell;
+    private TextView tvbarcode, tvname, tvquantity, tvprice;
     private ExpandableTextView etvdesc;
     private ImageView ivProdImage;
+    private ListView lvquanthist;
+
     private SparseBooleanArray mCollapsedStatus;
     private String scanContent;
     private GlobalVariables globalVariable;
@@ -35,7 +42,10 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
     private byte[] byteImage;
     private Bitmap bitmap;
 
-    private DbProductAdapter dbAdapter;
+    private ArrayList<Product> quantityList;
+    private DbProductAdapter dbProAdapter;
+    private DbQuantityAdapter dbQuanAdapter;
+    private QuantityAdapter quantityAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +70,14 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
         mCollapsedStatus = new SparseBooleanArray();
         id = getIntent().getStringExtra("id");  //Obtained when list item is selected
         scanContent = getIntent().getStringExtra("scanContentsellitem");  //Obtained when barcode is scanned
-        dbAdapter = new DbProductAdapter(this);
+        dbProAdapter = new DbProductAdapter(this);
+        dbQuanAdapter = new DbQuantityAdapter(this);
         if (id != null) {
             getProductfor(id);
+            quantityList = getQuantityDetails(id);
         } else if (scanContent != null) {
             getProductvia(scanContent);
+            quantityList = getQuantityDetails(scanContent);
         } else {
             Toast.makeText(this, "Nothing was found", Toast.LENGTH_SHORT).show();
         }
@@ -93,12 +106,25 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
         etvdesc = (ExpandableTextView) findViewById(R.id.expand_text_view);
         etvdesc.setText(desc, mCollapsedStatus, 0);
 
+        tvquantity = (TextView) findViewById(R.id.tv_sellitems_quantity);
+        tvquantity.setText(quantity);
+
         tvprice = (TextView) findViewById(R.id.et_sellitems_prod_price);
         tvprice.setText(price);
+
+        lvquanthist = (ListView) findViewById(R.id.lv_sellitems_quanthist);
+        if (quantityList != null) {
+            quantityAdapter = new QuantityAdapter(this, quantityList);
+            lvquanthist.setAdapter(quantityAdapter);
+        }
+    }
+
+    private ArrayList<Product> getQuantityDetails(String id) {
+        return dbQuanAdapter.getQuatityDetailsfor(id);
     }
 
     private void getProductvia(String scanContent) {
-        Product product = dbAdapter.getProductDetails(scanContent);
+        Product product = dbProAdapter.getProductDetails(scanContent);
         if (product != null) {
             name = product.getName();
             desc = product.getDesc();
@@ -111,7 +137,7 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
     }
 
     private void getProductfor(String id) {
-        Product product = dbAdapter.getProductDetails(id);
+        Product product = dbProAdapter.getProductDetails(id);
         if (product != null) {
             name = product.getName();
             desc = product.getDesc();
@@ -132,71 +158,15 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
                 break;
 
             case R.id.b_sellitems_submit:
-                long ret = dbAdapter.updateSoldProductDetails(id);
-                if (ret < 0) {
-                    Toast.makeText(this, "Sold Record Not Updated: " + ret, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Sold Record Updated", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(this, SoldItems.class));
-                }
+                startSoldItemActivity();
                 break;
-            /*case R.id.b_sellitems_update:
-
-                id = etbarcode.getText().toString();
-                name = etname.getText().toString();
-                desc = etdesc.getText().toString();
-                quantity = etquantity.getText().toString();
-                price = etprice.getText().toString();
-                if (imagePath != null) {
-                    try {
-                        //Convert Image path to byte array
-                        FileInputStream instream = new FileInputStream(imagePath);
-                        BufferedInputStream bif = new BufferedInputStream(instream);
-                        byteImage = new byte[bif.available()];
-                        bif.read(byteImage);
-                    } catch (IOException e) {
-                        Toast.makeText(this, "Error:Unable to get the Image Location", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(this, "Error: Update Product Image", Toast.LENGTH_LONG).show();
-                    break;
-                }
-                if (Check.ifNull(id)) {
-                    etbarcode.setHint("Field Required");
-                    etbarcode.setHintTextColor(getResources().getColor(R.color.material_red_A400));
-                    break;
-
-                } else if (Check.ifNull(name)) {
-                    etname.setHint("Field Required");
-                    etname.setHintTextColor(getResources().getColor(R.color.material_red_A400));
-                    break;
-
-                } else if (Check.ifNull(desc)) {
-                    etdesc.setHint("Field Required");
-                    etdesc.setHintTextColor(getResources().getColor(R.color.material_red_A400));
-                    break;
-
-                } else if (Check.ifNull(quantity)) {
-                    etquantity.setHint("Field Required");
-                    etquantity.setHintTextColor(getResources().getColor(R.color.material_red_A400));
-                    break;
-
-                } else if (Check.ifNull(price)) {
-                    etprice.setHint("Field Required");
-                    etprice.setHintTextColor(getResources().getColor(R.color.material_red_A400));
-                    break;
-
-                } else {
-                    long ret = cursorAdapter.updateProductDetails(id, byteImage, name, desc, quantity, price, 0);
-                    if (ret < 0) {
-                        Toast.makeText(this, "Record Not Updated: " + ret, Toast.LENGTH_SHORT).show();
-                    } else {
-                        adjustlayoutUPDATE();
-                        Toast.makeText(this, "Record Updated", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                break;*/
         }
+    }
+
+    private void startSoldItemActivity() {
+        Intent soldItemForm = new Intent(this, SoldItemForm.class);
+        soldItemForm.putExtra("productid", id);
+        startActivity(soldItemForm);
     }
 
     private void startEditItemActivity() {
@@ -204,77 +174,4 @@ public class SellItemForm extends ActionBarActivity implements View.OnClickListe
         editItem.putExtra("prodid", id);
         startActivity(editItem);
     }
-
-/*    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_items, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
-
-   /* private void adjustlayoutEDIT() {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-
-        etbarcode.setFocusableInTouchMode(false);
-        etname.setFocusableInTouchMode(true);
-        etdesc.setFocusableInTouchMode(true);
-        etquantity.setFocusableInTouchMode(true);
-        etprice.setFocusableInTouchMode(true);
-
-        bEdit.setVisibility(View.GONE);
-        bSell.setVisibility(View.GONE);
-        bBack.setVisibility(View.VISIBLE);
-        bUpdate.setVisibility(View.VISIBLE);
-        bCaptureImage.setVisibility(View.VISIBLE);
-        bBack.setLayoutParams(params);
-        bUpdate.setLayoutParams(params);
-
-        llButtons.setWeightSum(2f);
-
-
-    }*/
-
-   /* private void adjustlayoutUPDATE() {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-
-        etbarcode.setFocusableInTouchMode(false);
-        etbarcode.setFocusable(false);
-        etname.setFocusableInTouchMode(false);
-        etname.setFocusable(false);
-        etdesc.setFocusableInTouchMode(false);
-        etdesc.setFocusable(false);
-        etquantity.setFocusableInTouchMode(false);
-        etquantity.setFocusable(false);
-        etprice.setFocusableInTouchMode(false);
-        etprice.setFocusable(false);
-
-        bBack.setVisibility(View.VISIBLE);
-        bSell.setVisibility(View.VISIBLE);
-        bEdit.setVisibility(View.VISIBLE);
-        bUpdate.setVisibility(View.GONE);
-
-        bSell.setLayoutParams(params);
-        bBack.setLayoutParams(params);
-        bEdit.setLayoutParams(params);
-
-        llButtons.setWeightSum(3f);
-    }*/
-
 }

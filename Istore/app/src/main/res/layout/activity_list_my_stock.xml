@@ -92,6 +92,4 @@
             fab:fab_colorPressed="@color/material_blue_grey_100"
             fab:fab_title="Add Item" />
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
-
-
 </RelativeLayout>

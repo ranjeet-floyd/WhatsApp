@@ -36,15 +36,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.adapters.NavDrawAdapter;
 import in.istore.bitblue.app.addItems.AddItems;
 import in.istore.bitblue.app.data.ExportData;
 import in.istore.bitblue.app.data.ImportData;
+import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.listMyStock.ListMyStock;
 import in.istore.bitblue.app.navDrawer.NavDrawItems;
 import in.istore.bitblue.app.sellItems.SellItems;
-import in.istore.bitblue.app.soldItems.SoldItems;
+import in.istore.bitblue.app.soldItems.ListSoldItems;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class HomePage extends ActionBarActivity implements View.OnClickListener,
@@ -101,7 +101,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                     .addOnConnectionFailedListener(this).addApi(Plus.API)
                     .addScope(Plus.SCOPE_PLUS_LOGIN).build();
             if (!googleApiClient.isConnected()) {
-               // onConnected(savedInstanceState);
+                // onConnected(savedInstanceState);
             }
 
         } else if (responseFacebook == 2) {
@@ -360,8 +360,8 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 startActivity(ListStock);
                 break;
             case R.id.b_view_sold_items:
-                Intent ViewSoldItem = new Intent(this, SoldItems.class);
-                startActivity(ViewSoldItem);
+                Intent ListSoldItem = new Intent(this, ListSoldItems.class);
+                startActivity(ListSoldItem);
                 break;
             case R.id.b_add_items:
                 Intent AddItems = new Intent(this, AddItems.class);

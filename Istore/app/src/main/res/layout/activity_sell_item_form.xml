@@ -83,9 +83,10 @@
 
                         <ImageView
                             android:id="@+id/iv_sellitems_image"
-                            android:layout_width="100dp"
-                            android:layout_height="150dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:layout_marginLeft="@dimen/padd10dp"
+                            android:layout_marginRight="@dimen/padd10dp"
                             android:src="@drawable/no_image" />
                     </LinearLayout>
 
@@ -212,7 +213,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/padd5dp"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -229,15 +229,38 @@
                         android:gravity="bottom"
                         android:orientation="vertical">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/padd5dp"
-                            android:layout_marginLeft="@dimen/padd5dp"
-                            android:text="Quantity History"
-                            android:textColor="@color/material_teal_700"
-                            android:textSize="20sp"
-                            android:textStyle="bold|italic" />
+                            android:orientation="horizontal"
+                            android:weightSum="2">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/padd5dp"
+                                android:layout_marginLeft="@dimen/padd5dp"
+                                android:layout_weight="1"
+                                android:text="Quantity "
+                                android:textColor="@color/material_teal_700"
+                                android:textSize="20sp"
+                                android:textStyle="bold|italic" />
+
+                            <TextView
+                                android:id="@+id/tv_sellitems_quantity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end"
+                                android:layout_marginBottom="@dimen/padd5dp"
+                                android:layout_marginLeft="@dimen/padd5dp"
+                                android:layout_marginRight="@dimen/padd10dp"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text=""
+                                android:textColor="@color/material_teal_700"
+                                android:textSize="20sp"
+                                android:textStyle="bold|italic" />
+                        </LinearLayout>
 
                         <View
                             android:layout_width="match_parent"
@@ -250,7 +273,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:layout_weight="1"
-                        android:orientation="vertical"></LinearLayout>
+                        android:background="@color/white"
+                        android:orientation="vertical">
+
+                        <ListView
+                            android:id="@+id/lv_sellitems_quanthist"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:dividerHeight="1dp" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

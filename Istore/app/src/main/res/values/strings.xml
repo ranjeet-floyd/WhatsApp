@@ -27,7 +27,11 @@
     <string name="productName">Product Name:</string>
     <string name="description">Description:</string>
     <string name="quantity">Quantity:</string>
+    <string name="quantitytoSell">Quantity To Sell:</string>
+    <string name="quantitytoAdd">Add Quantity:</string>
     <string name="price">Price Rs:</string>
+    <string name="sellPrice">Selling Price:</string>
+
     <string name="captureImage">CAPTURE IMAGE</string>
     <string name="submit">SUBMIT</string>
     <string name="cancell">BACK</string>
@@ -42,7 +46,7 @@
     <string name="title_facebook_login">Log in with Facebook</string>
 
     <!-- Sell Item Page -->
-    <string name="sell">SELL</string>
+    <string name="sell">SELL ITEM</string>
     <string name="back">BACK</string>
     <string name="edit">EDIT</string>
     <string name="update">UPDATE</string>
@@ -78,5 +82,6 @@
     <!-- View Item -->
     <string name="changeImage">Change Image</string>
     <string name="title_activity_edit_item_form">EditItemForm</string>
+    <string name="title_activity_sold_item_form">SoldItemForm</string>
 
 </resources>

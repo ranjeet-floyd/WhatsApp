@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
+import in.istore.bitblue.app.listMyStock.ListMyStock;
 import in.istore.bitblue.app.utilities.Check;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
@@ -146,6 +147,7 @@ public class EditItemForm extends ActionBarActivity implements View.OnClickListe
                         Toast.makeText(this, "Record Not Updated: " + ret, Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, "Record Updated", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this, ListMyStock.class));
                     }
                 }
                 break;

@@ -44,7 +44,7 @@
             android:name=".sellItems.SellItems"
             android:parentActivityName=".loginScreen.HomePage" />
         <activity
-            android:name=".soldItems.SoldItems"
+            android:name=".soldItems.ListSoldItems"
             android:parentActivityName=".loginScreen.HomePage" />
         <activity
             android:name=".addItems.AddItemForm"
@@ -53,8 +53,8 @@
             android:name=".sellItems.SellItemForm"
             android:parentActivityName=".listMyStock.ListMyStock" />
         <activity
-            android:name=".soldItems.ViewItem"
-            android:parentActivityName=".soldItems.SoldItems" />
+            android:name=".soldItems.ViewSoldItem"
+            android:parentActivityName=".soldItems.ListSoldItems" />
         <activity
             android:name=".data.ImportData"
             android:parentActivityName=".loginScreen.HomePage" />
@@ -68,6 +68,9 @@
         <activity
             android:name=".sellItems.EditItemForm"
             android:parentActivityName=".listMyStock.ListMyStock" />
+        <activity
+            android:name=".soldItems.SoldItemForm"
+            android:parentActivityName=".listMyStock.ListMyStock"/>
     </application>
 
 </manifest>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
     private TextView toolTitle;
     private EditText etbarcode, etname, etquantity;
     private ImageView ivProdImage;
+    private Button bBack, bUpdate;
 
     private String id;
     private String origquantity;
@@ -52,17 +54,21 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
 
     private void initViews() {
         dbAdapter = new DbProductAdapter(this);
+        dbquanAdapter = new DbQuantityAdapter(this);
         Product product;
 
-        ivProdImage = (ImageView) findViewById(R.id.iv_viewstockitem_image);
+        bBack = (Button) findViewById(R.id.b_viewstockitem_back);
+        bBack.setOnClickListener(this);
+        bUpdate = (Button) findViewById(R.id.b_viewstockitem_update);
+        bUpdate.setOnClickListener(this);
 
+        ivProdImage = (ImageView) findViewById(R.id.iv_viewstockitem_image);
         etbarcode = (EditText) findViewById(R.id.et_viewstockitem_barcode_prod_id);
         etname = (EditText) findViewById(R.id.et_viewstockitem_prod_name);
         etquantity = (EditText) findViewById(R.id.et_viewstockitem_prod_quantity);
 
         if ((id != null) && (!id.equals(""))) {
             product = getProductDetails(id);
-
             if (product != null) {
                 origquantity = product.getQuantity();
                 etbarcode.setText(id);
@@ -96,7 +102,7 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
                     etquantity.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
                 } else {
-                    String totalquatity = origquantity + addedquantity;
+                    String totalquatity = getTotalQuantity(origquantity, addedquantity);
                     int retprod = updateProductDetails(id, totalquatity);
                     long retquant = insertQuantityDetails(id, addedquantity);
                     if (retprod <= 0 || retquant < 0) {
@@ -107,6 +113,17 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
                 }
                 break;
         }
+    }
+
+    private String getTotalQuantity(String origquantity, String addedquantity) {
+        int total;
+        try {
+            total = Integer.parseInt(origquantity) + Integer.parseInt(addedquantity);
+        } catch (NumberFormatException nfe) {
+            total = 0;
+        }
+        String sum = String.valueOf(total);
+        return sum;
     }
 
     private long insertQuantityDetails(String id, String addedquantity) {
