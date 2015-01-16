@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
@@ -307,7 +306,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
         }
     }
 
-    @Override
+/*    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_sold_items, menu);
@@ -333,5 +332,5 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }

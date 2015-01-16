@@ -87,7 +87,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
 
         etbarcode = (EditText) findViewById(R.id.et_additems_barcode_prod_id);
         if (scanContent != null || scanContent != "")
-            isProductExisting = checkForExistingBarcode(scanContent);
+            isProductExisting = checkForExistingProduct(scanContent);
         if (isProductExisting) {
             Intent viewStockItem = new Intent(this, ViewStockItems.class);
             viewStockItem.putExtra("barcode", scanContent);
@@ -105,8 +105,12 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
 
     }
 
-    private boolean checkForExistingBarcode(String id) {
-        return dbAdapter.idAlreadyPresent(id);
+    private boolean checkForExistingProduct(String id) {
+        boolean isProductAvailable, isidPresent;
+        String status = "not sold";
+        isProductAvailable = dbAdapter.isProductAvail(id, status);
+        isidPresent = dbAdapter.idAlreadyPresent(id);
+        return (isidPresent && isProductAvailable);
     }
 
     @Override

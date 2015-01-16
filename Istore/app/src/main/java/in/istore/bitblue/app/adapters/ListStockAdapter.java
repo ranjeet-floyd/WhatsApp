@@ -34,14 +34,14 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
     private ViewHolder holder;
     private int lastPosition = -1;
     private ArrayList<Product> origproductArrayList;
-    private DbProductAdapter dbAdapter;
+    private DbProductAdapter dbProAdapter;
 
     public ListStockAdapter(Context context, ArrayList<Product> productArrayList) {
         if (context != null && productArrayList != null) {
             this.productArrayList = productArrayList;
             this.context = context;
             mInflater = LayoutInflater.from(context);
-            dbAdapter = new DbProductAdapter(context);
+            dbProAdapter = new DbProductAdapter(context);
         }
     }
 
@@ -99,7 +99,7 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
                 } else {
                     product.setFavorite(0);
                 }
-                dbAdapter.updateFavoriteProductDetails(product.getId(), product.getFavorite());
+                dbProAdapter.updateFavoriteProductDetails(product.getId(), product.getFavorite());
             }
         });
         //This is used to select clicked listItem and get its details

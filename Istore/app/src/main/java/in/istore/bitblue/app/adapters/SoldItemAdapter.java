@@ -13,13 +13,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.listMyStock.Product;
 import in.istore.bitblue.app.soldItems.ViewSoldItem;
+import in.istore.bitblue.app.utilities.DateUtil;
 
 public class SoldItemAdapter extends BaseAdapter {
     private ArrayList<Product> productArrayList = new ArrayList<Product>();
@@ -27,12 +30,14 @@ public class SoldItemAdapter extends BaseAdapter {
     private Context context;
     private ViewHolder holder;
     private int lastPosition = -1;
+    private DbProductAdapter dbProAdapter;
 
     public SoldItemAdapter(Context context, ArrayList<Product> productArrayList) {
         if (context != null && productArrayList != null) {
             this.productArrayList = productArrayList;
             this.context = context;
             mInflater = LayoutInflater.from(context);
+            dbProAdapter = new DbProductAdapter(context);
         }
     }
 
@@ -54,18 +59,18 @@ public class SoldItemAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View listRow, ViewGroup viewGroup) {
         if (listRow == null) {
-            listRow = mInflater.inflate(R.layout.listitem, null);
+            listRow = mInflater.inflate(R.layout.soldlistitem, null);
             holder = new ViewHolder();
-            holder.id = (TextView) listRow.findViewById(R.id.tv_listitem_category);
-            holder.image = (ImageView) listRow.findViewById(R.id.iv_listitem_img);
-            holder.name = (TextView) listRow.findViewById(R.id.tv_listitem_name);
+            holder.id = (TextView) listRow.findViewById(R.id.tv_soldlistitem_category);
+            holder.image = (ImageView) listRow.findViewById(R.id.iv_soldlistitem_img);
+            holder.name = (TextView) listRow.findViewById(R.id.tv_soldlistitem_name);
+            holder.date = (TextView) listRow.findViewById(R.id.tv_soldlistitem_date);
+            holder.favorite = (ToggleButton) listRow.findViewById(R.id.ib_soldlistitem_favorite);
             listRow.setTag(holder);
-
         } else {
             holder = (ViewHolder) listRow.getTag();
         }
-        Product product = productArrayList.get(position);
-
+        final Product product = productArrayList.get(position);
         holder.id.setText(product.getId());
         byte[] outImage = product.getImage();
         if (outImage != null) {
@@ -75,12 +80,28 @@ public class SoldItemAdapter extends BaseAdapter {
         }
 
         holder.name.setText(product.getName());
-
+        holder.date.setText(DateUtil.getStringDate(product.getDate()));
+        if (product.getFavorite() == 1) {
+            holder.favorite.setChecked(true);
+        } else if (product.getFavorite() == 0) {
+            holder.favorite.setChecked(false);
+        }
+        holder.favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (holder.favorite.isChecked()) {
+                    product.setFavorite(1);
+                } else {
+                    product.setFavorite(0);
+                }
+                dbProAdapter.updateFavoriteProductDetails(product.getId(), product.getFavorite());
+            }
+        });
         listRow.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                holder.id = (TextView) view.findViewById(R.id.tv_listitem_category);
+                holder.id = (TextView) view.findViewById(R.id.tv_soldlistitem_category);
                 String id = holder.id.getText().toString();
                 Intent viewItem = new Intent(context, ViewSoldItem.class);
                 if (id != null) {
@@ -98,7 +119,8 @@ public class SoldItemAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        TextView id, name;
+        TextView id, name, date;
         ImageView image;
+        ToggleButton favorite;
     }
 }

@@ -20,7 +20,7 @@
             android:layout_marginLeft="@dimen/padd10dp">
 
             <ImageView
-                android:id="@+id/iv_listitem_img"
+                android:id="@+id/iv_soldlistitem_img"
                 android:layout_width="70dp"
                 android:layout_height="100dp"
                 android:src="@drawable/no_image" />
@@ -48,7 +48,7 @@
                     android:weightSum="2">
 
                     <TextView
-                        android:id="@+id/tv_listitem_name"
+                        android:id="@+id/tv_soldlistitem_name"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -60,7 +60,7 @@
 
 
                     <ToggleButton
-                        android:id="@+id/ib_listitem_favorite"
+                        android:id="@+id/ib_soldlistitem_favorite"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="right"
@@ -103,7 +103,7 @@
                         android:textColor="@color/myPrimaryColor" />
 
                     <TextView
-                        android:id="@+id/tv_listitem_category"
+                        android:id="@+id/tv_soldlistitem_category"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -121,11 +121,11 @@
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Added on: "
+                        android:text="Sold on: "
                         android:textColor="@color/myPrimaryColor" />
 
                     <TextView
-                        android:id="@+id/tv_listitem_date"
+                        android:id="@+id/tv_soldlistitem_date"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

@@ -106,29 +106,36 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.b_solditem_sell:
+                int quant;
                 id = etbarcode.getText().toString();
                 quantity = etquantity.getText().toString();
                 sellprice = etprice.getText().toString();
+                try {
+                    quant = Integer.parseInt(quantity);
+                } catch (NumberFormatException nfe) {
+                    quant = 0;
+                }
                 if (Check.ifNull(quantity)) {
                     etquantity.setHint("Field Required");
                     etquantity.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
-
+                } else if (quant > maxlimit) {
+                    limitReached();
+                    break;
                 } else if (Check.ifNull(sellprice)) {
                     etprice.setHint("Field Required");
                     etprice.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
-
                 } else {
                     long ret = dbSolItmAdapter.insertSoldItemQuantityDetail(id, quantity, sellprice);
-                    if (ret < 0) {
+                    long ret1 = dbProAdapter.updateSoldProductDetails(id);
+                    if (ret < 0 || ret1 <= 0) {
                         Toast.makeText(this, "Sold Record Not Updated: " + ret, Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, "Sold Record Updated", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(this, ListSoldItems.class));
                     }
                 }
-
                 break;
             case R.id.b_solditem_inc:
                 int quantinc;

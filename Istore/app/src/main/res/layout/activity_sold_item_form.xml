@@ -166,6 +166,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
                             android:inputType="number"
                             android:singleLine="true"
                             android:textColor="@color/material_dark_teal_A400" />

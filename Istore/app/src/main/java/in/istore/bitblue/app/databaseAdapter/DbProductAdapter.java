@@ -303,6 +303,19 @@ public class DbProductAdapter {
         return COLUMN;
     }
 
+    public boolean isProductAvail(String id, String status) {
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
+                DBHelper.COL_PROD_ID + "='" + id + "'" + " AND " + DBHelper.COL_PROD_STATUS + "='" + status + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            closeDatabase();
+            return true;
+        } else {
+            closeDatabase();
+            return false;
+        }
+    }
+
     public int getRowCount() {
         openWritableDatabase();
         Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
