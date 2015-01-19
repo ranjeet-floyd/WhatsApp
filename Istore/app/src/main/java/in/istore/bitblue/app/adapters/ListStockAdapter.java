@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.listMyStock.Product;
-import in.istore.bitblue.app.sellItems.SellItemForm;
+import in.istore.bitblue.app.sellItems.SellItem;
 import in.istore.bitblue.app.utilities.DateUtil;
 
 public class ListStockAdapter extends BaseAdapter implements Filterable {
@@ -109,7 +109,7 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
             public void onClick(View view) {
                 holder.id = (TextView) view.findViewById(R.id.tv_listitem_category);
                 String id = holder.id.getText().toString();
-                Intent viewItem = new Intent(context, SellItemForm.class);
+                Intent viewItem = new Intent(context, SellItem.class);
                 if (id != null) {
                     viewItem.putExtra("id", id);
                     context.startActivity(viewItem);

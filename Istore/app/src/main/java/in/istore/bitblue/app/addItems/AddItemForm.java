@@ -39,7 +39,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     private ImageView ivProdImage;
 
     private GlobalVariables globalVariable;
-    private int proImgCount = 1;
+    private int proImgCount = 1, iquantity, iprice;
     private String imagePath, id, name, desc, quantity, price;
     private byte[] byteImage;
     private String scanContent;
@@ -120,7 +120,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 captureImage();
                 break;
             case R.id.b_additems_cancel:
-                startActivity(new Intent(this, AddItems.class));
+                startActivity(new Intent(this, AddItemsMenu.class));
                 break;
             case R.id.b_additems_submit:
                 id = etbarcode.getText().toString();
@@ -128,6 +128,12 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 desc = etdesc.getText().toString();
                 quantity = etquantity.getText().toString();
                 price = etprice.getText().toString();
+
+                try {
+                    iquantity = Integer.parseInt(quantity);
+                    iprice = Integer.parseInt(price);
+                } catch (NumberFormatException nfe) {
+                }
                 if (imagePath != null) {
                     try {
 
@@ -166,11 +172,16 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     etquantity.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
 
+                } else if (iquantity == 0) {
+                    Toast.makeText(this, "Quantity cannot be blank", Toast.LENGTH_SHORT).show();
+                    break;
                 } else if (Check.ifNull(price)) {
                     etprice.setHint("Field Required");
                     etprice.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
-
+                } else if (iprice == 0) {
+                    Toast.makeText(this, "Price cannot be blank", Toast.LENGTH_SHORT).show();
+                    break;
                 } else {
                     long ret = dbAdapter.insertProductDetails(id, byteImage, name, desc, quantity, price);
                     if (ret < 0) {
@@ -212,7 +223,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                         Log.e("App", "Already created directory, Istore");
                     }
                     try {
-                        file = new File(getExternalFilesDir("/Istore"), "product " + proImgCount + ".png");
+                        file = new File(dir, "product " + proImgCount + ".png");
                         file.createNewFile();
                         FileOutputStream fo = new FileOutputStream(file);
                         fo.write(bytes.toByteArray());

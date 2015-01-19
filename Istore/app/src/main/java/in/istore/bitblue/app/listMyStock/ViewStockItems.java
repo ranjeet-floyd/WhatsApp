@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.addItems.AddItems;
+import in.istore.bitblue.app.addItems.AddItemsMenu;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbQuantityAdapter;
 import in.istore.bitblue.app.utilities.Check;
@@ -93,7 +93,7 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
 
         switch (button.getId()) {
             case R.id.b_viewstockitem_back:
-                startActivity(new Intent(this, AddItems.class));
+                startActivity(new Intent(this, AddItemsMenu.class));
                 break;
             case R.id.b_viewstockitem_update:
                 String addedquantity = etquantity.getText().toString();

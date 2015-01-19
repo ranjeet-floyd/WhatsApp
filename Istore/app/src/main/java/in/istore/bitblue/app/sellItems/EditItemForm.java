@@ -96,7 +96,7 @@ public class EditItemForm extends ActionBarActivity implements View.OnClickListe
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.b_edititems_back:
-                startActivity(new Intent(this, SellItemForm.class));
+                startActivity(new Intent(this, SellItem.class));
                 break;
             case R.id.b_edititems_captureImage:
                 captureImage();

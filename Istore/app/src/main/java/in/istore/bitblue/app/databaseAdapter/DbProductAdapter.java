@@ -125,7 +125,7 @@ public class DbProductAdapter {
         openWritableDatabase();
         String RAW_QUERY = "SELECT *" +
                 " FROM " + DBHelper.TABLE_PRODUCT +
-                " WHERE " + DBHelper.COL_PROD_STATUS + "='" + status + "'" +
+                " WHERE " + DBHelper.COL_PROD_QUANTITY + " > 0" +
                 " LIMIT " + limit +
                 " OFFSET " + rowCount;
         Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);

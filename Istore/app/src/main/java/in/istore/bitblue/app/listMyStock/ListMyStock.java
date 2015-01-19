@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.ListStockAdapter;
-import in.istore.bitblue.app.addItems.AddItems;
+import in.istore.bitblue.app.addItems.AddItemsMenu;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.utilities.DBHelper;
 
@@ -199,7 +199,7 @@ public class ListMyStock extends ActionBarActivity
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.fab_listmystock_additem:
-                Intent addItem = new Intent(this, AddItems.class);
+                Intent addItem = new Intent(this, AddItemsMenu.class);
                 addItem.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(addItem);
                 break;

@@ -13,6 +13,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,13 +40,14 @@ import java.util.List;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.NavDrawAdapter;
-import in.istore.bitblue.app.addItems.AddItems;
+import in.istore.bitblue.app.addItems.AddItemsMenu;
 import in.istore.bitblue.app.data.ExportData;
 import in.istore.bitblue.app.data.ImportData;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.listMyStock.ListMyStock;
 import in.istore.bitblue.app.navDrawer.NavDrawItems;
-import in.istore.bitblue.app.sellItems.SellItems;
+import in.istore.bitblue.app.print.CloudPrint;
+import in.istore.bitblue.app.sellItems.SellItemsMenu;
 import in.istore.bitblue.app.soldItems.ListSoldItems;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
@@ -101,7 +105,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                     .addOnConnectionFailedListener(this).addApi(Plus.API)
                     .addScope(Plus.SCOPE_PLUS_LOGIN).build();
             if (!googleApiClient.isConnected()) {
-                 onConnected(savedInstanceState);
+                // onConnected(savedInstanceState);
             }
 
         } else if (responseFacebook == 2) {
@@ -303,6 +307,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         ArrayList<NavDrawItems> drawerList = new ArrayList<NavDrawItems>();
         drawerList.add(new NavDrawItems("Import Data", R.drawable.importdata));
         drawerList.add(new NavDrawItems("Export Data", R.drawable.exportdata));
+        drawerList.add(new NavDrawItems("Print Invoice", R.drawable.ic_action_computer));
         return drawerList;
     }
 
@@ -324,9 +329,37 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             case 1:  //EXPORT DATA
                 startActivity(new Intent(this, ExportData.class));
                 break;
+            case 2: //Print Invoice
+                showCloudPrintDialog();
+                break;
         }
         navDrawList.setItemChecked(position, true);
         drawer.closeDrawer(Gravity.LEFT);
+    }
+
+    private void showCloudPrintDialog() {
+        // Linkify the message
+        String cloudPrint = "https://www.google.com/cloudprint/learn/howitworks.html";
+        final SpannableString cloudprintLink = new SpannableString(cloudPrint);
+        Linkify.addLinks(cloudprintLink, Linkify.ALL);
+
+        final AlertDialog d = new AlertDialog.Builder(this)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        startActivity(new Intent(getApplicationContext(), CloudPrint.class));
+                    }
+                })
+                .setIcon(R.drawable.ic_drawer)
+                .setMessage("Google Cloud Service must be enabled to print invoice.\n" +
+                        "For setting up google cloud print go to:\n" + cloudprintLink)
+                .create();
+
+        d.show();
+
+        // Make the textview clickable. Must be called after show()
+        ((TextView) d.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override
@@ -364,11 +397,11 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 startActivity(ListSoldItem);
                 break;
             case R.id.b_add_items:
-                Intent AddItems = new Intent(this, AddItems.class);
+                Intent AddItems = new Intent(this, AddItemsMenu.class);
                 startActivity(AddItems);
                 break;
             case R.id.b_sell_items:
-                Intent SellItems = new Intent(this, SellItems.class);
+                Intent SellItems = new Intent(this, SellItemsMenu.class);
                 startActivity(SellItems);
                 break;
             case R.id.b_google_logout:

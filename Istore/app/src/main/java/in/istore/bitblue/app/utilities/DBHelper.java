@@ -22,11 +22,17 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_PROD_PRICE = "price";
     public static final String COL_PROD_STATUS = "status";
     public static final String COL_PROD_DATE = "date";
+
     public static final String COL_PROD_FAVORITE = "isfavorite";
+
     public static final String COL_PROD_SELLPRICE = "sellPrice";
+    public static final String COL_PROD_SOLDQUANTITY = "soldquantity";
+    public static final String COL_PROD_REMAINQUANTITY = "remquantity";
+    public static final String COL_PROD_SOLDDATE = "soldDate";
+
     public static final String[] PRODUCT_COLUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_PRICE, COL_PROD_STATUS, COL_PROD_DATE, COL_PROD_FAVORITE};
     public static final String[] QUANTITY_DATE_COLUMNS = {COL_PROD_ID, COL_PROD_QUANTITY, COL_PROD_DATE, COL_PROD_STATUS};
-    public static final String[] SOLD_ITEM_COLUMN = {COL_PROD_ID, COL_PROD_QUANTITY, COL_PROD_DATE, COL_PROD_SELLPRICE};
+    public static final String[] SOLD_ITEM_COLUMN = {COL_PROD_ID, COL_PROD_SOLDQUANTITY, COL_PROD_REMAINQUANTITY, COL_PROD_SOLDDATE, COL_PROD_SELLPRICE};
 
     //Product table to store Product Details
     public static final String CREATE_TABLE_PRODUCT =
@@ -54,8 +60,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String CREATE_TABLE_SOLD_ITEMS =
             "CREATE TABLE " + TABLE_SOLD_ITEMS + "(" +
                     COL_PROD_ID + " TEXT," +
-                    COL_PROD_QUANTITY + " TEXT," +
-                    COL_PROD_DATE + " INTEGER," +
+                    COL_PROD_SOLDQUANTITY + " TEXT," +
+                    COL_PROD_REMAINQUANTITY + " TEXT," +
+                    COL_PROD_SOLDDATE + " INTEGER," +
                     COL_PROD_SELLPRICE + " TEXT)";
 
     public DBHelper(Context context, String name,

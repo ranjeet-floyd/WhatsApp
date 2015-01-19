@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary_dark_material_dark"
-    tools:context="in.istore.bitblue.app.sellItems.SellItemForm">
+    tools:context="in.istore.bitblue.app.soldItems.ViewSoldItem">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -150,12 +150,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/quantity"
+                        android:text="@string/soldQuan"
                         android:textColor="@color/primary_material_dark"
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/et_viewitem_prod_quantity"
+                        android:id="@+id/et_viewitem_prod_soldquantity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -179,12 +179,41 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/price"
+                        android:text="@string/remQuan"
                         android:textColor="@color/primary_material_dark"
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/et_viewitem_prod_price"
+                        android:id="@+id/et_viewitem_prod_remquantity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:inputType="numberDecimal"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd15dp"
+                    android:layout_marginRight="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/sellPrice"
+                        android:textColor="@color/primary_material_dark"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_viewitem_prod_sellprice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

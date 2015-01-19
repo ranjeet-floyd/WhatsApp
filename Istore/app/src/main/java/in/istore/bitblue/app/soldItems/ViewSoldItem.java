@@ -10,23 +10,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
+
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbSoldItemAdapter;
 import in.istore.bitblue.app.listMyStock.Product;
 
 public class ViewSoldItem extends ActionBarActivity {
     private Toolbar toolbar;
 
-    private EditText tvbarcode, tvname, tvdesc, tvquantity, tvprice;
+    private EditText etbarcode, etname, etdesc, etsoldquantity, etremquantity, etsellprice;
     private ImageView ivProdImage;
 
-    private String id, name, desc, quantity, price;
+    private String id;
     private byte[] byteImage;
     private Bitmap bitmap;
 
-    private DbProductAdapter cursorAdapter;
+    private DbSoldItemAdapter dbsolAdapter;
+    private Product product;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_item);
@@ -45,47 +49,44 @@ public class ViewSoldItem extends ActionBarActivity {
 
     private void initViews() {
 
-        id = getIntent().getStringExtra("id");  //Obtained when list item is selected
-        cursorAdapter = new DbProductAdapter(this);
-        if (id != null) {
-            getProductfor(id);
-        } else {
-            Toast.makeText(this, "Nothing was found", Toast.LENGTH_SHORT).show();
-        }
+        product = new Product();
 
         ivProdImage = (ImageView) findViewById(R.id.iv_viewitem_image);
-        if (bitmap != null) {
-            ivProdImage.setImageBitmap(bitmap);
+
+        etbarcode = (EditText) findViewById(R.id.et_viewitem_barcode_prod_id);
+        etname = (EditText) findViewById(R.id.et_viewitem_prod_name);
+        etdesc = (EditText) findViewById(R.id.et_viewitem_prod_desc);
+        etsoldquantity = (EditText) findViewById(R.id.et_viewitem_prod_soldquantity);
+        etremquantity = (EditText) findViewById(R.id.et_viewitem_prod_remquantity);
+        etsellprice = (EditText) findViewById(R.id.et_viewitem_prod_sellprice);
+
+        id = getIntent().getStringExtra("id");  //Obtained when list item is selected
+        dbsolAdapter = new DbSoldItemAdapter(this);
+
+        if (id != null) {
+            getSoldDetailsfor(id);
+        } else {
+            Toast.makeText(this, "ID not found", Toast.LENGTH_SHORT).show();
         }
 
-        tvbarcode = (EditText) findViewById(R.id.et_viewitem_barcode_prod_id);
-        if (id != null) {
-            tvbarcode.setText(id);
-        } else Toast.makeText(this, "Id not found", Toast.LENGTH_SHORT).show();
-
-        tvname = (EditText) findViewById(R.id.et_viewitem_prod_name);
-        tvname.setText(name);
-
-        tvdesc = (EditText) findViewById(R.id.et_viewitem_prod_desc);
-        tvdesc.setText(desc);
-
-        tvquantity = (EditText) findViewById(R.id.et_viewitem_prod_quantity);
-        tvquantity.setText(quantity);
-
-        tvprice = (EditText) findViewById(R.id.et_viewitem_prod_price);
-        tvprice.setText(price);
     }
 
-    private void getProductfor(String id) {
-        Product product = cursorAdapter.getProductDetails(id);
+    private void getSoldDetailsfor(String id) {
+        product = dbsolAdapter.getSoldProductDetails(id);
         if (product != null) {
-            name = product.getName();
-            desc = product.getDesc();
-            quantity = product.getQuantity();
-            price = product.getPrice();
             byteImage = product.getImage();
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            bitmap = BitmapFactory.decodeByteArray(byteImage, 0, byteImage.length, options);
+            if (byteImage != null) {
+                ByteArrayInputStream imageStream = new ByteArrayInputStream(byteImage);
+                bitmap = BitmapFactory.decodeStream(imageStream);
+                ivProdImage.setImageBitmap(bitmap);
+            }
+            etbarcode.setText(id);
+            etname.setText(product.getName());
+            etdesc.setText(product.getDesc());
+            etsoldquantity.setText(product.getSoldQuantity());
+            etremquantity.setText(product.getRemQuantity());
+            etsellprice.setText(product.getSellPrice());
         }
+
     }
 }
