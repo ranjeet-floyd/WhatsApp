@@ -3,37 +3,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:weightSum="4">
+    android:weightSum="6">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Added: "
+        android:text="Sold: "
         android:textColor="@color/black"
-        android:layout_weight="1.1"/>
+        android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/tv_quanthistitem_addedquantity"
+        android:id="@+id/tv_soldhistitem_soldquantity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="5"
         android:textColor="@color/black"
-        android:layout_weight="1.3"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=" units on "
-        android:textColor="@color/black"
         android:layout_weight="1.1"/>
 
     <TextView
-        android:id="@+id/tv_quanthistitem_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="units on"
+        android:textColor="@color/black"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/tv_soldhistitem_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:text=" 15/1/2015"
+        android:text="15/1/2015"
+        android:layout_weight=".9"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=" at Rs: "
+        android:textColor="@color/black"
         android:layout_weight="1"/>
 
+    <TextView
+        android:id="@+id/tv_soldhistitem_sellprice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:text=" 500"
+        android:layout_weight="1"/>
 
 </LinearLayout>

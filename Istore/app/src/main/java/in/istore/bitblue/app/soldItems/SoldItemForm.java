@@ -139,8 +139,8 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                     String remQuantity = String.valueOf(remQuan);
 
                     long ret = dbSolItmAdapter.insertSoldItemQuantityDetail(id, soldQuantity, remQuantity, sellprice);
-                    long ret1 = dbProAdapter.updateSoldProductDetails(id);  //update status to sold in product table.
-                    long ret2 = dbProAdapter.updateProductQuantity(id, remQuantity);//update remaining quantity from solditem table in product table
+                    long ret1 = dbProAdapter.updateSoldProductDetails(id);  //update status to 'sold' in product table.
+                    long ret2 = dbProAdapter.updateProductQuantity(id, remQuantity);//update remaining quantity in product table
 
                     if (ret < 0 || ret1 <= 0 || ret2 <= 0) {
                         Toast.makeText(this, "Sold Record Not Updated: " + ret, Toast.LENGTH_SHORT).show();

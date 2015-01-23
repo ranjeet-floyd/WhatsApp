@@ -2,8 +2,8 @@
 <resources>
 
     <!-- App Level -->
-    <string name="app_name"></string>
-    <string name="action_settings"></string>
+    <string name="app_name"/>
+    <string name="action_settings"/>
     <string name="name">Istore</string>
 
     <!-- Login Page -->

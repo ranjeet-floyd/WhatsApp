@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,27 +20,50 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.android.DialogError;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.ProfilePictureView;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.microsoft.windowsazure.messaging.NotificationHub;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.notifications.NotificationsManager;
 
+import org.brickred.socialauth.android.DialogListener;
+import org.brickred.socialauth.android.SocialAuthAdapter;
+import org.brickred.socialauth.android.SocialAuthError;
+import org.brickred.socialauth.android.SocialAuthListener;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.home.HomePage;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class LoginPage extends Activity implements View.OnClickListener {
     private SignInButton bGmail;
     private LoginButton bFacebook;
     private ImageView userImage;
+    private Button bsignup;
     private static final int GMAIL = 1;
     private static final int FACEBOOK = 2;
-    private String userName, userEmail;
+    public static final String SENDER_ID = "838791774954";
+    private String userName, userEmail, regid;
+
     private GlobalVariables globalVariable;
+    private Bitmap bitmap;
+
+    //For Azure Notifications
+    private GoogleCloudMessaging gcm;
+    private NotificationHub hub;
+    public static MobileServiceClient mClient;
+
 
     //For Facebook
     private UiLifecycleHelper uiHelper;
@@ -52,9 +78,40 @@ public class LoginPage extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
+
+        //Gcm
+        gcm = GoogleCloudMessaging.getInstance(this);
+
+        //Azure Setup
+        NotificationsManager.handleNotifications(this, SENDER_ID, MyHandler.class);
+        String connectionString = "Endpoint=sb://istore.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=Kgoog4L8WY1+2g2vRf1ZJuKa7ttS2iEpVxegHGuLRcs=";
+        hub = new NotificationHub("istorehub", connectionString, this);
+        registerWithNotificationHubs();
+        //Facebook
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
         initViews();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void registerWithNotificationHubs() {
+        new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                try {
+                    regid = gcm.register(SENDER_ID);
+                    hub.register(regid);
+                } catch (Exception e) {
+                    return e;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                Toast.makeText(getApplicationContext(), "Device Registered: " + regid, Toast.LENGTH_SHORT).show();
+            }
+        }.execute(null, null, null);
     }
 
     private void initViews() {
@@ -67,6 +124,9 @@ public class LoginPage extends Activity implements View.OnClickListener {
         bFacebook.setPublishPermissions(Arrays.asList("email", "public_profile", "user_friends"));
 
         globalVariable = (GlobalVariables) getApplicationContext();
+
+        bsignup = (Button) findViewById(R.id.b_login_signup);
+        bsignup.setOnClickListener(this);
 
     }
 
@@ -91,7 +151,8 @@ public class LoginPage extends Activity implements View.OnClickListener {
                 homePageGmail.putExtra("gmail", GMAIL);
                 startActivity(homePageGmail);
                 break;
-            case R.id.authButton:
+            case R.id.b_login_signup:
+                SocialAuthAdapter adapter = new SocialAuthAdapter(new ResponseListener());
                 break;
         }
     }
@@ -152,19 +213,14 @@ public class LoginPage extends Activity implements View.OnClickListener {
                         globalVariable.setUserEmail(userEmail);
 
                         ProfilePictureView ppv = (ProfilePictureView) findViewById(R.id.fbImg);
-                        ppv.setProfileId(user.getId());
+                        // ppv.setProfileId(user.getId());
                         userImage = ((ImageView) ppv.getChildAt(0));
-                        Bitmap bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
-
-
-                        ppv.setDefaultProfilePicture(bitmap);
-                       // globalVariable.setProfPic(bitmap);
-
+                        bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
                         String filePath = createImageFromBitmap(bitmap);
                         Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
                         homePageFacebook.putExtra("facebook", FACEBOOK);
                         homePageFacebook.putExtra("filePath", filePath);
-                        startActivity(homePageFacebook);
+                        // startActivity(homePageFacebook);
                     }
                 }
             }).executeAsync();
@@ -173,19 +229,70 @@ public class LoginPage extends Activity implements View.OnClickListener {
         }
     }
 
-    public String createImageFromBitmap(Bitmap bitmap) {
-        String filename = "fbimage.png";
-        File f = new File(Environment.getExternalStorageDirectory(), filename);
-        if (f.exists())
-            f.delete();
+    public String createImageFromBitmap(Bitmap bmp) {
         try {
-            FileOutputStream fos = new FileOutputStream(f);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            fos.close();
+            int size = 0;
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(size);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, bos);
+            byte[] bArr = bos.toByteArray();
+            bos.flush();
+            bos.close();
+            File mFile = new File(Environment.getExternalStorageDirectory(), "Image.png");
+
+            FileOutputStream fos = new FileOutputStream(mFile);
+            fos.write(bArr);
             fos.flush();
+            fos.close();
+            return mFile.getAbsolutePath();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return f.getAbsolutePath();
+    }
+
+    private final class ResponseListener implements DialogListener {
+        public void onComplete(Bundle values) {
+
+            edit = (EditText) findViewById(R.id.editTxt);
+            adapter.updateStatus(edit.getText().toString(), new MessageListener(), false);
+
+        }
+
+        @Override
+        public void onError(SocialAuthError socialAuthError) {
+
+        }
+
+        public void onError(DialogError error) {
+            Log.d("ShareButton", "Error");
+        }
+
+        public void onCancel() {
+            Log.d("ShareButton", "Cancelled");
+        }
+
+        @Override
+        public void onBack() {
+
+        }
+    }
+
+    // To get status of message after authentication
+    private final class MessageListener implements SocialAuthListener<Integer> {
+        @Override
+        public void onExecute(String s, Integer t) {
+            Integer status = t;
+            if (status == 200 || status == 201 || status == 204)
+                Toast.makeText(LoginPage.this, "Message posted", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(LoginPage.this, "Message not posted", Toast.LENGTH_LONG).show();
+        }
+
+        public void onError(SocialAuthError e) {
+
+        }
     }
 }

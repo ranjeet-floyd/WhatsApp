@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import in.istore.bitblue.app.listMyStock.Product;
@@ -51,8 +52,6 @@ public class DbSoldItemAdapter {
         Product product = new Product();
         String orderBy = DBHelper.COL_PROD_SOLDDATE + " DESC";
         String limit = "1";
-        Cursor cprodetalis = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
-                DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, null);
 
         Cursor csolDetails = sqLiteDb.query(DBHelper.TABLE_SOLD_ITEMS, DBHelper.SOLD_ITEM_COLUMN,
                 DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, orderBy, limit); //get the latest record from duplicate records
@@ -67,6 +66,9 @@ public class DbSoldItemAdapter {
             return null;
         }
 
+        Cursor cprodetalis = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
+                DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, null);
+
         if (cprodetalis != null && cprodetalis.moveToFirst()) {
             product.setImage(cprodetalis.getBlob(1));
             product.setName(cprodetalis.getString(cprodetalis.getColumnIndexOrThrow("name")));
@@ -74,6 +76,29 @@ public class DbSoldItemAdapter {
         } else {
             return null;
         }
+
+        closeDatabase();
         return product;
+    }
+
+    public ArrayList<Product> getAllSoldDetailsfor(String id) {
+        openWritableDatabase();
+        ArrayList<Product> productList = new ArrayList<Product>();
+        Cursor csolDetails = sqLiteDb.query(DBHelper.TABLE_SOLD_ITEMS, DBHelper.SOLD_ITEM_COLUMN,
+                DBHelper.COL_PROD_ID + "='" + id + "'", null, null, null, null);
+        if (csolDetails != null && csolDetails.moveToFirst()) {
+            do {
+                Product product = new Product();
+                product.setId(id);
+                product.setSoldQuantity(csolDetails.getString(csolDetails.getColumnIndexOrThrow("soldquantity")));
+                product.setSoldDate(csolDetails.getLong(csolDetails.getColumnIndexOrThrow("soldDate")));
+                product.setSellPrice(csolDetails.getString(csolDetails.getColumnIndexOrThrow("sellPrice")));
+                productList.add(product);
+            } while (csolDetails.moveToNext());
+            closeDatabase();
+            return productList;
+        } else {
+            return null;
+        }
     }
 }

@@ -92,7 +92,7 @@ category#android.intent.category.LAUNCHER
 ADDED from AndroidManifest.xml:33:17
 	android:name
 		ADDED from AndroidManifest.xml:33:27
-activity#in.istore.bitblue.app.loginScreen.HomePage
+activity#in.istore.bitblue.app.home.HomePage
 ADDED from AndroidManifest.xml:36:9
 	android:name
 		ADDED from AndroidManifest.xml:36:19

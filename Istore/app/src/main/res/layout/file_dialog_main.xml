@@ -37,9 +37,10 @@
                 <Button
                     android:id="@+id/fdButtonSelect"
                     android:layout_width="0dip"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_weight=".7"
-                    android:text="@string/select" />
+                    android:text="@string/select"
+                    android:background="@color/myAccentColor"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -63,7 +64,8 @@
                 android:id="@+id/fdEditTextFile"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="" />
+                android:text=""
+                android:textColor="@color/black" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -80,9 +82,10 @@
                 <Button
                     android:id="@+id/fdButtonCreate"
                     android:layout_width="0dip"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_weight=".7"
-                    android:text="@string/create" />
+                    android:text="@string/create"
+                    android:background="@color/myAccentColor"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -97,19 +100,21 @@
         <TextView
             android:id="@+id/path"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"/>
 
         <ListView
             android:id="@android:id/list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:listSelector="@color/primary_material_light"/>
+            android:listSelector="@color/button_material_light"/>
 
         <TextView
             android:id="@android:id/empty"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:text="@string/no_data" />
+            android:text="@string/no_data"
+            android:textColor="@color/black"/>
     </LinearLayout>
 
 
