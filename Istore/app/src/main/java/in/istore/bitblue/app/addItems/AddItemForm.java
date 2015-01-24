@@ -27,8 +27,8 @@ import java.io.IOException;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
-import in.istore.bitblue.app.listMyStock.ListMyStock;
-import in.istore.bitblue.app.listMyStock.ViewStockItems;
+import in.istore.bitblue.app.listStock.ListMyStock;
+import in.istore.bitblue.app.listStock.ViewStockItems;
 import in.istore.bitblue.app.utilities.Check;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 

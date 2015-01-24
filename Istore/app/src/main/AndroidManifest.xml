@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.istore.bitblue.app">
+    package="in.istore.bitblue.app" >
 
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -16,6 +15,7 @@
     <permission
         android:name="in.istore.bitblue.app.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="in.istore.bitblue.app.permission.C2D_MESSAGE" />
 
     <application
@@ -23,7 +23,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -38,15 +38,16 @@
         <activity
             android:name=".loginScreen.LoginPage"
             android:label="@string/name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".home.HomePage" />
         <activity
-            android:name=".listMyStock.ListMyStock"
+            android:name=".listStock.ListMyStock"
             android:parentActivityName=".home.HomePage"
             android:screenOrientation="portrait" />
         <activity
@@ -67,7 +68,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".sellItems.SellItem"
-            android:parentActivityName=".listMyStock.ListMyStock"
+            android:parentActivityName=".listStock.ListMyStock"
             android:screenOrientation="portrait" />
         <activity
             android:name=".soldItems.ViewSoldItem"
@@ -85,34 +86,38 @@
             android:name=".FileChooser.FileDialog"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".listMyStock.ViewStockItems"
+            android:name=".listStock.ViewStockItems"
             android:parentActivityName=".addItems.AddItemsMenu"
             android:screenOrientation="portrait" />
         <activity
             android:name=".sellItems.EditItemForm"
-            android:parentActivityName=".listMyStock.ListMyStock"
+            android:parentActivityName=".listStock.ListMyStock"
             android:screenOrientation="portrait" />
         <activity
             android:name=".soldItems.SoldItemForm"
-            android:parentActivityName=".listMyStock.ListMyStock"
+            android:parentActivityName=".listStock.ListMyStock"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".print.CloudPrint"
+            android:name=".cloudprint.CloudPrint"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".print.PrintDialogActivity"
+            android:name=".loginScreen.SignUpAdmin"
             android:screenOrientation="portrait" />
 
-        <!--Receiver For GCM Notiications -->
+        <!-- Receiver For GCM Notiications -->
         <receiver
             android:name="com.microsoft.windowsazure.notifications.NotificationsBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="in.istore.bitblue.app" />
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".loginScreen.StoreName">
+        </activity>
     </application>
 
 </manifest>

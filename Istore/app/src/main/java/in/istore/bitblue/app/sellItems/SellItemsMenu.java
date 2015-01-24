@@ -13,7 +13,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.listMyStock.ListMyStock;
+import in.istore.bitblue.app.listStock.ListMyStock;
 
 public class SellItemsMenu extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;

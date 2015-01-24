@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 
-import in.istore.bitblue.app.listMyStock.Product;
+import in.istore.bitblue.app.listStock.Product;
 
 public class GlobalVariables extends Application {
     private String userName;

@@ -3,70 +3,147 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="@dimen/padd10dp"
+    android:paddingRight="@dimen/padd10dp"
     tools:context="in.istore.bitblue.app.loginScreen.LoginPage">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Mobile Number"/>
-    </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/ll_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/ll_login_signup"
+            android:id="@+id/ll_login_cred"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padd10dp"
-            android:gravity="center">
+            android:orientation="vertical">
 
-            <Button android:id="@+id/b_login_signup"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="SIGNUP" />
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Store ID: "
+                    android:textColor="@color/black" />
+
+                <EditText
+                    android:id="@+id/et_login_storeid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mobile Number:"
+                    android:textColor="@color/black" />
+
+                <EditText
+                    android:id="@+id/et_login_mob_num"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Password: "
+                    android:textColor="@color/black" />
+
+                <EditText
+                    android:id="@+id/et_login_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:imeOptions="actionGo"
+                    android:inputType="textPassword"
+                    android:textColor="@color/black" />
+            </LinearLayout>
         </LinearLayout>
 
-
         <LinearLayout
-            android:id="@+id/ll_login_login"
+            android:id="@+id/ll_login_signup_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_login_signup"
-            android:gravity="center">
+            android:layout_below="@+id/ll_login_cred"
+            android:layout_marginTop="@dimen/padd20dp"
+            android:weightSum="2">
+            <Button
+                android:id="@+id/b_login_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/padd5dp"
+                android:layout_weight="1"
+                android:background="@color/primary_dark_material_light"
+                android:text="LOGIN" />
 
             <Button
+                android:id="@+id/b_login_signup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LOGIN" />
+                android:layout_weight="1"
+                android:background="@color/primary_dark_material_light"
+                android:text="SIGNUP" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_login_gmail_facebook"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_login"
+        android:layout_marginTop="@dimen/padd30dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/padd10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="OR"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/fbpic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_login_signup"
-            android:orientation="horizontal">
-
-            <com.facebook.widget.ProfilePictureView
-                android:id="@+id/fbImg"
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/photoMarginTop"
-                android:visibility="visible"
-                facebook:preset_size="small" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/padd20dp"
+            android:layout_marginRight="@dimen/padd20dp"
+            android:orientation="vertical"
             android:weightSum="2">
 
             <com.google.android.gms.common.SignInButton
@@ -79,9 +156,22 @@
                 android:id="@+id/authButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
                 android:layout_weight="1" />
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fbpic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_login_gmail_facebook">
+
+        <com.facebook.widget.ProfilePictureView
+            android:id="@+id/fbImg"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/photoMarginTop"
+            android:visibility="visible"
+            facebook:preset_size="small" />
     </LinearLayout>
 </RelativeLayout>

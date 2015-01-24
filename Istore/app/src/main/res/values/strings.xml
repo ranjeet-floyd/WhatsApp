@@ -2,8 +2,8 @@
 <resources>
 
     <!-- App Level -->
-    <string name="app_name"/>
-    <string name="action_settings"/>
+    <string name="app_name"></string>
+    <string name="action_settings"></string>
     <string name="name">Istore</string>
 
     <!-- Login Page -->
@@ -89,5 +89,7 @@
     <string name="cloudPrint">https://www.google.com/cloudprint/learn/howitworks.html</string>
     <string name="title_activity_cloud_print">CloudPrint</string>
     <string name="title_activity_print_dialog">PrintDialogActivity</string>
+    <string name="title_activity_sign_up">SignUp</string>
+    <string name="title_activity_store_name">StoreName</string>
 
 </resources>

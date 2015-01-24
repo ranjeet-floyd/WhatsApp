@@ -3,7 +3,7 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.listMyStock.ListMyStock">
+    tools:context="in.istore.bitblue.app.listStock.ListMyStock">
 
     <LinearLayout
         android:layout_width="match_parent"

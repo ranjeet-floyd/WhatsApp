@@ -1,7 +1,9 @@
 package in.istore.bitblue.app.utilities;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class DateUtil {
@@ -17,4 +19,16 @@ public class DateUtil {
         calendar.setTimeInMillis(todayDate);
         return formatter.format(calendar.getTime());
     }
+
+    public static String convertToStringDate(Date todayDate) {
+
+        String dateFormat = "dd/MM/yyyy hh:mm a";
+
+        DateFormat dFormat = new SimpleDateFormat(dateFormat);
+        if (todayDate != null)
+            return dFormat.format(todayDate);
+        else return null;
+    }
+
+
 }

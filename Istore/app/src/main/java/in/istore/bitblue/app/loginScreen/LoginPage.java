@@ -20,7 +20,6 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.android.DialogError;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.ProfilePictureView;
@@ -29,11 +28,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.microsoft.windowsazure.messaging.NotificationHub;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
-
-import org.brickred.socialauth.android.DialogListener;
-import org.brickred.socialauth.android.SocialAuthAdapter;
-import org.brickred.socialauth.android.SocialAuthError;
-import org.brickred.socialauth.android.SocialAuthListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,7 +44,10 @@ public class LoginPage extends Activity implements View.OnClickListener {
     private SignInButton bGmail;
     private LoginButton bFacebook;
     private ImageView userImage;
-    private Button bsignup;
+    private Button bsignup, blogin;
+    private EditText etstoreId, etmobNum, etPass;
+    private EditText[] allEditTexts;
+
     private static final int GMAIL = 1;
     private static final int FACEBOOK = 2;
     public static final String SENDER_ID = "838791774954";
@@ -63,7 +60,6 @@ public class LoginPage extends Activity implements View.OnClickListener {
     private GoogleCloudMessaging gcm;
     private NotificationHub hub;
     public static MobileServiceClient mClient;
-
 
     //For Facebook
     private UiLifecycleHelper uiHelper;
@@ -79,7 +75,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
-        //Gcm
+        //Gcm Setup
         gcm = GoogleCloudMessaging.getInstance(this);
 
         //Azure Setup
@@ -87,7 +83,8 @@ public class LoginPage extends Activity implements View.OnClickListener {
         String connectionString = "Endpoint=sb://istore.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=Kgoog4L8WY1+2g2vRf1ZJuKa7ttS2iEpVxegHGuLRcs=";
         hub = new NotificationHub("istorehub", connectionString, this);
         registerWithNotificationHubs();
-        //Facebook
+
+        //Facebook Setup
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
         initViews();
@@ -128,19 +125,13 @@ public class LoginPage extends Activity implements View.OnClickListener {
         bsignup = (Button) findViewById(R.id.b_login_signup);
         bsignup.setOnClickListener(this);
 
-    }
+        blogin = (Button) findViewById(R.id.b_login_login);
+        blogin.setOnClickListener(this);
 
-    protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
-        // Find the TextView that is inside of the SignInButton and set its text
-        for (int i = 0; i < signInButton.getChildCount(); i++) {
-            View v = signInButton.getChildAt(i);
-
-            if (v instanceof TextView) {
-                TextView tv = (TextView) v;
-                tv.setText(buttonText);
-                return;
-            }
-        }
+        etstoreId = (EditText) findViewById(R.id.et_login_storeid);
+        etmobNum = (EditText) findViewById(R.id.et_login_mob_num);
+        etPass = (EditText) findViewById(R.id.et_login_password);
+        allEditTexts = new EditText[]{etstoreId, etmobNum, etPass};
     }
 
     @Override
@@ -152,8 +143,19 @@ public class LoginPage extends Activity implements View.OnClickListener {
                 startActivity(homePageGmail);
                 break;
             case R.id.b_login_signup:
-                SocialAuthAdapter adapter = new SocialAuthAdapter(new ResponseListener());
+                clearField(allEditTexts);
+                startActivity(new Intent(this, SignUpAdmin.class));
                 break;
+            case R.id.b_login_login:
+                clearField(allEditTexts);
+                break;
+        }
+    }
+
+    private void clearField(EditText[] allEditTexts) {
+        for (EditText editText :
+                allEditTexts) {
+            editText.setText("");
         }
     }
 
@@ -169,7 +171,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
 
-        //Not sure whether to use this
+        //Not sure to use this
 
        /* Session session = Session.getActiveSession();
         if (session != null && (session.isClosed() || session.isOpened())) {
@@ -253,46 +255,17 @@ public class LoginPage extends Activity implements View.OnClickListener {
         }
     }
 
-    private final class ResponseListener implements DialogListener {
-        public void onComplete(Bundle values) {
+    protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
 
-            edit = (EditText) findViewById(R.id.editTxt);
-            adapter.updateStatus(edit.getText().toString(), new MessageListener(), false);
+        // Find the TextView that is inside of the SignInButton and set its text
+        for (int i = 0; i < signInButton.getChildCount(); i++) {
+            View v = signInButton.getChildAt(i);
 
-        }
-
-        @Override
-        public void onError(SocialAuthError socialAuthError) {
-
-        }
-
-        public void onError(DialogError error) {
-            Log.d("ShareButton", "Error");
-        }
-
-        public void onCancel() {
-            Log.d("ShareButton", "Cancelled");
-        }
-
-        @Override
-        public void onBack() {
-
-        }
-    }
-
-    // To get status of message after authentication
-    private final class MessageListener implements SocialAuthListener<Integer> {
-        @Override
-        public void onExecute(String s, Integer t) {
-            Integer status = t;
-            if (status == 200 || status == 201 || status == 204)
-                Toast.makeText(LoginPage.this, "Message posted", Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(LoginPage.this, "Message not posted", Toast.LENGTH_LONG).show();
-        }
-
-        public void onError(SocialAuthError e) {
-
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+                tv.setText(buttonText);
+                return;
+            }
         }
     }
 }
