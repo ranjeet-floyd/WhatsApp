@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.Date;
 
-import in.istore.bitblue.app.listStock.Product;
+import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
 
 public class DbProductAdapter {

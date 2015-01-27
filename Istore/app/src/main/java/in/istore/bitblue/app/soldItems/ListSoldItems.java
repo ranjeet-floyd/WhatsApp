@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.SoldItemAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
-import in.istore.bitblue.app.listStock.Product;
+import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
 
 public class ListSoldItems extends ActionBarActivity implements View.OnClickListener,

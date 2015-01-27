@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
-import in.istore.bitblue.app.listStock.Product;
+import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.soldItems.ViewSoldItem;
 import in.istore.bitblue.app.utilities.DateUtil;
 

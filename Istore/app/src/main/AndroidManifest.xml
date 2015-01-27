@@ -115,8 +115,17 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".loginScreen.StoreName">
+        <activity android:name=".loginScreen.StoreName" >
+        </activity>
+        <activity android:name=".loginScreen.GooglePlus" >
+        </activity>
+        <activity android:name=".adminMenu.staffMgmt.StaffMgntContent" >
+        </activity>
+        <activity android:name=".adminMenu.suppInfo.SuppInfoContent" >
+        </activity>
+        <activity android:name=".adminMenu.CustInfo" >
+        </activity>
+        <activity android:name=".adminMenu.Trans" >
         </activity>
     </application>
 

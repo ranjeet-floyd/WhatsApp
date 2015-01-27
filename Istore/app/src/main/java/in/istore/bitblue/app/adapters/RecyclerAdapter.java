@@ -13,7 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.listStock.Product;
+import in.istore.bitblue.app.pojo.Product;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
     private ArrayList<Product> productArrayList = new ArrayList<Product>();

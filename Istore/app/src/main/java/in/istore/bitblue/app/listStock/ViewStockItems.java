@@ -17,6 +17,7 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.addItems.AddItemsMenu;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbQuantityAdapter;
+import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.Check;
 
 public class ViewStockItems extends ActionBarActivity implements View.OnClickListener {

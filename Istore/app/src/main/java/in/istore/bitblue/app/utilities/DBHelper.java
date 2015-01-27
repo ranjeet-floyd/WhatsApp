@@ -7,13 +7,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "istore.db";
-    public static final int DATABASE_VERSION = 2;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
+    public static final int DATABASE_VERSION = 4;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
 
     public static final String TABLE_PRODUCT = "product";
     public static final String TABLE_QUANTITY_HISTORY = "quantityhistory";
     public static final String TABLE_SOLD_ITEMS = "solditems";
     public static final String TABLE_LOGIN_CRED_ADMIN = "logincredadmin";
-    public static final String TABLE_LOGIN_CRED_STAFF = "logincredstaff";
+    public static final String TABLE_STAFFMGNT = "staffmgnt";
 
     //Product Table Column
     public static final String COL_PROD_ID = "id";
@@ -38,14 +38,24 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_LOGINCRED_MOBNUM = "mobile";
     public static final String COL_LOGINCRED_PASSWD = "passwd";
     public static final String COL_LOGINCRED_STOREID = "storeid";
-    public static final String COL_LOGINCRED_STAFFID = "staffid";
+    public static final String COL_LOGINCRED_STORENAME = "storename";
     public static final String COL_LOGINCRED_CREATION_DATE = "createdOn";
+
+    //StaffManagement Table
+    public static final String COL_STAFFMGNT_STOREID = "storeid";
+    public static final String COL_STAFFMGNT_STAFFID = "staffid";
+    public static final String COL_STAFFMGNT_NAME = "staffname";
+    public static final String COL_STAFFMGNT_MOBNUM = "staffmobile";
+    public static final String COL_STAFFMGNT_ADDRESS = "staffaddress";
+    public static final String COL_STAFFMGNT_PASSWD = "staffpasswd";
+    public static final String COL_STAFFMGNT_JOIN_DATE = "staffjoinOn";
+    public static final String COL_STAFFMGNT_TOTALSALES = "stafftotsale";
 
     public static final String[] PRODUCT_COLUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_PRICE, COL_PROD_STATUS, COL_PROD_DATE, COL_PROD_FAVORITE};
     public static final String[] QUANTITY_DATE_COLUMNS = {COL_PROD_ID, COL_PROD_QUANTITY, COL_PROD_DATE, COL_PROD_STATUS};
-    public static final String[] SOLD_ITEM_COLUMN = {COL_PROD_ID, COL_PROD_SOLDQUANTITY, COL_PROD_REMAINQUANTITY, COL_PROD_SOLDDATE, COL_PROD_SELLPRICE};
-    public static final String[] LOGIN_CRED_ADMIN_COLUMN = {COL_LOGINCRED_NAME, COL_LOGINCRED_EMAIL, COL_LOGINCRED_MOBNUM, COL_LOGINCRED_PASSWD, COL_LOGINCRED_STOREID, COL_LOGINCRED_CREATION_DATE};
-    public static final String[] LOGIN_CRED_STAFF_COLUMN = {COL_LOGINCRED_NAME, COL_LOGINCRED_EMAIL, COL_LOGINCRED_MOBNUM, COL_LOGINCRED_PASSWD, COL_LOGINCRED_STOREID, COL_LOGINCRED_CREATION_DATE, COL_LOGINCRED_STAFFID};
+    public static final String[] SOLD_ITEM_COLUMNS = {COL_PROD_ID, COL_PROD_SOLDQUANTITY, COL_PROD_REMAINQUANTITY, COL_PROD_SOLDDATE, COL_PROD_SELLPRICE};
+    public static final String[] LOGIN_CRED_ADMIN_COLUMNS = {COL_LOGINCRED_NAME, COL_LOGINCRED_EMAIL, COL_LOGINCRED_MOBNUM, COL_LOGINCRED_PASSWD, COL_LOGINCRED_STOREID, COL_LOGINCRED_CREATION_DATE};
+    public static final String[] STAFFMGNT_COLUMNS = {COL_STAFFMGNT_STOREID, COL_STAFFMGNT_STAFFID, COL_STAFFMGNT_NAME, COL_STAFFMGNT_MOBNUM, COL_STAFFMGNT_ADDRESS, COL_STAFFMGNT_PASSWD, COL_STAFFMGNT_JOIN_DATE, COL_STAFFMGNT_TOTALSALES};
 
     //Product Table to store product details
     public static final String CREATE_TABLE_PRODUCT =
@@ -80,23 +90,25 @@ public class DBHelper extends SQLiteOpenHelper {
     //Login Credentials to store ADMIN information
     public static final String CREATE_TABLE_LOGIN_CRED_ADMIN =
             "CREATE TABLE " + TABLE_LOGIN_CRED_ADMIN + "(" +
-                    COL_LOGINCRED_STOREID + " INTEGER PRIMARY KEY," +
+                    COL_LOGINCRED_MOBNUM + " INTEGER PRIMARY KEY," +
+                    COL_LOGINCRED_STOREID + " INTEGER UNIQUE," +
+                    COL_LOGINCRED_STORENAME + " TEXT," +
                     COL_LOGINCRED_NAME + " TEXT," +
                     COL_LOGINCRED_EMAIL + " TEXT," +
                     COL_LOGINCRED_PASSWD + " TEXT," +
-                    COL_LOGINCRED_MOBNUM + " INTEGER," +
                     COL_LOGINCRED_CREATION_DATE + " TEXT)";
 
     //Login Credentials to store STAFF information
-    public static final String CREATE_TABLE_LOGIN_CRED_STAFF =
-            "CREATE TABLE " + TABLE_LOGIN_CRED_STAFF + "(" +
-                    COL_LOGINCRED_STAFFID + " INTEGER PRIMARY KEY," +
-                    COL_LOGINCRED_STOREID + " INTEGER," +
-                    COL_LOGINCRED_NAME + " TEXT," +
-                    COL_LOGINCRED_EMAIL + " TEXT," +
-                    COL_LOGINCRED_PASSWD + " TEXT," +
-                    COL_LOGINCRED_MOBNUM + " INTEGER," +
-                    COL_LOGINCRED_CREATION_DATE + " TEXT)";
+    public static final String CREATE_TABLE_STAFFMGNT =
+            "CREATE TABLE " + TABLE_STAFFMGNT + "(" +
+                    COL_STAFFMGNT_MOBNUM + " INTEGER PRIMARY KEY," +
+                    COL_STAFFMGNT_STOREID + " INTEGER," +
+                    COL_STAFFMGNT_STAFFID + " INTEGER UNIQUE," +
+                    COL_STAFFMGNT_NAME + " TEXT," +
+                    COL_STAFFMGNT_PASSWD + " TEXT," +
+                    COL_STAFFMGNT_ADDRESS + " TEXT," +
+                    COL_STAFFMGNT_JOIN_DATE + " TEXT," +
+                    COL_STAFFMGNT_TOTALSALES + " INTEGER)";
 
     public DBHelper(Context context, String name,
                     SQLiteDatabase.CursorFactory factory, int version) {
@@ -109,7 +121,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_QUANTITY_HISTORY);
         sqLiteDatabase.execSQL(CREATE_TABLE_SOLD_ITEMS);
         sqLiteDatabase.execSQL(CREATE_TABLE_LOGIN_CRED_ADMIN);
-        sqLiteDatabase.execSQL(CREATE_TABLE_LOGIN_CRED_STAFF);
+        sqLiteDatabase.execSQL(CREATE_TABLE_STAFFMGNT);
     }
 
     @Override
@@ -118,7 +130,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_QUANTITY_HISTORY);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_SOLD_ITEMS);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN_CRED_ADMIN);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN_CRED_STAFF);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_STAFFMGNT);
         onCreate(sqLiteDatabase);
     }
 }

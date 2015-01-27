@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.SoldHistoryAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbSoldItemAdapter;
-import in.istore.bitblue.app.listStock.Product;
+import in.istore.bitblue.app.pojo.Product;
 
 public class ViewSoldItem extends ActionBarActivity {
     private Toolbar toolbar;

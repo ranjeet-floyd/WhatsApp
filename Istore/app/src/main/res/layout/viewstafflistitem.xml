@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/padd5dp"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/padd5dp"
+    android:paddingRight="@dimen/padd5dp"
+    android:weightSum="4">
+
+    <TextView
+        android:id="@+id/tv_view_staff_staffid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="27"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_view_staff_staffname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:text="sdaf"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_view_staff_staffmobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:text="0987654321"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_view_staff_staffsales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:text="0"
+        android:textColor="@color/black" />
+</LinearLayout>

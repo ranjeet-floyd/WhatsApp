@@ -16,6 +16,15 @@ public class Store {
         return random.nextInt((max - min) + 1) + min;
     }
 
+    public static int generateStaffId() {
+
+        int min = 11;
+        int max = 99;
+        Random random = new Random();
+
+        // nextInt is normally exclusive so add 1 to make it inclusive
+        return random.nextInt((max - min) + 1) + min;
+    }
 
     public static String generatePassword() {
         return RandomStringUtils.randomAlphanumeric(5);

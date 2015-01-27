@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
+import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.Mail;
 import in.istore.bitblue.app.utilities.Store;
 
@@ -27,14 +28,17 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
     private Button bContinue;
     private EditText[] allEditTexts;
 
-    private String Name, Email, Passwd, Mobile;
+    private String Name, Email, Passwd;
     private int StoreId;
+    private long Mobile;
     private DbLoginCredAdapter loginCredAdapter;
+    private GlobalVariables globalVariable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        globalVariable = (GlobalVariables) getApplicationContext();
         setToolbar();
         initViews();
     }
@@ -50,6 +54,7 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
     }
 
     private void initViews() {
+
         etname = (EditText) findViewById(R.id.et_signup_name);
         etmobNum = (EditText) findViewById(R.id.et_signup_mobnum);
         etEmail = (EditText) findViewById(R.id.et_signup_email);
@@ -76,9 +81,10 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                 //If everything is ok send email to user with randomly generated store id
                 StoreId = Store.generateStoreId();
                 Passwd = Store.generatePassword();
+                globalVariable.setStoreId(StoreId);
                 Name = etname.getText().toString();
                 Email = etEmail.getText().toString();
-                Mobile = etmobNum.getText().toString();
+                Mobile = Long.parseLong(etmobNum.getText().toString());
                 sendMailToUser(Email, StoreId, Passwd);
                 break;
         }
@@ -94,7 +100,9 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                 dialog.setTitle("");
                 dialog.setMessage("Please Wait...");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
                 dialog.show();
+
             }
 
             @Override
@@ -110,8 +118,12 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                     long dbresult = loginCredAdapter.insertAdminInfo(Name, Email, Passwd, Mobile, StoreId);
                     if (dbresult <= 0) {
                         Toast.makeText(SignUpAdmin.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                    } else
-                        startActivity(new Intent(SignUpAdmin.this, StoreName.class));
+                    } else {
+                        Intent storeName = new Intent(SignUpAdmin.this, StoreName.class);
+                        storeName.putExtra("Mobile", Mobile);
+                        storeName.putExtra("StoreId", StoreId);
+                        startActivity(storeName);
+                    }
                 }
             }
         }.execute();

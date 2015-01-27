@@ -1,6 +1,7 @@
 package in.istore.bitblue.app.loginScreen;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -37,6 +38,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.home.HomePage;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
@@ -45,18 +47,20 @@ public class LoginPage extends Activity implements View.OnClickListener {
     private LoginButton bFacebook;
     private ImageView userImage;
     private Button bsignup, blogin;
-    private EditText etstoreId, etmobNum, etPass;
+    private EditText etmobNum, etPass;
     private EditText[] allEditTexts;
 
     private static final int GMAIL = 1;
     private static final int FACEBOOK = 2;
-    public static final String SENDER_ID = "838791774954";
     private String userName, userEmail, regid;
-
+    private long Mobile;
+    private String Pass;
     private GlobalVariables globalVariable;
     private Bitmap bitmap;
+    private DbLoginCredAdapter loginCredAdapter;
 
     //For Azure Notifications
+    public static final String SENDER_ID = "838791774954";
     private GoogleCloudMessaging gcm;
     private NotificationHub hub;
     public static MobileServiceClient mClient;
@@ -106,12 +110,14 @@ public class LoginPage extends Activity implements View.OnClickListener {
 
             @Override
             protected void onPostExecute(Object o) {
-                Toast.makeText(getApplicationContext(), "Device Registered: " + regid, Toast.LENGTH_SHORT).show();
             }
         }.execute(null, null, null);
     }
 
     private void initViews() {
+
+        loginCredAdapter = new DbLoginCredAdapter(this);
+
         bGmail = (SignInButton) findViewById(R.id.sign_in_button);
         bGmail.setOnClickListener(this);
         setGooglePlusButtonText(bGmail, "Log in with Google+");
@@ -128,27 +134,75 @@ public class LoginPage extends Activity implements View.OnClickListener {
         blogin = (Button) findViewById(R.id.b_login_login);
         blogin.setOnClickListener(this);
 
-        etstoreId = (EditText) findViewById(R.id.et_login_storeid);
         etmobNum = (EditText) findViewById(R.id.et_login_mob_num);
         etPass = (EditText) findViewById(R.id.et_login_password);
-        allEditTexts = new EditText[]{etstoreId, etmobNum, etPass};
+        allEditTexts = new EditText[]{etmobNum, etPass};
     }
 
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.sign_in_button:
-                Intent homePageGmail = new Intent(getApplicationContext(), HomePage.class);
-                homePageGmail.putExtra("gmail", GMAIL);
-                startActivity(homePageGmail);
+                Intent googleplus = new Intent(getApplicationContext(), GooglePlus.class);
+                googleplus.putExtra("gmail", GMAIL);
+                startActivity(googleplus);
                 break;
             case R.id.b_login_signup:
                 clearField(allEditTexts);
                 startActivity(new Intent(this, SignUpAdmin.class));
                 break;
             case R.id.b_login_login:
-                clearField(allEditTexts);
+                checkForValidation(allEditTexts);
+                try {
+                    Mobile = Long.parseLong(etmobNum.getText().toString());
+                } catch (NumberFormatException nfe) {
+                    checkForValidation(allEditTexts);
+                    break;
+                }
+                Pass = etPass.getText().toString();
+                if (Mobile > 0)
+                    new AsyncTask<String, String, Boolean>() {
+                        ProgressDialog dialog = new ProgressDialog(LoginPage.this);
+
+                        @Override
+                        protected void onPreExecute() {
+                            dialog.setMessage("Logging in...");
+                            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            dialog.setCancelable(false);
+                            dialog.show();
+                        }
+
+                        @Override
+                        protected Boolean doInBackground(String... strings) {
+                            boolean validCred = loginCredAdapter.isValidCred(Mobile, Pass);
+                            if (validCred)
+                                return true;
+                            else return false;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Boolean isValidCreds) {
+                            dialog.dismiss();
+                            if (!isValidCreds) {
+                                clearField(allEditTexts);
+                                Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
+                            } else {
+                                globalVariable.setAdminMobile(Mobile);
+                                startActivity(new Intent(LoginPage.this, HomePage.class));
+                            }
+                        }
+                    }.execute();
                 break;
+        }
+    }
+
+    private void checkForValidation(EditText[] allEditTexts) {
+        for (EditText editText : allEditTexts) {
+            if (editText.getText().toString().equals("")) {
+                editText.setHint("Field Required");
+                editText.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                return;
+            }
         }
     }
 
@@ -163,8 +217,6 @@ public class LoginPage extends Activity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != -1)
-            Toast.makeText(getApplicationContext(), "Login Failed. Check Network", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -211,18 +263,26 @@ public class LoginPage extends Activity implements View.OnClickListener {
                         userName = user.getFirstName() + " " + user.getLastName();
                         userEmail = user.getProperty("email").toString();
 
-                        globalVariable.setUserName(userName);
-                        globalVariable.setUserEmail(userEmail);
+                        globalVariable.setFbName(userName);
+                        globalVariable.setFbEmail(userEmail);
+
 
                         ProfilePictureView ppv = (ProfilePictureView) findViewById(R.id.fbImg);
                         // ppv.setProfileId(user.getId());
                         userImage = ((ImageView) ppv.getChildAt(0));
                         bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
                         String filePath = createImageFromBitmap(bitmap);
-                        Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
-                        homePageFacebook.putExtra("facebook", FACEBOOK);
-                        homePageFacebook.putExtra("filePath", filePath);
-                        // startActivity(homePageFacebook);
+
+                        boolean isEmailExist = loginCredAdapter.isEmailExists(userEmail);
+                        if (isEmailExist) {
+                            long adminMobile = loginCredAdapter.getAdminMobile(userEmail);
+                            Toast.makeText(getApplicationContext(), String.valueOf(adminMobile), Toast.LENGTH_SHORT).show();
+                            globalVariable.setAdminMobile(adminMobile);
+                            Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
+                            homePageFacebook.putExtra("facebook", FACEBOOK);
+                            homePageFacebook.putExtra("filePath", filePath);
+                            startActivity(homePageFacebook);
+                        }
                     }
                 }
             }).executeAsync();
@@ -239,7 +299,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
             byte[] bArr = bos.toByteArray();
             bos.flush();
             bos.close();
-            File mFile = new File(Environment.getExternalStorageDirectory(), "Image.png");
+            File mFile = new File(Environment.getExternalStorageDirectory(), "FbImage.png");
 
             FileOutputStream fos = new FileOutputStream(mFile);
             fos.write(bArr);

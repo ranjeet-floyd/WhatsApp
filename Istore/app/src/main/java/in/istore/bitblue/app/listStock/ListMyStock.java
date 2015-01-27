@@ -35,6 +35,7 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.ListStockAdapter;
 import in.istore.bitblue.app.addItems.AddItemsMenu;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
+import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
 
 public class ListMyStock extends ActionBarActivity

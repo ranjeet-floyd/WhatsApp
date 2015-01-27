@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.Date;
 
-import in.istore.bitblue.app.listStock.Product;
+import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
 
 public class DbSoldItemAdapter {
@@ -53,7 +53,7 @@ public class DbSoldItemAdapter {
         String orderBy = DBHelper.COL_PROD_SOLDDATE + " DESC";
         String limit = "1";
 
-        Cursor csolDetails = sqLiteDb.query(DBHelper.TABLE_SOLD_ITEMS, DBHelper.SOLD_ITEM_COLUMN,
+        Cursor csolDetails = sqLiteDb.query(DBHelper.TABLE_SOLD_ITEMS, DBHelper.SOLD_ITEM_COLUMNS,
                 DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, orderBy, limit); //get the latest record from duplicate records
 
         if ((csolDetails != null && csolDetails.moveToFirst())) {
@@ -84,7 +84,7 @@ public class DbSoldItemAdapter {
     public ArrayList<Product> getAllSoldDetailsfor(String id) {
         openWritableDatabase();
         ArrayList<Product> productList = new ArrayList<Product>();
-        Cursor csolDetails = sqLiteDb.query(DBHelper.TABLE_SOLD_ITEMS, DBHelper.SOLD_ITEM_COLUMN,
+        Cursor csolDetails = sqLiteDb.query(DBHelper.TABLE_SOLD_ITEMS, DBHelper.SOLD_ITEM_COLUMNS,
                 DBHelper.COL_PROD_ID + "='" + id + "'", null, null, null, null);
         if (csolDetails != null && csolDetails.moveToFirst()) {
             do {

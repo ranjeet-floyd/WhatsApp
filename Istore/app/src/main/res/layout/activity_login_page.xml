@@ -18,7 +18,7 @@
             android:id="@+id/ll_login_cred"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"><!--
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="number"
                     android:textColor="@color/black" />
-            </LinearLayout>
+            </LinearLayout>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -97,6 +97,7 @@
             android:layout_below="@+id/ll_login_cred"
             android:layout_marginTop="@dimen/padd20dp"
             android:weightSum="2">
+
             <Button
                 android:id="@+id/b_login_login"
                 android:layout_width="wrap_content"
@@ -124,6 +125,7 @@
         android:layout_below="@+id/ll_login"
         android:layout_marginTop="@dimen/padd30dp"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
