@@ -11,8 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -45,17 +43,16 @@ public class ListMyStock extends ActionBarActivity
         AbsListView.OnScrollListener {
 
     private TextView tvnodata, toolTitle;
+    private SearchView searchView;
     private Toolbar toolbar;
     private View footerView;
     private FloatingActionsMenu itemMenu;
     private FloatingActionButton addNewItem, delAllItem, sortItems;
-    private MenuItem sortBy;
 
     private DbProductAdapter dbAdapter;
     private ListStockAdapter listAdapter;
     private ListView lvproductList;
     private ArrayList<Product> productArrayList;
-    private SearchView searchView;
 
     private boolean loadingMoreItems;
     private int offset = 0;
@@ -169,34 +166,6 @@ public class ListMyStock extends ActionBarActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list_my_stock, menu);
-        sortBy = menu.findItem(R.id.sortBy);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.sortBy) {
-            if (productArrayList == null || productArrayList.size() == 0) {
-                Toast.makeText(this, "No Items to Sort", Toast.LENGTH_SHORT).show();
-            } else {
-                showDialogForSort();
-            }
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.fab_listmystock_additem:
@@ -213,11 +182,11 @@ public class ListMyStock extends ActionBarActivity
                 }
                 break;
             case R.id.fab_listmystock_sortitem:
-               /* if (productArrayList == null || productArrayList.size() == 0) {
+                if (productArrayList == null || productArrayList.size() == 0) {
                     Toast.makeText(this, "No Items to Sort", Toast.LENGTH_SHORT).show();
                 } else {
                     showDialogForSort();
-                }*/
+                }
                 break;
         }
     }

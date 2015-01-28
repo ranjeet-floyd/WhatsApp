@@ -24,14 +24,17 @@
 
     <!-- Add Item Page -->
     <string name="barcodenoorproductID">Barcode Number/Product ID:</string>
+    <string name="Category">Category</string>
     <string name="productName">Product Name:</string>
     <string name="description">Description:</string>
     <string name="quantity">Quantity:</string>
+    <string name="minlimit">Min Limit</string>
     <string name="quantitytoSell">Quantity To Sell:</string>
     <string name="soldQuan">Quantity Sold:</string>
     <string name="remQuan">Quantity Available:</string>
     <string name="quantitytoAdd">Add Quantity:</string>
     <string name="price">Price Rs:</string>
+    <string name="costPrice">Cost Price</string>
     <string name="sellPrice">Selling Price:</string>
     <string name="captureImage">CAPTURE IMAGE</string>
     <string name="submit">SUBMIT</string>
@@ -97,5 +100,8 @@
     <string name="title_activity_cust_info">CustInfo</string>
     <string name="title_activity_trans">Trans</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_view_cus_info">ViewCusInfo</string>
+    <string name="title_activity_category">Category</string>
+    <string name="title_activity_products">Products</string>
 
 </resources>

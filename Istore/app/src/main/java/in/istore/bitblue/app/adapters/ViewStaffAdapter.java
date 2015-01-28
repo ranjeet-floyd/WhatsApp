@@ -10,7 +10,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.pojo.Staff;
 
 public class ViewStaffAdapter extends BaseAdapter {
@@ -18,7 +17,6 @@ public class ViewStaffAdapter extends BaseAdapter {
     private ArrayList<Staff> staffArrayList;
     private Context context;
     private LayoutInflater mInflater;
-    private DbStaffAdapter staffAdapter;
     private ViewHolder holder;
 
     public ViewStaffAdapter(Context context, ArrayList<Staff> staffArrayList) {
@@ -26,7 +24,6 @@ public class ViewStaffAdapter extends BaseAdapter {
             this.staffArrayList = staffArrayList;
             this.context = context;
             mInflater = LayoutInflater.from(context);
-            staffAdapter = new DbStaffAdapter(context);
         }
     }
 

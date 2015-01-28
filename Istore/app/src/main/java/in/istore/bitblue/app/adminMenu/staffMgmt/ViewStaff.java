@@ -64,9 +64,9 @@ public class ViewStaff extends Fragment {
             }
 
             @Override
-            protected void onPostExecute(Boolean res) {
+            protected void onPostExecute(Boolean result) {
                 dialog.dismiss();
-                if (res == true) {
+                if (result) {
                     staffAdapter = new ViewStaffAdapter(getActivity(), staffArrayList);
                     lvViewStaff = (ListView) view.findViewById(R.id.lv_viewStaff);
                     lvViewStaff.setAdapter(staffAdapter);

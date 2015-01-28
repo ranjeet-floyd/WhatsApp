@@ -12,6 +12,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,7 +39,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     private Button bCaptureImage, bSubmit, bCancel;
     private EditText etbarcode, etname, etdesc, etquantity, etprice;
     private ImageView ivProdImage;
-
+    private AutoCompleteTextView actvcategory;
     private GlobalVariables globalVariable;
     private int proImgCount = 1, iquantity, iprice;
     private String imagePath, id, name, desc, quantity, price;
@@ -52,11 +54,9 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item_form);
-
         scanContent = getIntent().getStringExtra("scanContentaddItem");
         globalVariable = (GlobalVariables) getApplicationContext();
         proImgCount = globalVariable.getProdImageCount();
-
         setToolbar();
         initViews();
     }
@@ -75,6 +75,12 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         boolean isProductExisting = false;
 
         dbAdapter = new DbProductAdapter(this);
+
+        actvcategory = (AutoCompleteTextView) findViewById(R.id.actv_additems_category);
+        ArrayAdapter adapter = new ArrayAdapter
+                (this, R.layout.dropdownlist, categories);
+        actvcategory.setThreshold(1);
+        actvcategory.setAdapter(adapter);
 
         bCaptureImage = (Button) findViewById(R.id.b_additems_captureImage);
         bCaptureImage.setOnClickListener(this);

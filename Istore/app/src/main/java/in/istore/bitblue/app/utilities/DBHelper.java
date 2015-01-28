@@ -7,13 +7,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "istore.db";
-    public static final int DATABASE_VERSION = 4;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
+    public static final int DATABASE_VERSION = 14;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
 
     public static final String TABLE_PRODUCT = "product";
     public static final String TABLE_QUANTITY_HISTORY = "quantityhistory";
     public static final String TABLE_SOLD_ITEMS = "solditems";
     public static final String TABLE_LOGIN_CRED_ADMIN = "logincredadmin";
     public static final String TABLE_STAFFMGNT = "staffmgnt";
+    public static final String TABLE_SUPPINFO = "suppinfo";
+    public static final String TABLE_CUSTINFO = "custinfo";
+    public static final String TABLE_CATEGORY = "category";
+    public static final String TABLE_SUBCATEGORY = "subcategory";
 
     //Product Table Column
     public static final String COL_PROD_ID = "id";
@@ -41,7 +45,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_LOGINCRED_STORENAME = "storename";
     public static final String COL_LOGINCRED_CREATION_DATE = "createdOn";
 
-    //StaffManagement Table
+    //StaffManagement Table Columns
     public static final String COL_STAFFMGNT_STOREID = "storeid";
     public static final String COL_STAFFMGNT_STAFFID = "staffid";
     public static final String COL_STAFFMGNT_NAME = "staffname";
@@ -51,11 +55,34 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_STAFFMGNT_JOIN_DATE = "staffjoinOn";
     public static final String COL_STAFFMGNT_TOTALSALES = "stafftotsale";
 
+    //Supplier Table Columns
+    public static final String COL_SUPPINFO_NAME = "suppname";
+    public static final String COL_SUPPINFO_MOBILE = "suppmobile";
+    public static final String COL_SUPPINFO_ADDRESS = "suppaddress";
+    public static final String COL_SUPPINFO_STARTING_DATE = "suppstartdate";
+
+    //Customer Purchase Amount Columns
+    public static final String COL_CUSTPURCHASE_MOBILE = "custmobile";
+    public static final String COL_CUSTPURCHASE_AMOUNT = "custpurchaseAmt";
+
+    //Category Table Column
+    public static final String COL_CATEGORY_ID = "categoryid";
+    public static final String COL_CATEGORY_NAME = "categoryName";
+
+    //Subcategory Table Column
+    public static final String COL_SUBCATEGORY_ID = "prosubcatid";
+    public static final String COL_SUBCATEGORY_NAME = "prosubcatName";
+
     public static final String[] PRODUCT_COLUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_PRICE, COL_PROD_STATUS, COL_PROD_DATE, COL_PROD_FAVORITE};
     public static final String[] QUANTITY_DATE_COLUMNS = {COL_PROD_ID, COL_PROD_QUANTITY, COL_PROD_DATE, COL_PROD_STATUS};
     public static final String[] SOLD_ITEM_COLUMNS = {COL_PROD_ID, COL_PROD_SOLDQUANTITY, COL_PROD_REMAINQUANTITY, COL_PROD_SOLDDATE, COL_PROD_SELLPRICE};
     public static final String[] LOGIN_CRED_ADMIN_COLUMNS = {COL_LOGINCRED_NAME, COL_LOGINCRED_EMAIL, COL_LOGINCRED_MOBNUM, COL_LOGINCRED_PASSWD, COL_LOGINCRED_STOREID, COL_LOGINCRED_CREATION_DATE};
     public static final String[] STAFFMGNT_COLUMNS = {COL_STAFFMGNT_STOREID, COL_STAFFMGNT_STAFFID, COL_STAFFMGNT_NAME, COL_STAFFMGNT_MOBNUM, COL_STAFFMGNT_ADDRESS, COL_STAFFMGNT_PASSWD, COL_STAFFMGNT_JOIN_DATE, COL_STAFFMGNT_TOTALSALES};
+    public static final String[] SUPPINFO_COLUMNS = {COL_SUPPINFO_NAME, COL_SUPPINFO_MOBILE, COL_SUPPINFO_ADDRESS, COL_SUPPINFO_STARTING_DATE};
+    public static final String[] CUSTPURCHASE_COLUMNS = {COL_CUSTPURCHASE_MOBILE, COL_CUSTPURCHASE_AMOUNT};
+
+    public static final String[] CATEGORY_COLUMNS = {COL_CATEGORY_ID, COL_CATEGORY_NAME};
+    public static final String[] PROSUBCAT_COLUMNS = {COL_SUBCATEGORY_ID, COL_CATEGORY_NAME, COL_SUBCATEGORY_NAME,};
 
     //Product Table to store product details
     public static final String CREATE_TABLE_PRODUCT =
@@ -87,7 +114,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     COL_PROD_SOLDDATE + " INTEGER," +
                     COL_PROD_SELLPRICE + " TEXT)";
 
-    //Login Credentials to store ADMIN information
+    //LoginCredentials Table to store ADMIN information
     public static final String CREATE_TABLE_LOGIN_CRED_ADMIN =
             "CREATE TABLE " + TABLE_LOGIN_CRED_ADMIN + "(" +
                     COL_LOGINCRED_MOBNUM + " INTEGER PRIMARY KEY," +
@@ -98,7 +125,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     COL_LOGINCRED_PASSWD + " TEXT," +
                     COL_LOGINCRED_CREATION_DATE + " TEXT)";
 
-    //Login Credentials to store STAFF information
+    //StaffMgnt Table to store STAFF information
     public static final String CREATE_TABLE_STAFFMGNT =
             "CREATE TABLE " + TABLE_STAFFMGNT + "(" +
                     COL_STAFFMGNT_MOBNUM + " INTEGER PRIMARY KEY," +
@@ -109,6 +136,33 @@ public class DBHelper extends SQLiteOpenHelper {
                     COL_STAFFMGNT_ADDRESS + " TEXT," +
                     COL_STAFFMGNT_JOIN_DATE + " TEXT," +
                     COL_STAFFMGNT_TOTALSALES + " INTEGER)";
+
+    //SuppInfo Table to store SUPPLIER information
+    public static final String CREATE_TABLE_SUPPINFO =
+            "CREATE TABLE " + TABLE_SUPPINFO + "(" +
+                    COL_SUPPINFO_MOBILE + " INTEGER PRIMARY KEY," +
+                    COL_SUPPINFO_NAME + " TEXT," +
+                    COL_SUPPINFO_ADDRESS + " TEXT," +
+                    COL_SUPPINFO_STARTING_DATE + " TEXT)";
+
+    //CustInfo Table to store CUSTOMER information
+    public static final String CREATE_TABLE_CUSTINFO =
+            "CREATE TABLE " + TABLE_CUSTINFO + "(" +
+                    COL_CUSTPURCHASE_MOBILE + " INTEGER PRIMARY KEY," +
+                    COL_CUSTPURCHASE_AMOUNT + " TEXT)";
+
+    //Category Table
+    public static final String CREATE_TABLE_CATEGORY =
+            "CREATE TABLE " + TABLE_CATEGORY + "(" +
+                    COL_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    COL_CATEGORY_NAME + " TEXT)";
+
+    //Products Table to store products in category
+    public static final String CREATE_TABLE_SUBCATEGORY =
+            "CREATE TABLE " + TABLE_SUBCATEGORY + "(" +
+                    COL_SUBCATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    COL_CATEGORY_NAME + " TEXT, " +
+                    COL_SUBCATEGORY_NAME + " TEXT)";
 
     public DBHelper(Context context, String name,
                     SQLiteDatabase.CursorFactory factory, int version) {
@@ -122,6 +176,11 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_SOLD_ITEMS);
         sqLiteDatabase.execSQL(CREATE_TABLE_LOGIN_CRED_ADMIN);
         sqLiteDatabase.execSQL(CREATE_TABLE_STAFFMGNT);
+        sqLiteDatabase.execSQL(CREATE_TABLE_SUPPINFO);
+        sqLiteDatabase.execSQL(CREATE_TABLE_CUSTINFO);
+        sqLiteDatabase.execSQL(CREATE_TABLE_CATEGORY);
+        sqLiteDatabase.execSQL(CREATE_TABLE_SUBCATEGORY);
+
     }
 
     @Override
@@ -131,6 +190,11 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_SOLD_ITEMS);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN_CRED_ADMIN);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_STAFFMGNT);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_SUPPINFO);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTINFO);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_SUBCATEGORY);
+
         onCreate(sqLiteDatabase);
     }
 }

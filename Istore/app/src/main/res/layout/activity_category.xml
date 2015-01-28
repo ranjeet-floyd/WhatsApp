@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.listStock.ListMyStock">
+    tools:context="in.istore.bitblue.app.category.Categories">
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -27,7 +28,7 @@
         android:weightSum="2">
 
         <SearchView
-            android:id="@+id/sv_solditems_search"
+            android:id="@+id/sv_category_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="right"
@@ -35,29 +36,20 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_category_lv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/linearLayout"
+        android:layout_below="@+id/searchviewlayout"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_soldItem_nodata"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="NO DATA"
-            android:textColor="@color/myPrimaryColor"
-            android:visibility="visible" />
-
         <ListView
-            android:id="@+id/lv_soldItem_itemlist"
+            android:id="@+id/lv_category"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/fab_solditems_menu"
+        android:id="@+id/fab_category_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -66,29 +58,18 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        fab:fab_addButtonColorNormal="@color/material_teal_500"
+        fab:fab_addButtonColorNormal="@color/material_red_700"
         fab:fab_addButtonColorPressed="@color/material_red_100"
         fab:fab_addButtonPlusIconColor="@color/white"
         fab:fab_labelStyle="@style/menu_labels_style">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_solditems_sortitem"
+            android:id="@+id/fab_category_additem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_sort_by_size"
-            fab:fab_colorNormal="@color/material_blue_100"
+            android:src="@drawable/ic_action_add"
+            fab:fab_colorNormal="@color/material_green_100"
             fab:fab_colorPressed="@color/material_blue_grey_100"
-            fab:fab_title="Sort By" />
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_solditems_delallitem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_discard"
-            fab:fab_colorNormal="@color/material_red_100"
-            fab:fab_colorPressed="@color/material_blue_grey_100"
-            fab:fab_title="Delete All Item" />
+            fab:fab_title="Add Item" />
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
-
-
 </RelativeLayout>

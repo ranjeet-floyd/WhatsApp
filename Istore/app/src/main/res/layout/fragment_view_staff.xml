@@ -19,7 +19,6 @@
             android:weightSum="4">
 
             <TextView
-                android:id="@+id/view_staff_staffid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -27,7 +26,6 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/view_staff_staffname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -35,7 +33,6 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/view_staff_staffmobile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -43,7 +40,6 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/view_staff_staffsales"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

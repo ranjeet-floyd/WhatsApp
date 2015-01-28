@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.adminMenu.suppInfo.ViewSupplier">
+    tools:context="in.istore.bitblue.app.adminMenu.custInfo.ViewCustInfo">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,19 +22,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Name"
+                android:text="Mobile Number"
                 android:textColor="@color/black" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Mobile No"
+                android:text="Purchase Amount"
                 android:textColor="@color/black" />
         </LinearLayout>
 
         <ListView
-            android:id="@+id/lv_viewSupp"
+            android:id="@+id/lv_viewCust"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_header"

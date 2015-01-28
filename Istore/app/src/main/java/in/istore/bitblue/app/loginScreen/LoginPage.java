@@ -238,13 +238,11 @@ public class LoginPage extends Activity implements View.OnClickListener {
         uiHelper.onPause();
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         uiHelper.onDestroy();
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle bundle) {

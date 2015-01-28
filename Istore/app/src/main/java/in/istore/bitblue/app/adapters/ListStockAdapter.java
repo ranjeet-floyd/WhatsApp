@@ -102,6 +102,7 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
                 dbProAdapter.updateFavoriteProductDetails(product.getId(), product.getFavorite());
             }
         });
+
         //This is used to select clicked listItem and get its details
         listRow.setOnClickListener(new View.OnClickListener() {
 
