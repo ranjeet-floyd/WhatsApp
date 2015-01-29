@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "istore.db";
-    public static final int DATABASE_VERSION = 14;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
+    public static final int DATABASE_VERSION = 17;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
 
     public static final String TABLE_PRODUCT = "product";
     public static final String TABLE_QUANTITY_HISTORY = "quantityhistory";
@@ -22,12 +22,16 @@ public class DBHelper extends SQLiteOpenHelper {
     //Product Table Column
     public static final String COL_PROD_ID = "id";
     public static final String COL_PROD_IMAGE = "image";
+    public static final String COL_PROD_CATEGORY = "category";
     public static final String COL_PROD_NAME = "name";
     public static final String COL_PROD_DESC = "desc";
     public static final String COL_PROD_QUANTITY = "quantity";
-    public static final String COL_PROD_PRICE = "price";
+    public static final String COL_PROD_MINLIMIT = "minlimit";
+    public static final String COL_PROD_COSTPRICE = "costprice";
+    public static final String COL_PROD_SELLINGPRICE = "sellingprice";
+    public static final String COL_PROD_SUPPLIER = "supplier";
     public static final String COL_PROD_STATUS = "status";
-    public static final String COL_PROD_DATE = "date";
+    public static final String COL_PROD_ADDEDDATE = "addeddOn";
     public static final String COL_PROD_FAVORITE = "isfavorite";
 
     //SoldItems Table Column
@@ -73,8 +77,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_SUBCATEGORY_ID = "prosubcatid";
     public static final String COL_SUBCATEGORY_NAME = "prosubcatName";
 
-    public static final String[] PRODUCT_COLUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_PRICE, COL_PROD_STATUS, COL_PROD_DATE, COL_PROD_FAVORITE};
-    public static final String[] QUANTITY_DATE_COLUMNS = {COL_PROD_ID, COL_PROD_QUANTITY, COL_PROD_DATE, COL_PROD_STATUS};
+    public static final String[] PRODUCT_COLUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_CATEGORY, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_MINLIMIT, COL_PROD_COSTPRICE, COL_PROD_SELLINGPRICE, COL_PROD_SUPPLIER, COL_PROD_ADDEDDATE, COL_PROD_FAVORITE};
+    public static final String[] QUANTITY_DATE_COLUMNS = {COL_PROD_ID, COL_PROD_QUANTITY, COL_PROD_ADDEDDATE};
     public static final String[] SOLD_ITEM_COLUMNS = {COL_PROD_ID, COL_PROD_SOLDQUANTITY, COL_PROD_REMAINQUANTITY, COL_PROD_SOLDDATE, COL_PROD_SELLPRICE};
     public static final String[] LOGIN_CRED_ADMIN_COLUMNS = {COL_LOGINCRED_NAME, COL_LOGINCRED_EMAIL, COL_LOGINCRED_MOBNUM, COL_LOGINCRED_PASSWD, COL_LOGINCRED_STOREID, COL_LOGINCRED_CREATION_DATE};
     public static final String[] STAFFMGNT_COLUMNS = {COL_STAFFMGNT_STOREID, COL_STAFFMGNT_STAFFID, COL_STAFFMGNT_NAME, COL_STAFFMGNT_MOBNUM, COL_STAFFMGNT_ADDRESS, COL_STAFFMGNT_PASSWD, COL_STAFFMGNT_JOIN_DATE, COL_STAFFMGNT_TOTALSALES};
@@ -89,30 +93,32 @@ public class DBHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TABLE_PRODUCT + "(" +
                     COL_PROD_ID + " TEXT PRIMARY KEY," +
                     COL_PROD_IMAGE + " TEXT," +
+                    COL_PROD_CATEGORY + " TEXT," +
                     COL_PROD_NAME + " TEXT," +
                     COL_PROD_DESC + " TEXT," +
-                    COL_PROD_QUANTITY + " TEXT," +
-                    COL_PROD_PRICE + " TEXT," +
-                    COL_PROD_STATUS + " TEXT," +
-                    COL_PROD_DATE + " INTEGER," +
+                    COL_PROD_QUANTITY + " INTEGER," +
+                    COL_PROD_MINLIMIT + " INTEGER," +
+                    COL_PROD_COSTPRICE + " REAL," +
+                    COL_PROD_SELLINGPRICE + " REAL," +
+                    COL_PROD_SUPPLIER + " TEXT," +
+                    COL_PROD_ADDEDDATE + " TEXT," +
                     COL_PROD_FAVORITE + " INTEGER)";
 
     //QuantityHistory Table to store product sold on some particular date
     public static final String CREATE_TABLE_QUANTITY_HISTORY =
             "CREATE TABLE " + TABLE_QUANTITY_HISTORY + "(" +
                     COL_PROD_ID + " TEXT," +
-                    COL_PROD_QUANTITY + " TEXT," +
-                    COL_PROD_DATE + " INTEGER," +
-                    COL_PROD_STATUS + " TEXT)";
+                    COL_PROD_QUANTITY + " INTEGER," +
+                    COL_PROD_ADDEDDATE + " TEXT)";
 
     //SoldItems Table to store items sold
     public static final String CREATE_TABLE_SOLD_ITEMS =
             "CREATE TABLE " + TABLE_SOLD_ITEMS + "(" +
                     COL_PROD_ID + " TEXT," +
-                    COL_PROD_SOLDQUANTITY + " TEXT," +
-                    COL_PROD_REMAINQUANTITY + " TEXT," +
-                    COL_PROD_SOLDDATE + " INTEGER," +
-                    COL_PROD_SELLPRICE + " TEXT)";
+                    COL_PROD_SOLDQUANTITY + " INTEGER," +
+                    COL_PROD_REMAINQUANTITY + " INTEGER," +
+                    COL_PROD_SOLDDATE + " TEXT," +
+                    COL_PROD_SELLPRICE + " REAL)";
 
     //LoginCredentials Table to store ADMIN information
     public static final String CREATE_TABLE_LOGIN_CRED_ADMIN =

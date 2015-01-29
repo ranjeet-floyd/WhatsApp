@@ -40,11 +40,11 @@ import in.istore.bitblue.app.adminMenu.Trans;
 import in.istore.bitblue.app.adminMenu.custInfo.CusInfoContent;
 import in.istore.bitblue.app.adminMenu.staffMgmt.StaffMgntContent;
 import in.istore.bitblue.app.adminMenu.suppInfo.SuppInfoContent;
-import in.istore.bitblue.app.category.Categories;
 import in.istore.bitblue.app.cloudprint.CloudPrint;
 import in.istore.bitblue.app.data.ExportData;
 import in.istore.bitblue.app.data.ImportData;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
+import in.istore.bitblue.app.listStock.ListMyStock;
 import in.istore.bitblue.app.loginScreen.LoginPage;
 import in.istore.bitblue.app.navDrawer.NavDrawItems;
 import in.istore.bitblue.app.sellItems.SellItemsMenu;
@@ -298,7 +298,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.b_list_my_stock:
-                Intent ListStock = new Intent(this, Categories.class);
+                Intent ListStock = new Intent(this, ListMyStock.class);
                 startActivity(ListStock);
                 break;
             case R.id.b_view_sold_items:

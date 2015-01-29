@@ -69,4 +69,21 @@ public class DbCategoryAdapter {
             return false;
         }
     }
+
+    public ArrayList<String> getAllCategoryNames() {
+        ArrayList<String> categoryNameList = new ArrayList<String>();
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_CATEGORY, DBHelper.CATEGORY_COLUMNS,
+                null, null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                categoryNameList.add(c.getString(c.getColumnIndexOrThrow("categoryName")));
+            } while (c.moveToNext());
+            closeDatabase();
+            return categoryNameList;
+        } else {
+            return null;
+        }
+
+    }
 }

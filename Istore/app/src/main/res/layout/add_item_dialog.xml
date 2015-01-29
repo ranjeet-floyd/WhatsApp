@@ -12,7 +12,7 @@
         android:id="@+id/et_additem_dialog_categoryname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Category Name"
+        android:hint="Enter Name"
         android:inputType="text"
         android:singleLine="true"
         android:textColor="@color/white" />

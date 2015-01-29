@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbQuantityAdapter;
 import in.istore.bitblue.app.pojo.Product;
-import in.istore.bitblue.app.utilities.DateUtil;
 
 public class QuantityAdapter extends BaseAdapter {
     private ArrayList<Product> quantityList = new ArrayList<Product>();
@@ -58,7 +57,7 @@ public class QuantityAdapter extends BaseAdapter {
         Product quantity = quantityList.get(position);
 
         holder.addedquantity.setText(quantity.getQuantity());
-        holder.date.setText(DateUtil.getStringDate(quantity.getDate()));
+        holder.date.setText(quantity.getAddedDate());
 
         return listRow;
     }

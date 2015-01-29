@@ -62,4 +62,20 @@ public class DbSuppAdapter {
         }
     }
 
+    public ArrayList<String> getAllSupplierNames() {
+        ArrayList<String> supplierArrayList = new ArrayList<String>();
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_SUPPINFO, DBHelper.SUPPINFO_COLUMNS,
+                null, null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                supplierArrayList.add(c.getString(c.getColumnIndexOrThrow("suppname")));
+            } while (c.moveToNext());
+            closeDatabase();
+            return supplierArrayList;
+        } else {
+            return null;
+        }
+    }
+
 }

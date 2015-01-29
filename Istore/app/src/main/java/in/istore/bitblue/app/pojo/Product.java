@@ -3,51 +3,50 @@ package in.istore.bitblue.app.pojo;
 public class Product {
     private String Id;
     private byte[] Image;
+    private String Category;
     private String Name;
     private String Desc;
-    private String Quantity;
-    private String Price;
-    private long Date;
+    private int Quantity;
+    private int MinLimit;
+    private float CostPrice;
+    private float SellingPrice;
+    private String Supplier;
+    private String AddedDate;
     private int IsFavorite;
 
-    private long SoldDate;
-    private String SoldQuantity;
-    private String RemQuantity;
-    private String SellPrice;
+    private String SoldDate;
+    private int SoldQuantity;
+    private int RemQuantity;
+    private float SellPrice;
 
     public Product() {
     }
 
-    public Product(String id, byte[] image, String name, String desc, String quantity, long soldDate, String soldQuantity, String remQuantity, String sellPrice) {
+    public Product(String id, byte[] image, String category, String name, String desc, int quantity, int minlimit, float costprice, float sellingprice, String supplier, String addedDate) {
         Id = id;
         Image = image;
+        Category = category;
         Name = name;
         Desc = desc;
         Quantity = quantity;
-        SoldDate = soldDate;
-        SoldQuantity = soldQuantity;
-        RemQuantity = remQuantity;
-        SellPrice = sellPrice;
+        MinLimit = minlimit;
+        CostPrice = costprice;
+        SellingPrice = sellingprice;
+        Supplier = supplier;
+        AddedDate = addedDate;
     }
 
-    public Product(String id, byte[] image, String name, String desc, String quantity, String price) {
+    public Product(String id, byte[] image, String category, String name, int quantity, String desc, int minLimit, float costPrice, float sellingPrice, String supplier) {
         Id = id;
         Image = image;
+        Category = category;
         Name = name;
-        Desc = desc;
         Quantity = quantity;
-        Price = price;
-    }
-
-    public Product(String id, byte[] image, String name, String desc, String quantity, String price, long date, int isFavorite) {
-        Id = id;
-        Image = image;
-        Name = name;
         Desc = desc;
-        Quantity = quantity;
-        Price = price;
-        Date = date;
-        IsFavorite = isFavorite;
+        MinLimit = minLimit;
+        CostPrice = costPrice;
+        SellingPrice = sellingPrice;
+        Supplier = supplier;
     }
 
     public Product(String id, byte[] image, String name) {
@@ -72,6 +71,14 @@ public class Product {
         Image = image;
     }
 
+    public String getCategory() {
+        return Category;
+    }
+
+    public void setCategory(String category) {
+        Category = category;
+    }
+
     public String getName() {
         return Name;
     }
@@ -88,67 +95,92 @@ public class Product {
         Desc = desc;
     }
 
-    public String getQuantity() {
+    public int getQuantity() {
         return Quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(int quantity) {
         Quantity = quantity;
     }
 
-    public String getPrice() {
-        return Price;
+    public int getMinLimit() {
+        return MinLimit;
     }
 
-    public void setPrice(String price) {
-        Price = price;
+    public void setMinLimit(int minLimit) {
+        MinLimit = minLimit;
     }
 
-    public long getDate() {
-        return Date;
+    public float getCostPrice() {
+        return CostPrice;
     }
 
-    public void setDate(long date) {
-        this.Date = date;
+    public void setCostPrice(float costPrice) {
+        CostPrice = costPrice;
     }
 
-    public int getFavorite() {
+    public float getSellingPrice() {
+        return SellingPrice;
+    }
+
+    public void setSellingPrice(float sellingPrice) {
+        SellingPrice = sellingPrice;
+    }
+
+    public String getSupplier() {
+        return Supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        Supplier = supplier;
+    }
+
+    public String getAddedDate() {
+        return AddedDate;
+    }
+
+    public void setAddedDate(String addedDate) {
+        AddedDate = addedDate;
+    }
+
+    public int getIsFavorite() {
         return IsFavorite;
     }
 
-    public void setFavorite(int isFavorite) {
+    public void setIsFavorite(int isFavorite) {
         IsFavorite = isFavorite;
     }
 
-    public String getSoldQuantity() {
-        return SoldQuantity;
-    }
-
-    public void setSoldQuantity(String soldQuantity) {
-        this.SoldQuantity = soldQuantity;
-    }
-
-    public String getRemQuantity() {
-        return RemQuantity;
-    }
-
-    public void setRemQuantity(String remQuantity) {
-        this.RemQuantity = remQuantity;
-    }
-
-    public String getSellPrice() {
-        return SellPrice;
-    }
-
-    public void setSellPrice(String sellPrice) {
-        this.SellPrice = sellPrice;
-    }
-
-    public long getSoldDate() {
+    public String getSoldDate() {
         return SoldDate;
     }
 
-    public void setSoldDate(long soldDate) {
+    public void setSoldDate(String soldDate) {
         SoldDate = soldDate;
+    }
+
+
+    public int getSoldQuantity() {
+        return SoldQuantity;
+    }
+
+    public void setSoldQuantity(int soldQuantity) {
+        SoldQuantity = soldQuantity;
+    }
+
+    public int getRemQuantity() {
+        return RemQuantity;
+    }
+
+    public void setRemQuantity(int remQuantity) {
+        RemQuantity = remQuantity;
+    }
+
+    public float getSellPrice() {
+        return SellPrice;
+    }
+
+    public void setSellPrice(float sellPrice) {
+        SellPrice = sellPrice;
     }
 }

@@ -27,12 +27,14 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
     private ImageView ivProdImage;
     private Button bSellItem, bInc, bDec;
 
-    private int maxlimit, minlimit = 0;
     private DbProductAdapter dbProAdapter;
     private DbSoldItemAdapter dbSolItmAdapter;
-    private String id, name, desc, quantity, sellprice;
-    private byte[] byteImage;
+
     private Bitmap bitmap;
+    private String id, name, desc;
+    private int quantity, maxlimit, minlimit = 0;
+    private float sellprice;
+    private byte[] byteImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,11 +89,11 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
             etdesc.setText(desc);
 
             quantity = product.getQuantity();
-            etquantity.setText(quantity);
-            maxlimit = Integer.parseInt(quantity);
+            etquantity.setText(String.valueOf(quantity));
+            maxlimit = quantity;
 
-            sellprice = product.getPrice();
-            etprice.setText(sellprice);
+            sellprice = product.getSellingPrice();
+            etprice.setText(String.valueOf(sellprice));
 
             byteImage = product.getImage();
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -108,41 +110,38 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
             case R.id.b_solditem_sell:
                 int quant;
                 id = etbarcode.getText().toString();
-                quantity = etquantity.getText().toString();
-                sellprice = etprice.getText().toString();
                 try {
-                    quant = Integer.parseInt(quantity);
+                    quant = quantity;
                 } catch (NumberFormatException nfe) {
                     quant = 0;
                 }
-                if (Check.ifNull(quantity)) {
+                if (Check.ifNull(etquantity.getText().toString())) {
                     etquantity.setHint("Field Required");
                     etquantity.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
                 } else if (quant > maxlimit) {
                     limitReached();
                     break;
-                } else if (Check.ifNull(sellprice)) {
+                } else if (Check.ifNull(etprice.getText().toString())) {
                     etprice.setHint("Field Required");
                     etprice.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
                 } else {
-                    String soldQuantity = etquantity.getText().toString();
-                    int soldQuan;
+                    String soldQuan = etquantity.getText().toString();
+                    int soldQuantity;
                     try {
-                        soldQuan = Integer.parseInt(soldQuantity);
+                        soldQuantity = Integer.parseInt(soldQuan);
                     } catch (NumberFormatException nfe) {
-                        soldQuan = 0;
+                        soldQuantity = 0;
                     }
 
-                    int remQuan = maxlimit - soldQuan;
-                    String remQuantity = String.valueOf(remQuan);
+                    int remQuantity = maxlimit - soldQuantity;
 
                     long ret = dbSolItmAdapter.insertSoldItemQuantityDetail(id, soldQuantity, remQuantity, sellprice);
-                    long ret1 = dbProAdapter.updateSoldProductDetails(id);  //update status to 'sold' in product table.
+                    // long ret1 = dbProAdapter.updateSoldProductDetails(id);  //update status to 'sold' in product table.
                     long ret2 = dbProAdapter.updateProductQuantity(id, remQuantity);//update remaining quantity in product table
 
-                    if (ret < 0 || ret1 <= 0 || ret2 <= 0) {
+                    if (ret < 0 || ret2 <= 0) {
                         Toast.makeText(this, "Sold Record Not Updated: " + ret, Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, "Sold Record Updated", Toast.LENGTH_SHORT).show();

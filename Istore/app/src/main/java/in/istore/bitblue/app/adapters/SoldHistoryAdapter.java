@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbSoldItemAdapter;
 import in.istore.bitblue.app.pojo.Product;
-import in.istore.bitblue.app.utilities.DateUtil;
 
 public class SoldHistoryAdapter extends BaseAdapter {
     private ArrayList<Product> soldhistlist = new ArrayList<Product>();
@@ -58,9 +57,9 @@ public class SoldHistoryAdapter extends BaseAdapter {
         } else holder = (ViewHolder) listRow.getTag();
 
         Product product = soldhistlist.get(position);
-        holder.tvsoldquantity.setText(product.getSoldQuantity());
-        holder.tvdate.setText(DateUtil.getStringDate(product.getSoldDate()));
-        holder.tvsellPrice.setText(product.getSellPrice());
+        holder.tvsoldquantity.setText(String.valueOf(product.getSoldQuantity()));
+        holder.tvdate.setText(product.getSoldDate());
+        holder.tvsellPrice.setText(String.valueOf(product.getSellPrice()));
         return listRow;
     }
 

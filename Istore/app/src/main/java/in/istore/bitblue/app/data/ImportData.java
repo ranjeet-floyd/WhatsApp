@@ -117,8 +117,8 @@ public class ImportData extends ActionBarActivity {
                     price = row[5];
                     if (dbAdapter.idAlreadyPresent(id))
                         continue;
-                    else
-                        result = dbAdapter.insertProductDetails(id, imageByteValue, name, desc, quantity, price);
+                   /* else            REMOVE THIS
+                        result = dbAdapter.insertProductDetails(id, imageByteValue, name, desc, quantity, price);*/
                 }
             } catch (Exception e) {
                 e.printStackTrace();

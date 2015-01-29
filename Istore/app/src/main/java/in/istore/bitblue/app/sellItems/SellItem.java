@@ -30,7 +30,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
     private Toolbar toolbar;
 
     private Button bEdit, bSell;
-    private TextView tvbarcode, tvname, tvquantity, tvprice;
+    private TextView tvbarcode, tvname, tvquantity, tvcostprice, tvsellprice;
     private ExpandableTextView etvdesc;
     private ImageView ivProdImage;
     private ListView lvquanthist;
@@ -38,7 +38,9 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
     private SparseBooleanArray mCollapsedStatus;
     private String scanContent;
     private GlobalVariables globalVariable;
-    private String id, name, desc, quantity, price;
+    private String id, category, name, desc, supplier;
+    private int quantity, minlimit;
+    private float costprice, sellprice;
     private byte[] byteImage;
     private Bitmap bitmap;
 
@@ -93,24 +95,27 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
             ivProdImage.setImageBitmap(bitmap);
         }
 
-        tvbarcode = (TextView) findViewById(R.id.et_sellitems_barcode_prod_id);
+        tvbarcode = (TextView) findViewById(R.id.tv_sellitems_barcode_prod_id);
         if (scanContent != null) {
             tvbarcode.setText(scanContent);
         } else if (id != null) {
             tvbarcode.setText(id);
         } else Toast.makeText(this, "Id not found", Toast.LENGTH_SHORT).show();
 
-        tvname = (TextView) findViewById(R.id.et_sellitems_prod_name);
+        tvname = (TextView) findViewById(R.id.tv_sellitems_prod_name);
         tvname.setText(name);
 
         etvdesc = (ExpandableTextView) findViewById(R.id.expand_text_view);
         etvdesc.setText(desc, mCollapsedStatus, 0);
 
         tvquantity = (TextView) findViewById(R.id.tv_sellitems_quantity);
-        tvquantity.setText(quantity);
+        tvquantity.setText(String.valueOf(quantity));
 
-        tvprice = (TextView) findViewById(R.id.et_sellitems_prod_price);
-        tvprice.setText(price);
+        tvcostprice = (TextView) findViewById(R.id.tv_sellitems_prod_costprice);
+        tvcostprice.setText(String.valueOf(costprice));
+
+        tvsellprice = (TextView) findViewById(R.id.tv_sellitems_prod_sellprice);
+        tvsellprice.setText(String.valueOf(sellprice));
 
         lvquanthist = (ListView) findViewById(R.id.lv_sellitems_quanthist);
         if (quantityList != null) {
@@ -129,7 +134,9 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
             name = product.getName();
             desc = product.getDesc();
             quantity = product.getQuantity();
-            price = product.getPrice();
+            costprice = product.getCostPrice();
+            sellprice = product.getSellingPrice();
+            supplier = product.getSupplier();
             byteImage = product.getImage();
             BitmapFactory.Options options = new BitmapFactory.Options();
             bitmap = BitmapFactory.decodeByteArray(byteImage, 0, byteImage.length, options);
@@ -142,7 +149,9 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
             name = product.getName();
             desc = product.getDesc();
             quantity = product.getQuantity();
-            price = product.getPrice();
+            costprice = product.getCostPrice();
+            sellprice = product.getSellingPrice();
+            supplier = product.getSupplier();
             byteImage = product.getImage();
             BitmapFactory.Options options = new BitmapFactory.Options();
             if (byteImage != null)

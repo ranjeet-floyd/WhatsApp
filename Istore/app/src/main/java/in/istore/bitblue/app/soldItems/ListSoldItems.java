@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -44,12 +43,10 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
     private ListView lvsoldproductList;
     private View footerView;
     private SearchView searchView;
-    private MenuItem sortBy;
 
     private DbProductAdapter dbAdapter;
     private SoldItemAdapter listAdapter;
     private ArrayList<Product> soldproductArrayList;
-    private String sold = "sold";
     private boolean loadingMoreItems;
     private int offset = 0;
     private int limit = 10;
@@ -95,7 +92,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
         lvsoldproductList.addFooterView(footerView);
         offset = 0;
         limit = 10;
-        soldproductArrayList = dbAdapter.getAllSoldProducts(sold, limit, offset);
+         soldproductArrayList = dbAdapter.getAllSoldProducts(limit, offset);
         if (soldproductArrayList == null || soldproductArrayList.size() == 0) {
             tvnodata.setVisibility(View.VISIBLE);
         } else {
@@ -201,7 +198,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
                                     } catch (IOException e) {
                                         Log.e("Unable to delete Directory: ", "Istore");
                                     }
-                                    int ret = dbAdapter.deleteAllProduct(sold);
+                                    int ret = dbAdapter.deleteAllProduct();
                                     if (ret < 0) {
                                         Toast.makeText(getApplicationContext(), "Error : When Deleting", Toast.LENGTH_SHORT).show();
                                     } else {
@@ -236,7 +233,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
     }
 
     private void showDialogForSort() {
-        final String[] items = {DBHelper.COL_PROD_ID, DBHelper.COL_PROD_NAME, DBHelper.COL_PROD_DATE};
+        final String[] items = {DBHelper.COL_PROD_ID, DBHelper.COL_PROD_NAME, DBHelper.COL_PROD_ADDEDDATE};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Sort Items by");
 
@@ -259,8 +256,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
     }
 
     private void sortItemsBy(String column) {
-        String status = "not sold";
-        soldproductArrayList = dbAdapter.sortBy(column, status);
+        soldproductArrayList = dbAdapter.sortBy(column);
         if (soldproductArrayList != null) {
             listAdapter = new SoldItemAdapter(this, soldproductArrayList);
             lvsoldproductList.setAdapter(listAdapter);
@@ -289,11 +285,11 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
             ArrayList<Product> productsList;
             loadingMoreItems = true;
             offset += 10;
-            if (dbAdapter != null) {
+           /* if (dbAdapter != null) {                   REMOVE THIS
                 productsList = dbAdapter.getAllSoldProducts(sold, limit, offset);
                 return productsList;
-            } else
-                return null;
+            } else*/
+            return null;
         }
 
         @Override

@@ -22,7 +22,6 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.soldItems.ViewSoldItem;
-import in.istore.bitblue.app.utilities.DateUtil;
 
 public class SoldItemAdapter extends BaseAdapter {
     private ArrayList<Product> productArrayList = new ArrayList<Product>();
@@ -80,21 +79,21 @@ public class SoldItemAdapter extends BaseAdapter {
         }
 
         holder.name.setText(product.getName());
-        holder.date.setText(DateUtil.getStringDate(product.getDate()));
-        if (product.getFavorite() == 1) {
+        holder.date.setText(product.getSoldDate());
+        if (product.getIsFavorite() == 1) {
             holder.favorite.setChecked(true);
-        } else if (product.getFavorite() == 0) {
+        } else if (product.getIsFavorite() == 0) {
             holder.favorite.setChecked(false);
         }
         holder.favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (holder.favorite.isChecked()) {
-                    product.setFavorite(1);
+                    product.setIsFavorite(1);
                 } else {
-                    product.setFavorite(0);
+                    product.setIsFavorite(0);
                 }
-                dbProAdapter.updateFavoriteProductDetails(product.getId(), product.getFavorite());
+                dbProAdapter.updateFavoriteProductDetails(product.getId(), product.getIsFavorite());
             }
         });
         listRow.setOnClickListener(new View.OnClickListener() {

@@ -11,7 +11,10 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,9 +27,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.databaseAdapter.DbCategoryAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbProSubCatAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbSuppAdapter;
 import in.istore.bitblue.app.listStock.ListMyStock;
 import in.istore.bitblue.app.utilities.Check;
 import in.istore.bitblue.app.utilities.GlobalVariables;
@@ -34,14 +41,23 @@ import in.istore.bitblue.app.utilities.GlobalVariables;
 public class EditItemForm extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
     private Button bCaptureImage, bUpdate, bBack;
-    private EditText etbarcode, etname, etdesc, etquantity, etprice;
+    private EditText etbarcode, etdesc, etquantity, etminlimit, etcostprice, etsellingprice;
     private ImageView ivProdImage;
+    private AutoCompleteTextView actvcategory, actvprodname, actvsupplier;
+
 
     private static final int CAPTURE_PIC_REQ = 2222;
-    private String id, name, desc, quantity, price;
+    private String id, category, name, desc, supplier;
+    private int quantity, minlimit;
+    private float costprice, sellprice;
     private String imagePath;
     private byte[] byteImage;
     private int proImgCount = 1;
+
+    private ArrayList<String> categoryNameList, proSubCatNameList, suppNameList;
+    private DbCategoryAdapter dbCategoryAdapter;
+    private DbProSubCatAdapter dbProSubCatAdapter;
+    private DbSuppAdapter dbSuppAdapter;
     private DbProductAdapter dbAdapter;
     private GlobalVariables globalVariable;
 
@@ -67,6 +83,28 @@ public class EditItemForm extends ActionBarActivity implements View.OnClickListe
 
         dbAdapter = new DbProductAdapter(this);
 
+        dbCategoryAdapter = new DbCategoryAdapter(this);
+        categoryNameList = dbCategoryAdapter.getAllCategoryNames();
+
+        dbProSubCatAdapter = new DbProSubCatAdapter(this);
+
+        dbSuppAdapter = new DbSuppAdapter(this);
+        suppNameList = dbSuppAdapter.getAllSupplierNames();
+
+        actvcategory = (AutoCompleteTextView) findViewById(R.id.actv_edititems_prod_category);
+        actvprodname = (AutoCompleteTextView) findViewById(R.id.actv_edititems_prod_name);
+        actvsupplier = (AutoCompleteTextView) findViewById(R.id.actv_edititems_prod_supplier);
+
+        ArrayAdapter catadapter = new ArrayAdapter
+                (this, R.layout.dropdownlist, categoryNameList);
+        actvcategory.setThreshold(0);
+        actvcategory.setAdapter(catadapter);
+
+        ArrayAdapter suppAdapter = new ArrayAdapter
+                (this, R.layout.dropdownlist, suppNameList);
+        actvsupplier.setThreshold(0);
+        actvsupplier.setAdapter(suppAdapter);
+
         id = getIntent().getStringExtra("prodid");
         ivProdImage = (ImageView) findViewById(R.id.iv_edititems_image);
 
@@ -76,10 +114,58 @@ public class EditItemForm extends ActionBarActivity implements View.OnClickListe
         } else {
             Toast.makeText(this, "ID NOT FOUND", Toast.LENGTH_SHORT).show();
         }
-        etname = (EditText) findViewById(R.id.et_edititems_prod_name);
+
+        actvcategory.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (categoryNameList == null || categoryNameList.size() == 0) {
+                    actvcategory.setHint("No Category Specified");
+                    actvcategory.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    return true;
+                } else
+                    actvcategory.showDropDown();
+                return false;
+            }
+        });
+
+        actvprodname.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                String CategoryName = actvcategory.getText().toString();
+                if (Check.ifNull(CategoryName)) {
+                    actvcategory.setHint("Field Required");
+                    actvcategory.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    return true;
+                }
+                proSubCatNameList = dbProSubCatAdapter.getAllProductNames(CategoryName);
+                ArrayAdapter subcatadapter = new ArrayAdapter
+                        (getApplicationContext(), R.layout.dropdownlist, proSubCatNameList);
+                actvprodname.setThreshold(0);
+                actvprodname.setAdapter(subcatadapter);
+                actvprodname.showDropDown();
+                return false;
+            }
+        });
+
         etdesc = (EditText) findViewById(R.id.et_edititems_prod_desc);
         etquantity = (EditText) findViewById(R.id.et_edititems_prod_quantity);
-        etprice = (EditText) findViewById(R.id.et_edititems_prod_price);
+        etminlimit = (EditText) findViewById(R.id.et_edititems_prod_minlimit);
+        etcostprice = (EditText) findViewById(R.id.et_edititems_prod_costprice);
+        etsellingprice = (EditText) findViewById(R.id.et_edititems_prod_sellingprice);
+
+        actvsupplier.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (suppNameList == null || suppNameList.size() == 0) {
+                    actvsupplier.setHint("No Supplier Specified");
+                    actvsupplier.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    return true;
+                } else
+                    actvsupplier.showDropDown();
+                return false;
+            }
+        });
+
 
         bCaptureImage = (Button) findViewById(R.id.b_edititems_captureImage);
         bCaptureImage.setOnClickListener(this);
@@ -103,10 +189,17 @@ public class EditItemForm extends ActionBarActivity implements View.OnClickListe
                 break;
             case R.id.b_edititems_update:
                 id = etbarcode.getText().toString();
-                name = etname.getText().toString();
+                category = actvcategory.getText().toString();
+                name = actvprodname.getText().toString();
                 desc = etdesc.getText().toString();
-                quantity = etquantity.getText().toString();
-                price = etprice.getText().toString();
+                supplier = actvsupplier.getText().toString();
+                try {
+                    quantity = Integer.parseInt(etquantity.getText().toString());
+                    minlimit = Integer.parseInt(etminlimit.getText().toString());
+                    costprice = Float.parseFloat(etcostprice.getText().toString());
+                    sellprice = Float.parseFloat(etsellingprice.getText().toString());
+                } catch (Exception e) {
+                }
                 if (imagePath != null) {
                     try {
                         //Convert Image path to byte array
@@ -121,9 +214,13 @@ public class EditItemForm extends ActionBarActivity implements View.OnClickListe
                     Toast.makeText(this, "Error: Update Product Image", Toast.LENGTH_LONG).show();
                     break;
                 }
-                if (Check.ifNull(name)) {
-                    etname.setHint("Field Required");
-                    etname.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                if (Check.ifNull(category)) {
+                    actvcategory.setHint("Field Required");
+                    actvcategory.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                } else if (Check.ifNull(name)) {
+                    actvprodname.setHint("Field Required");
+                    actvprodname.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
 
                 } else if (Check.ifNull(desc)) {
@@ -131,18 +228,33 @@ public class EditItemForm extends ActionBarActivity implements View.OnClickListe
                     etdesc.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
 
-                } else if (Check.ifNull(quantity)) {
+                } else if (quantity == 0) {
                     etquantity.setHint("Field Required");
                     etquantity.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
 
-                } else if (Check.ifNull(price)) {
-                    etprice.setHint("Field Required");
-                    etprice.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                } else if (minlimit == 0) {
+                    etminlimit.setHint("Field Required");
+                    etminlimit.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+
+                } else if (costprice == 0) {
+                    etcostprice.setHint("Field Required");
+                    etcostprice.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+
+                } else if (sellprice == 0) {
+                    etsellingprice.setHint("Field Required");
+                    etsellingprice.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+
+                } else if (Check.ifNull(supplier)) {
+                    actvsupplier.setHint("Field Required");
+                    actvsupplier.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
 
                 } else {
-                    long ret = dbAdapter.updateProductDetails(id, byteImage, name, desc, quantity, price, 0);
+                    long ret = dbAdapter.updateProductDetails(id, byteImage, null, name, desc, quantity, 0, sellprice, null);
                     if (ret < 0) {
                         Toast.makeText(this, "Record Not Updated: " + ret, Toast.LENGTH_SHORT).show();
                     } else {

@@ -79,4 +79,29 @@ public class DbProSubCatAdapter {
             return false;
         }
     }
+
+    public ArrayList<String> getAllProductNames(String Category) {
+        ArrayList<String> prodCatNameList = new ArrayList<String>();
+        openWritableDatabase();
+        String CATEGORY_CATEGORYNAME = DBHelper.TABLE_CATEGORY + "." + DBHelper.COL_CATEGORY_NAME;
+        String SUBCATEGORY_CATEGORYNAME = DBHelper.TABLE_SUBCATEGORY + "." + DBHelper.COL_CATEGORY_NAME;
+
+        String rawQuery = "SELECT " + DBHelper.COL_SUBCATEGORY_NAME +
+                " FROM " + DBHelper.TABLE_SUBCATEGORY +
+                " INNER JOIN " + DBHelper.TABLE_CATEGORY + " ON " +
+                CATEGORY_CATEGORYNAME + "=" + SUBCATEGORY_CATEGORYNAME +
+                " WHERE " + SUBCATEGORY_CATEGORYNAME + "='" + Category + "'";
+
+        Cursor c = sqLiteDb.rawQuery(rawQuery, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                prodCatNameList.add(c.getString(c.getColumnIndexOrThrow("prosubcatName")));
+            } while (c.moveToNext());
+            closeDatabase();
+            return prodCatNameList;
+        } else {
+            return null;
+        }
+
+    }
 }

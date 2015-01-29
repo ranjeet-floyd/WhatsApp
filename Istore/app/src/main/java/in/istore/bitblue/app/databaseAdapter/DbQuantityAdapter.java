@@ -31,13 +31,13 @@ public class DbQuantityAdapter {
         sqLiteDb.close();
     }
 
-    public long insertQuantityDetails(String Id, String Quantity) {
+    public long insertQuantityDetails(String Id, int Quantity) {
         Date date = new Date();
         long todayDate = date.getTime();
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_ID, Id);
         row.put(DBHelper.COL_PROD_QUANTITY, Quantity);
-        row.put(DBHelper.COL_PROD_DATE, todayDate);   //Insert current date in Unix Time format.
+        row.put(DBHelper.COL_PROD_ADDEDDATE, todayDate);   //Insert current date in Unix Time format.
 
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_QUANTITY_HISTORY, null, row);
@@ -53,9 +53,9 @@ public class DbQuantityAdapter {
         if (c != null && c.moveToFirst()) {
             do {
                 Product product = new Product();
-                product.setId(c.getString(c.getColumnIndexOrThrow("id")));
-                product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
-                product.setDate(c.getLong(c.getColumnIndexOrThrow("date")));
+                product.setId(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ID)));
+                product.setQuantity(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_QUANTITY)));
+                product.setAddedDate(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ADDEDDATE)));
                 productArrayList.add(product);
             } while (c.moveToNext());
             closeDatabase();

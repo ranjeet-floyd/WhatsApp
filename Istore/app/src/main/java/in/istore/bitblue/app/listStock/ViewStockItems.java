@@ -18,7 +18,6 @@ import in.istore.bitblue.app.addItems.AddItemsMenu;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbQuantityAdapter;
 import in.istore.bitblue.app.pojo.Product;
-import in.istore.bitblue.app.utilities.Check;
 
 public class ViewStockItems extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -28,7 +27,7 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
     private Button bBack, bUpdate;
 
     private String id;
-    private String origquantity;
+    private int origquantity;
     private byte[] byteImage;
     private Bitmap bitmap;
     private DbProductAdapter dbAdapter;
@@ -71,7 +70,7 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
         if ((id != null) && (!id.equals(""))) {
             product = getProductDetails(id);
             if (product != null) {
-                origquantity = product.getQuantity();
+                origquantity = product.getRemQuantity();
                 etbarcode.setText(id);
                 etname.setText(product.getName());
                 etquantity.setText(origquantity);
@@ -97,13 +96,18 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
                 startActivity(new Intent(this, AddItemsMenu.class));
                 break;
             case R.id.b_viewstockitem_update:
-                String addedquantity = etquantity.getText().toString();
-                if (Check.ifNull(addedquantity)) {
+                int addedquantity = 0;
+                try {
+                    addedquantity = Integer.parseInt(etquantity.getText().toString());
+                } catch (Exception e) {
+                    addedquantity = 0;
+                }
+                if (addedquantity == 0) {
                     etquantity.setHint("Field Required");
                     etquantity.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
                 } else {
-                    String totalquatity = getTotalQuantity(origquantity, addedquantity);
+                    int totalquatity = getTotalQuantity(origquantity, addedquantity);
                     int retprod = updateProductDetails(id, totalquatity);
                     long retquant = insertQuantityDetails(id, addedquantity);
                     if (retprod <= 0 || retquant < 0) {
@@ -116,22 +120,15 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
         }
     }
 
-    private String getTotalQuantity(String origquantity, String addedquantity) {
-        int total;
-        try {
-            total = Integer.parseInt(origquantity) + Integer.parseInt(addedquantity);
-        } catch (NumberFormatException nfe) {
-            total = 0;
-        }
-        String sum = String.valueOf(total);
-        return sum;
+    private int getTotalQuantity(int origquantity, int addedquantity) {
+        return origquantity + addedquantity;
     }
 
-    private long insertQuantityDetails(String id, String addedquantity) {
+    private long insertQuantityDetails(String id, int addedquantity) {
         return dbquanAdapter.insertQuantityDetails(id, addedquantity);
     }
 
-    private int updateProductDetails(String id, String totalquatity) {
+    private int updateProductDetails(String id, int totalquatity) {
         return dbAdapter.updateProductQuantity(id, totalquatity);
     }
 

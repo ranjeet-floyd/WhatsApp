@@ -102,7 +102,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/et_sellitems_prod_name"
+                                android:id="@+id/tv_sellitems_prod_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/padd5dp"
@@ -112,7 +112,7 @@
                                 android:textSize="20sp" />
 
                             <TextView
-                                android:id="@+id/et_sellitems_barcode_prod_id"
+                                android:id="@+id/tv_sellitems_barcode_prod_id"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/padd5dp"
@@ -157,19 +157,65 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:weightSum="2">
+                                android:weightSum="3">
 
                                 <TextView
-                                    android:layout_width="30dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/padd5dp"
                                     android:layout_marginTop="@dimen/padd10dp"
                                     android:layout_weight="1"
+                                    android:text="@string/costPrice"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/padd10dp"
+                                    android:layout_weight="1.4"
                                     android:text="@string/rs"
                                     android:textColor="@color/black"
                                     android:textSize="20sp" />
 
                                 <TextView
-                                    android:id="@+id/et_sellitems_prod_price"
+                                    android:id="@+id/tv_sellitems_prod_costprice"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/padd10dp"
+                                    android:layout_marginTop="@dimen/padd10dp"
+                                    android:layout_weight="1"
+                                    android:textColor="@color/black"
+                                    android:textSize="20sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:weightSum="3">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/padd5dp"
+                                    android:layout_marginTop="@dimen/padd10dp"
+                                    android:layout_weight="1"
+                                    android:text="@string/sellPrice"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/padd10dp"
+                                    android:layout_weight="1.4"
+                                    android:text="@string/rs"
+                                    android:textColor="@color/black"
+                                    android:textSize="20sp" />
+
+                                <TextView
+                                    android:id="@+id/tv_sellitems_prod_sellprice"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginRight="@dimen/padd10dp"

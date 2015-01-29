@@ -101,7 +101,7 @@ public class ListMyStock extends ActionBarActivity
         dbAdapter = new DbProductAdapter(this);
         offset = 0;
         limit = 10;
-        productArrayList = dbAdapter.getAllProducts(available, limit, offset);
+        productArrayList = dbAdapter.getAllProducts(limit, offset);
         listAdapter = new ListStockAdapter(this, productArrayList);
         lvproductList.setAdapter(listAdapter);
 
@@ -215,7 +215,7 @@ public class ListMyStock extends ActionBarActivity
                                     } catch (IOException e) {
                                         Log.e("Unable to delete Directory: ", "Istore");
                                     }
-                                    int ret = dbAdapter.deleteAllProduct(available);
+                                    int ret = dbAdapter.deleteAllProduct();
                                     if (ret < 0) {
                                         Toast.makeText(getApplicationContext(), "Error : When Deleting", Toast.LENGTH_SHORT).show();
                                     } else {
@@ -250,7 +250,7 @@ public class ListMyStock extends ActionBarActivity
     }
 
     private void showDialogForSort() {
-        final String[] items = {DBHelper.COL_PROD_ID, DBHelper.COL_PROD_NAME, DBHelper.COL_PROD_DATE};
+        final String[] items = {DBHelper.COL_PROD_ID, DBHelper.COL_PROD_NAME, DBHelper.COL_PROD_ADDEDDATE};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Sort Items by");
 
@@ -262,7 +262,7 @@ public class ListMyStock extends ActionBarActivity
                     sortItemsBy(items[0]);
                 } else if ("name".equals(items[property])) {
                     sortItemsBy(items[1]);
-                } else if ("date".equals(items[property])) {
+                } else if ("addeddOn".equals(items[property])) {
                     sortItemsBy(items[2]);
                 }
                 dialog.dismiss();
@@ -273,8 +273,7 @@ public class ListMyStock extends ActionBarActivity
     }
 
     private void sortItemsBy(String column) {
-        String status = "not sold";
-        productArrayList = dbAdapter.sortBy(column, status);
+        productArrayList = dbAdapter.sortBy(column);
         if (productArrayList != null) {
             listAdapter = new ListStockAdapter(this, productArrayList);
             lvproductList.setAdapter(listAdapter);
@@ -320,7 +319,7 @@ public class ListMyStock extends ActionBarActivity
             loadingMoreItems = true;
             offset += 10;
             if (dbAdapter != null) {
-                productsList = dbAdapter.getAllProducts(available, limit, offset);
+                productsList = dbAdapter.getAllProducts(limit, offset);
                 return productsList;
             } else
                 return null;

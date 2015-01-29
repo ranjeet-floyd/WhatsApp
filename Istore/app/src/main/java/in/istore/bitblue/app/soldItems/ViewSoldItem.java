@@ -98,8 +98,8 @@ public class ViewSoldItem extends ActionBarActivity {
             tvbarcode.setText(id);
             tvname.setText(product.getName());
             tvdesc.setText(product.getDesc());
-            tvsoldquantity.setText(product.getSoldQuantity());
-            tvremquantity.setText(product.getRemQuantity());
+            tvsoldquantity.setText(String.valueOf(product.getSoldQuantity()));
+            tvremquantity.setText(String.valueOf(product.getRemQuantity()));
         }
 
     }

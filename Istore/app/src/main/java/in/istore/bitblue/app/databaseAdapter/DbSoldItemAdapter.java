@@ -10,6 +10,7 @@ import java.util.Date;
 
 import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
+import in.istore.bitblue.app.utilities.DateUtil;
 
 public class DbSoldItemAdapter {
     private DBHelper dbHelper;
@@ -31,9 +32,9 @@ public class DbSoldItemAdapter {
         sqLiteDb.close();
     }
 
-    public long insertSoldItemQuantityDetail(String Id, String SoldQuantity, String RemQuantity, String sellPrice) {
+    public long insertSoldItemQuantityDetail(String Id, int SoldQuantity, int RemQuantity, float sellPrice) {
         Date date = new Date();
-        long todayDate = date.getTime();
+        String todayDate = DateUtil.convertToStringDate(date);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_ID, Id);
         row.put(DBHelper.COL_PROD_SOLDQUANTITY, SoldQuantity);
@@ -57,11 +58,11 @@ public class DbSoldItemAdapter {
                 DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, orderBy, limit); //get the latest record from duplicate records
 
         if ((csolDetails != null && csolDetails.moveToFirst())) {
-            product.setId(csolDetails.getString(csolDetails.getColumnIndexOrThrow("id")));
-            product.setSoldQuantity(csolDetails.getString(csolDetails.getColumnIndexOrThrow("soldquantity")));
-            product.setRemQuantity(csolDetails.getString(csolDetails.getColumnIndexOrThrow("remquantity")));
-            product.setSoldDate(csolDetails.getLong(csolDetails.getColumnIndexOrThrow("soldDate")));
-            product.setSellPrice(csolDetails.getString(csolDetails.getColumnIndexOrThrow("sellPrice")));
+            product.setId(csolDetails.getString(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_ID)));
+            product.setSoldQuantity(csolDetails.getInt(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_SOLDQUANTITY)));
+            product.setRemQuantity(csolDetails.getInt(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_REMAINQUANTITY)));
+            product.setSoldDate(csolDetails.getString(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_SOLDDATE)));
+            product.setSellPrice(csolDetails.getFloat(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_SELLPRICE)));
         } else {
             return null;
         }
@@ -71,8 +72,8 @@ public class DbSoldItemAdapter {
 
         if (cprodetalis != null && cprodetalis.moveToFirst()) {
             product.setImage(cprodetalis.getBlob(1));
-            product.setName(cprodetalis.getString(cprodetalis.getColumnIndexOrThrow("name")));
-            product.setDesc(cprodetalis.getString(cprodetalis.getColumnIndexOrThrow("desc")));
+            product.setName(cprodetalis.getString(cprodetalis.getColumnIndexOrThrow(DBHelper.COL_PROD_NAME)));
+            product.setDesc(cprodetalis.getString(cprodetalis.getColumnIndexOrThrow(DBHelper.COL_PROD_DESC)));
         } else {
             return null;
         }
@@ -90,9 +91,9 @@ public class DbSoldItemAdapter {
             do {
                 Product product = new Product();
                 product.setId(id);
-                product.setSoldQuantity(csolDetails.getString(csolDetails.getColumnIndexOrThrow("soldquantity")));
-                product.setSoldDate(csolDetails.getLong(csolDetails.getColumnIndexOrThrow("soldDate")));
-                product.setSellPrice(csolDetails.getString(csolDetails.getColumnIndexOrThrow("sellPrice")));
+                product.setSoldQuantity(csolDetails.getInt(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_SOLDQUANTITY)));
+                product.setSoldDate(csolDetails.getString(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_SOLDDATE)));
+                product.setSellPrice(csolDetails.getFloat(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_SELLPRICE)));
                 productList.add(product);
             } while (csolDetails.moveToNext());
             closeDatabase();

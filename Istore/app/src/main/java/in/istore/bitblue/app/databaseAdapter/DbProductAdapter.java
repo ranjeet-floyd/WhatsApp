@@ -10,6 +10,7 @@ import java.util.Date;
 
 import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
+import in.istore.bitblue.app.utilities.DateUtil;
 
 public class DbProductAdapter {
 
@@ -32,19 +33,21 @@ public class DbProductAdapter {
         sqLiteDb.close();
     }
 
-    public long insertProductDetails(String Id, byte[] ImagePath, String Name, String Desc, String Quantity, String Price) {
+    public long insertProductDetails(String Id, byte[] ImagePath, String Category, String Name, String Desc, int Quantity, int MinLimit, float CostPrice, float SellPrice, String Supplier) {
         Date date = new Date();
-        long todayDate = date.getTime();
+        String todayDate = DateUtil.convertToStringDate(date);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_ID, Id);
         row.put(DBHelper.COL_PROD_IMAGE, ImagePath);
+        row.put(DBHelper.COL_PROD_CATEGORY, Category);
         row.put(DBHelper.COL_PROD_NAME, Name);
         row.put(DBHelper.COL_PROD_DESC, Desc);
         row.put(DBHelper.COL_PROD_QUANTITY, Quantity);
-        row.put(DBHelper.COL_PROD_PRICE, Price);
-        row.put(DBHelper.COL_PROD_STATUS, "not sold");
-        row.put(DBHelper.COL_PROD_DATE, todayDate);   //Insert current date in Unix Time format.
-
+        row.put(DBHelper.COL_PROD_MINLIMIT, MinLimit);
+        row.put(DBHelper.COL_PROD_COSTPRICE, CostPrice);
+        row.put(DBHelper.COL_PROD_SELLINGPRICE, SellPrice);
+        row.put(DBHelper.COL_PROD_SUPPLIER, Supplier);
+        row.put(DBHelper.COL_PROD_ADDEDDATE, todayDate);   //Insert current date in Unix Time format.
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_PRODUCT, null, row);
         closeDatabase();
@@ -57,14 +60,17 @@ public class DbProductAdapter {
         Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
                 DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
-            String id = c.getString(c.getColumnIndexOrThrow("id"));
+            String id = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ID));
             byte[] image = c.getBlob(1);
-            String name = c.getString(c.getColumnIndexOrThrow("name"));
-            String desc = c.getString(c.getColumnIndexOrThrow("desc"));
-            String quantity = c.getString(c.getColumnIndexOrThrow("quantity"));
-            String price = c.getString(c.getColumnIndexOrThrow("price"));
-            Product product = new Product(id, image, name, desc, quantity, price);
-            return product;
+            String category = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_CATEGORY));
+            String name = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_NAME));
+            String desc = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_DESC));
+            int quantity = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_QUANTITY));
+            int minlimit = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_MINLIMIT));
+            float costprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_COSTPRICE));
+            float sellprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SELLINGPRICE));
+            String supplier = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SUPPLIER));
+            return new Product(id, image, category, name, quantity, desc, minlimit, costprice, sellprice, supplier);
         } else {
             return null;
         }
@@ -75,41 +81,53 @@ public class DbProductAdapter {
         Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
                 DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
-            String id = c.getString(c.getColumnIndexOrThrow("id"));
+            String id = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ID));
             byte[] image = c.getBlob(1);
-            String name = c.getString(c.getColumnIndexOrThrow("name"));
-            String desc = c.getString(c.getColumnIndexOrThrow("desc"));
-            String quantity = c.getString(c.getColumnIndexOrThrow("quantity"));
-            String price = c.getString(c.getColumnIndexOrThrow("price"));
-            long date = c.getLong(c.getColumnIndexOrThrow("date"));
-            int favorite = c.getInt(c.getColumnIndexOrThrow("isfavorite"));
-            Product product = new Product(id, image, name, desc, quantity, price, date, favorite);
-            return product;
+            String category = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_CATEGORY));
+            String name = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_NAME));
+            String desc = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_DESC));
+            int quantity = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_QUANTITY));
+            int minlimit = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_MINLIMIT));
+            float costprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_COSTPRICE));
+            float sellprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SELLINGPRICE));
+            String supplier = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SUPPLIER));
+            return new Product(id, image, category, name, quantity, desc, minlimit, costprice, sellprice, supplier);
         } else {
             return null;
         }
     }
 
-    public ArrayList<Product> getAllSoldProducts(String status, int limit, int rowCount) {
+    public ArrayList<Product> getAllSoldProducts(int limitt, int rowCount) {
+        String id, name, solddate;
+        byte[] image;
+        int soldquantity, remquantity;
+        float sellprice;
+
+        Product product = new Product();
         ArrayList<Product> productArrayList = new ArrayList<Product>();
         openWritableDatabase();
         String RAW_QUERY = "SELECT *" +
-                " FROM " + DBHelper.TABLE_PRODUCT +
-                " WHERE " + DBHelper.COL_PROD_STATUS + "='" + status + "'" +
-                " LIMIT " + limit +
+                " FROM " + DBHelper.TABLE_PRODUCT + "," + DBHelper.TABLE_SOLD_ITEMS +
+                " LIMIT " + limitt +
                 " OFFSET " + rowCount;
         Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
-        if (c != null && c.moveToFirst()) {
+
+        if ((c != null) && (c.moveToFirst() && c.moveToFirst())) {
             do {
-                Product product = new Product();
-                product.setId(c.getString(c.getColumnIndexOrThrow("id")));
-                product.setImage((c.getBlob(1)));
-                product.setName(c.getString(c.getColumnIndexOrThrow("name")));
-                product.setDesc(c.getString(c.getColumnIndexOrThrow("desc")));
-                product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
-                product.setPrice(c.getString(c.getColumnIndexOrThrow("price")));
-                product.setDate(c.getLong(c.getColumnIndexOrThrow("date")));
-                product.setFavorite(c.getInt(c.getColumnIndexOrThrow("isfavorite")));
+                id = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ID));
+                image = c.getBlob(1);
+                name = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_NAME));
+                soldquantity = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SOLDQUANTITY));
+                remquantity = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_REMAINQUANTITY));
+                sellprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SELLINGPRICE));
+                solddate = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SOLDDATE));
+                product.setImage(image);
+                product.setName(name);
+                product.setId(id);
+                product.setSoldQuantity(soldquantity);
+                product.setRemQuantity(remquantity);
+                product.setSellingPrice(sellprice);
+                product.setSoldDate(solddate);
                 productArrayList.add(product);
             } while (c.moveToNext());
             closeDatabase();
@@ -120,7 +138,7 @@ public class DbProductAdapter {
     }
 
 
-    public ArrayList<Product> getAllProducts(String status, int limit, int rowCount) {
+    public ArrayList<Product> getAllProducts(int limit, int rowCount) {
         ArrayList<Product> productArrayList = new ArrayList<Product>();
         openWritableDatabase();
         String RAW_QUERY = "SELECT *" +
@@ -131,15 +149,18 @@ public class DbProductAdapter {
         Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
         if (c != null && c.moveToFirst()) {
             do {
-                Product product = new Product();
-                product.setId(c.getString(c.getColumnIndexOrThrow("id")));
-                product.setImage((c.getBlob(1)));
-                product.setName(c.getString(c.getColumnIndexOrThrow("name")));
-                product.setDesc(c.getString(c.getColumnIndexOrThrow("desc")));
-                product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
-                product.setPrice(c.getString(c.getColumnIndexOrThrow("price")));
-                product.setDate(c.getLong(c.getColumnIndexOrThrow("date")));
-                product.setFavorite(c.getInt(c.getColumnIndexOrThrow("isfavorite")));
+                String id = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ID));
+                byte[] image = c.getBlob(1);
+                String category = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_CATEGORY));
+                String name = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_NAME));
+                String desc = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_DESC));
+                int quantity = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_QUANTITY));
+                int minlimit = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_MINLIMIT));
+                float costprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_COSTPRICE));
+                float sellprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SELLINGPRICE));
+                String supplier = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SUPPLIER));
+                String addedDate = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ADDEDDATE));
+                Product product = new Product(id, image, category, name, desc, quantity, minlimit, costprice, sellprice, supplier, addedDate);
                 productArrayList.add(product);
             } while (c.moveToNext());
             closeDatabase();
@@ -159,13 +180,17 @@ public class DbProductAdapter {
         Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
         if (c != null && c.moveToFirst()) {
             do {
-                Product product = new Product();
-                product.setId(c.getString(c.getColumnIndexOrThrow("id")));
-                product.setImage((c.getBlob(1)));
-                product.setName(c.getString(c.getColumnIndexOrThrow("name")));
-                product.setDesc(c.getString(c.getColumnIndexOrThrow("desc")));
-                product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
-                product.setPrice(c.getString(c.getColumnIndexOrThrow("price")));
+                String id = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ID));
+                byte[] image = c.getBlob(1);
+                String category = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_CATEGORY));
+                String name = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_NAME));
+                String desc = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_DESC));
+                int quantity = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_QUANTITY));
+                int minlimit = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_MINLIMIT));
+                float costprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_COSTPRICE));
+                float sellprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SELLINGPRICE));
+                String supplier = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SUPPLIER));
+                Product product = new Product(id, image, category, name, quantity, desc, minlimit, costprice, sellprice, supplier);
                 productArrayList.add(product);
             } while (c.moveToNext());
             closeDatabase();
@@ -176,27 +201,31 @@ public class DbProductAdapter {
 
     }
 
-    public int updateProductQuantity(String Id, String Quantity) {
+    public int updateProductQuantity(String Id, int Quantity) {
         Date date = new Date();
+        String todayDate = DateUtil.convertToStringDate(date);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_QUANTITY, Quantity);
-        row.put(DBHelper.COL_PROD_DATE, date.getTime());
+        row.put(DBHelper.COL_PROD_ADDEDDATE, todayDate);
         openWritableDatabase();
         int result = sqLiteDb.update(DBHelper.TABLE_PRODUCT, row, DBHelper.COL_PROD_ID + "='" + Id + "'", null);
         closeDatabase();
         return result;
     }
 
-    public long updateProductDetails(String Id, byte[] ImagePath, String Name, String Desc, String Quantity, String Price, int isFavorite) {
+    public long updateProductDetails(String Id, byte[] ImagePath, String Category, String Name, String Desc, int Quantity, int MinLimit, float SellPrice, String Supplier) {
         Date date = new Date();
+        String todayDate = DateUtil.convertToStringDate(date);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_IMAGE, ImagePath);
+        row.put(DBHelper.COL_PROD_CATEGORY, Category);
         row.put(DBHelper.COL_PROD_NAME, Name);
         row.put(DBHelper.COL_PROD_DESC, Desc);
         row.put(DBHelper.COL_PROD_QUANTITY, Quantity);
-        row.put(DBHelper.COL_PROD_PRICE, Price);
-        row.put(DBHelper.COL_PROD_DATE, date.getTime());
-        row.put(DBHelper.COL_PROD_FAVORITE, isFavorite);
+        row.put(DBHelper.COL_PROD_MINLIMIT, MinLimit);
+        row.put(DBHelper.COL_PROD_SELLINGPRICE, SellPrice);
+        row.put(DBHelper.COL_PROD_SUPPLIER, Supplier);
+        row.put(DBHelper.COL_PROD_ADDEDDATE, todayDate);
 
         openWritableDatabase();
         long result = sqLiteDb.update(DBHelper.TABLE_PRODUCT, row, DBHelper.COL_PROD_ID + "='" + Id + "'", null);
@@ -233,42 +262,35 @@ public class DbProductAdapter {
         }
     }
 
-    public int deleteAllProduct(String status) {
+    public int deleteAllProduct() {
         openWritableDatabase();
-        int result = sqLiteDb.delete(DBHelper.TABLE_PRODUCT, DBHelper.COL_PROD_ID + "='" + status + "'", null);
+        int result = sqLiteDb.delete(DBHelper.TABLE_PRODUCT, null, null);
         closeDatabase();
         return result;
 
 
     }
 
-    public long updateSoldProductDetails(String Id) {
-        Date date = new Date();
-        ContentValues row = new ContentValues();
-        row.put(DBHelper.COL_PROD_STATUS, "sold");
-        row.put(DBHelper.COL_PROD_DATE, date.getTime());
-        openWritableDatabase();
-        long result = sqLiteDb.update(DBHelper.TABLE_PRODUCT, row, DBHelper.COL_PROD_ID + "='" + Id + "'", null);
-        closeDatabase();
-        return result;
-    }
-
-    public ArrayList<Product> sortBy(String column, String status) {
+    public ArrayList<Product> sortBy(String column) {
         ArrayList<Product> productArrayList = new ArrayList<Product>();
         openWritableDatabase();
         String orderBy = getColumnName(column);
         Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
-                DBHelper.COL_PROD_STATUS + "='" + status + "'", null, null, null, orderBy);
+                null, null, null, null, orderBy);
         if (c != null && c.moveToFirst()) {
             do {
-                Product product = new Product();
-                product.setId(c.getString(c.getColumnIndexOrThrow("id")));
-                product.setImage((c.getBlob(1)));
-                product.setName(c.getString(c.getColumnIndexOrThrow("name")));
-                product.setDesc(c.getString(c.getColumnIndexOrThrow("desc")));
-                product.setQuantity(c.getString(c.getColumnIndexOrThrow("quantity")));
-                product.setPrice(c.getString(c.getColumnIndexOrThrow("price")));
-                product.setDate(c.getLong(c.getColumnIndexOrThrow("date")));
+                String id = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ID));
+                byte[] image = c.getBlob(1);
+                String category = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_CATEGORY));
+                String name = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_NAME));
+                String desc = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_DESC));
+                int quantity = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_QUANTITY));
+                int minlimit = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_MINLIMIT));
+                float costprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_COSTPRICE));
+                float sellprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SELLINGPRICE));
+                String supplier = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SUPPLIER));
+                String addedDate = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ADDEDDATE));
+                Product product = new Product(id, image, category, name, desc, quantity, minlimit, costprice, sellprice, supplier, addedDate);
                 productArrayList.add(product);
             } while (c.moveToNext());
             closeDatabase();
@@ -284,6 +306,9 @@ public class DbProductAdapter {
             case "id":
                 COLUMN = DBHelper.COL_PROD_ID;
                 break;
+            case "category":
+                COLUMN = DBHelper.COL_PROD_CATEGORY;
+                break;
             case "name":
                 COLUMN = DBHelper.COL_PROD_NAME;
                 break;
@@ -293,20 +318,29 @@ public class DbProductAdapter {
             case "quantity":
                 COLUMN = DBHelper.COL_PROD_QUANTITY;
                 break;
-            case "price":
-                COLUMN = DBHelper.COL_PROD_PRICE;
+            case "minlimit":
+                COLUMN = DBHelper.COL_PROD_MINLIMIT;
                 break;
-            case "date":
-                COLUMN = DBHelper.COL_PROD_DATE;
+            case "costprice":
+                COLUMN = DBHelper.COL_PROD_COSTPRICE;
+                break;
+            case "sellingprice":
+                COLUMN = DBHelper.COL_PROD_SELLINGPRICE;
+                break;
+            case "supplier":
+                COLUMN = DBHelper.COL_PROD_SUPPLIER;
+                break;
+            case "addedOn":
+                COLUMN = DBHelper.COL_PROD_ADDEDDATE;
                 break;
         }
         return COLUMN;
     }
 
-    public boolean isProductAvail(String id, String status) {
+    public boolean isProductAvail(String id) {
         openWritableDatabase();
         Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
-                DBHelper.COL_PROD_ID + "='" + id + "'" + " AND " + DBHelper.COL_PROD_STATUS + "='" + status + "'", null, null, null, null);
+                DBHelper.COL_PROD_ID + "='" + id + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
             closeDatabase();
             return true;

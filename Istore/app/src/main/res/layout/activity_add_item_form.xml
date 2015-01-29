@@ -134,11 +134,12 @@
                         android:textColor="@color/primary_material_dark"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/et_additems_prod_name"
+                    <AutoCompleteTextView
+                        android:id="@+id/actv_additems_prod_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:inputType="text"
                         android:singleLine="true"
                         android:textColor="@color/material_dark_teal_A400" />
                 </LinearLayout>
@@ -209,12 +210,49 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/price"
+                        android:text="@string/minlimit"
                         android:textColor="@color/primary_material_dark"
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/et_additems_prod_price"
+                        android:id="@+id/et_additems_prod_minlimit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd10dp"
+                    android:layout_marginRight="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:gravity="center"
+                        android:text="@string/costPrice"
+                        android:textColor="@color/primary_material_dark"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.4"
+                        android:gravity="center"
+                        android:text="@string/rs"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/et_additems_prod_costprice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -222,6 +260,74 @@
                         android:singleLine="true"
                         android:textColor="@color/material_dark_teal_A400" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd15dp"
+                    android:layout_marginRight="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:gravity="center"
+                        android:text="@string/sellPrice"
+                        android:textColor="@color/primary_material_dark"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.4"
+                        android:gravity="center"
+                        android:text="@string/rs"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/et_additems_prod_sellprice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd15dp"
+                    android:layout_marginRight="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/supplier"
+                        android:textColor="@color/primary_material_dark"
+                        android:textStyle="bold" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actv_additems_prod_supplier"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
@@ -253,7 +359,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@null"
-            android:text="@string/submit"
+            android:text="@string/addtostock"
             android:textColor="@color/material_blue_300"
             android:textStyle="bold" />
     </LinearLayout>
