@@ -52,7 +52,9 @@
     <string name="title_facebook_login">Log in with Facebook</string>
 
     <!-- Sell Item Page -->
+    <string name="sellcart">Sell</string>
     <string name="sell">SELL ITEM</string>
+    <string name="addtocart">Add to Cart</string>
     <string name="back">BACK</string>
     <string name="edit">EDIT</string>
     <string name="update">UPDATE</string>
@@ -105,5 +107,8 @@
     <string name="title_activity_view_cus_info">ViewCusInfo</string>
     <string name="title_activity_category">Category</string>
     <string name="title_activity_products">Products</string>
+    <string name="title_activity_cart">Cart</string>
 
+    <!--Cart Item-->
+    <string name="viewcart">Cart</string>
 </resources>

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "istore.db";
-    public static final int DATABASE_VERSION = 17;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
+    public static final int DATABASE_VERSION = 25;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
 
     public static final String TABLE_PRODUCT = "product";
     public static final String TABLE_QUANTITY_HISTORY = "quantityhistory";
@@ -18,6 +18,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_CUSTINFO = "custinfo";
     public static final String TABLE_CATEGORY = "category";
     public static final String TABLE_SUBCATEGORY = "subcategory";
+    public static final String TABLE_CART = "cart";
+    public static final String TABLE_CUST_CART_PURCHASE = "custcartpurchase";
+    public static final String TABLE_CUST_PURCHASE_HISTORY = "custpurchasehistory";
 
     //Product Table Column
     public static final String COL_PROD_ID = "id";
@@ -35,6 +38,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_PROD_FAVORITE = "isfavorite";
 
     //SoldItems Table Column
+
     public static final String COL_PROD_SELLPRICE = "sellPrice";
     public static final String COL_PROD_SOLDQUANTITY = "soldquantity";
     public static final String COL_PROD_REMAINQUANTITY = "remquantity";
@@ -65,7 +69,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_SUPPINFO_ADDRESS = "suppaddress";
     public static final String COL_SUPPINFO_STARTING_DATE = "suppstartdate";
 
-    //Customer Purchase Amount Columns
+    //Customer Purchase Amount Column
     public static final String COL_CUSTPURCHASE_MOBILE = "custmobile";
     public static final String COL_CUSTPURCHASE_AMOUNT = "custpurchaseAmt";
 
@@ -77,16 +81,36 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_SUBCATEGORY_ID = "prosubcatid";
     public static final String COL_SUBCATEGORY_NAME = "prosubcatName";
 
+    //Cart Table Column
+    public static final String COL_CARTITEM_ID = "cid";
+    public static final String COL_CARTITEM_NAME = "name";
+    public static final String COL_CARTITEM_QUANTITY = "quantity";
+    public static final String COL_CARTITEM_SELLINGPRICE = "sellingprice";
+    public static final String COL_CARTITEM_TOTALPRICE = "totalprice";
+
+
+    //Customer Purchase Columns
+    public static final String COL_CUSTCARTPURCHASE_ID = "custpurid";
+    public static final String COL_CUSTCARTPURCHASE_MOBILE = "custmobile";
+    public static final String COL_CUSTCARTPURCHASE_PROD_NAME = "custprodname";
+    public static final String COL_CUSTCARTPURCHASE_PROD_QUANTITY = "custquantity";
+    public static final String COL_CUSTCARTPURCHASE_PROD_SELLING_PRICE = "custsellprice";
+    public static final String COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE = "custtotalprice";
+    public static final String COL_CUSTCARTPURCHASE_STAFF_ID = "custstaffid";
+    public static final String COL_CUSTCARTPURCHASE_PURCHASE_DATE = "custpurchasedate";
+
     public static final String[] PRODUCT_COLUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_CATEGORY, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_MINLIMIT, COL_PROD_COSTPRICE, COL_PROD_SELLINGPRICE, COL_PROD_SUPPLIER, COL_PROD_ADDEDDATE, COL_PROD_FAVORITE};
     public static final String[] QUANTITY_DATE_COLUMNS = {COL_PROD_ID, COL_PROD_QUANTITY, COL_PROD_ADDEDDATE};
-    public static final String[] SOLD_ITEM_COLUMNS = {COL_PROD_ID, COL_PROD_SOLDQUANTITY, COL_PROD_REMAINQUANTITY, COL_PROD_SOLDDATE, COL_PROD_SELLPRICE};
+    public static final String[] SOLD_ITEM_COLUMNS = {COL_PROD_ID, COL_PROD_NAME, COL_PROD_IMAGE, COL_PROD_SOLDQUANTITY, COL_PROD_REMAINQUANTITY, COL_PROD_SOLDDATE, COL_PROD_SELLPRICE};
     public static final String[] LOGIN_CRED_ADMIN_COLUMNS = {COL_LOGINCRED_NAME, COL_LOGINCRED_EMAIL, COL_LOGINCRED_MOBNUM, COL_LOGINCRED_PASSWD, COL_LOGINCRED_STOREID, COL_LOGINCRED_CREATION_DATE};
     public static final String[] STAFFMGNT_COLUMNS = {COL_STAFFMGNT_STOREID, COL_STAFFMGNT_STAFFID, COL_STAFFMGNT_NAME, COL_STAFFMGNT_MOBNUM, COL_STAFFMGNT_ADDRESS, COL_STAFFMGNT_PASSWD, COL_STAFFMGNT_JOIN_DATE, COL_STAFFMGNT_TOTALSALES};
     public static final String[] SUPPINFO_COLUMNS = {COL_SUPPINFO_NAME, COL_SUPPINFO_MOBILE, COL_SUPPINFO_ADDRESS, COL_SUPPINFO_STARTING_DATE};
     public static final String[] CUSTPURCHASE_COLUMNS = {COL_CUSTPURCHASE_MOBILE, COL_CUSTPURCHASE_AMOUNT};
-
     public static final String[] CATEGORY_COLUMNS = {COL_CATEGORY_ID, COL_CATEGORY_NAME};
     public static final String[] PROSUBCAT_COLUMNS = {COL_SUBCATEGORY_ID, COL_CATEGORY_NAME, COL_SUBCATEGORY_NAME,};
+    public static final String[] CARTITEM_COLUMNS = {COL_CARTITEM_ID, COL_CARTITEM_NAME, COL_CARTITEM_QUANTITY, COL_CARTITEM_SELLINGPRICE, COL_CARTITEM_TOTALPRICE};
+    public static final String[] CUSTCARTPURCHASE_COLUMNS = {COL_CUSTCARTPURCHASE_ID, COL_CUSTCARTPURCHASE_MOBILE, COL_CUSTCARTPURCHASE_PROD_NAME, COL_CUSTCARTPURCHASE_PROD_QUANTITY, COL_CUSTCARTPURCHASE_PROD_SELLING_PRICE, COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE, COL_CUSTCARTPURCHASE_STAFF_ID};
+    public static final String[] CUSTPURCHASEHISTORY_COLUMNS = {COL_CUSTCARTPURCHASE_ID, COL_CUSTCARTPURCHASE_MOBILE, COL_CUSTCARTPURCHASE_PROD_NAME, COL_CUSTCARTPURCHASE_PROD_QUANTITY, COL_CUSTCARTPURCHASE_PROD_SELLING_PRICE, COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE, COL_CUSTCARTPURCHASE_STAFF_ID, COL_CUSTCARTPURCHASE_PURCHASE_DATE};
 
     //Product Table to store product details
     public static final String CREATE_TABLE_PRODUCT =
@@ -115,6 +139,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String CREATE_TABLE_SOLD_ITEMS =
             "CREATE TABLE " + TABLE_SOLD_ITEMS + "(" +
                     COL_PROD_ID + " TEXT," +
+                    COL_PROD_NAME + " TEXT," +
+                    COL_PROD_IMAGE + " TEXT," +
                     COL_PROD_SOLDQUANTITY + " INTEGER," +
                     COL_PROD_REMAINQUANTITY + " INTEGER," +
                     COL_PROD_SOLDDATE + " TEXT," +
@@ -170,6 +196,38 @@ public class DBHelper extends SQLiteOpenHelper {
                     COL_CATEGORY_NAME + " TEXT, " +
                     COL_SUBCATEGORY_NAME + " TEXT)";
 
+    //Cart Table to store cart items
+    public static final String CREATE_TABLE_CART =
+            "CREATE TABLE " + TABLE_CART + "(" +
+                    COL_CARTITEM_ID + " TEXT PRIMARY KEY," +
+                    COL_CARTITEM_NAME + " TEXT, " +
+                    COL_CARTITEM_QUANTITY + " INTEGER, " +
+                    COL_CARTITEM_SELLINGPRICE + " REAL, " +
+                    COL_CARTITEM_TOTALPRICE + " REAL)";
+
+    //CustomerCartpurchases Table to store products purchased by ONE customer
+    public static final String CREATE_TABLE_CUSTCARTPURCHASE =
+            "CREATE TABLE " + TABLE_CUST_CART_PURCHASE + "(" +
+                    COL_CUSTCARTPURCHASE_ID + " TEXT," +
+                    COL_CUSTCARTPURCHASE_MOBILE + " INTEGER, " +
+                    COL_CUSTCARTPURCHASE_PROD_NAME + " TEXT, " +
+                    COL_CUSTCARTPURCHASE_PROD_QUANTITY + " INTEGER, " +
+                    COL_CUSTCARTPURCHASE_PROD_SELLING_PRICE + " REAL," +
+                    COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE + " REAL," +
+                    COL_CUSTCARTPURCHASE_STAFF_ID + " INTEGER)";
+
+    //CustomerPurchaseHistory Table to store all SOLD PRODUCTS FOR ALL CUSTOMERS
+    public static final String CREATE_TABLE_CUSTPURCHASEHISTORY =
+            "CREATE TABLE " + TABLE_CUST_PURCHASE_HISTORY + "(" +
+                    COL_CUSTCARTPURCHASE_ID + " TEXT," +
+                    COL_CUSTCARTPURCHASE_MOBILE + " INTEGER, " +
+                    COL_CUSTCARTPURCHASE_PROD_NAME + " TEXT, " +
+                    COL_CUSTCARTPURCHASE_PROD_QUANTITY + " INTEGER, " +
+                    COL_CUSTCARTPURCHASE_PROD_SELLING_PRICE + " REAL," +
+                    COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE + " REAL," +
+                    COL_CUSTCARTPURCHASE_STAFF_ID + " INTEGER," +
+                    COL_CUSTCARTPURCHASE_PURCHASE_DATE + " TEXT)";
+
     public DBHelper(Context context, String name,
                     SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -186,6 +244,9 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_CUSTINFO);
         sqLiteDatabase.execSQL(CREATE_TABLE_CATEGORY);
         sqLiteDatabase.execSQL(CREATE_TABLE_SUBCATEGORY);
+        sqLiteDatabase.execSQL(CREATE_TABLE_CART);
+        sqLiteDatabase.execSQL(CREATE_TABLE_CUSTCARTPURCHASE);
+        sqLiteDatabase.execSQL(CREATE_TABLE_CUSTPURCHASEHISTORY);
 
     }
 
@@ -200,6 +261,9 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTINFO);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_SUBCATEGORY);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CUST_CART_PURCHASE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CUST_PURCHASE_HISTORY);
 
         onCreate(sqLiteDatabase);
     }

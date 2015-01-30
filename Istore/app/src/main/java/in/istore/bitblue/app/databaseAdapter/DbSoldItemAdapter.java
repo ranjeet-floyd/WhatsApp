@@ -32,11 +32,13 @@ public class DbSoldItemAdapter {
         sqLiteDb.close();
     }
 
-    public long insertSoldItemQuantityDetail(String Id, int SoldQuantity, int RemQuantity, float sellPrice) {
+    public long insertSoldItemQuantityDetail(String Id, byte[] Image, String Name, int SoldQuantity, int RemQuantity, float sellPrice) {
         Date date = new Date();
         String todayDate = DateUtil.convertToStringDate(date);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_ID, Id);
+        row.put(DBHelper.COL_PROD_IMAGE, Image);
+        row.put(DBHelper.COL_PROD_NAME, Name);
         row.put(DBHelper.COL_PROD_SOLDQUANTITY, SoldQuantity);
         row.put(DBHelper.COL_PROD_REMAINQUANTITY, RemQuantity);
         row.put(DBHelper.COL_PROD_SOLDDATE, todayDate);   //Insert current date in Unix Time format.

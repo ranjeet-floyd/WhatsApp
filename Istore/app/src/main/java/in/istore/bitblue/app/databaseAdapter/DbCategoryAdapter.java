@@ -47,7 +47,7 @@ public class DbCategoryAdapter {
         if (c != null && c.moveToFirst()) {
             do {
                 Category category = new Category();
-                category.setCategoryName(c.getString(c.getColumnIndexOrThrow("categoryName")));
+                category.setCategoryName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CATEGORY_NAME)));
                 categoryArrayList.add(category);
             } while (c.moveToNext());
             closeDatabase();
@@ -77,7 +77,7 @@ public class DbCategoryAdapter {
                 null, null, null, null, null);
         if (c != null && c.moveToFirst()) {
             do {
-                categoryNameList.add(c.getString(c.getColumnIndexOrThrow("categoryName")));
+                categoryNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CATEGORY_NAME)));
             } while (c.moveToNext());
             closeDatabase();
             return categoryNameList;

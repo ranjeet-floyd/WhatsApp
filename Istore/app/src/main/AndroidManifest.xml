@@ -138,6 +138,9 @@
         <activity
             android:name=".category.products.ProSubCat"
             android:parentActivityName=".category.Categories" />
+        <activity
+            android:name=".cart.Cart"
+            android:parentActivityName=".soldItems.SoldItemForm" />
     </application>
 
 </manifest>

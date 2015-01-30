@@ -40,6 +40,8 @@ import in.istore.bitblue.app.adminMenu.Trans;
 import in.istore.bitblue.app.adminMenu.custInfo.CusInfoContent;
 import in.istore.bitblue.app.adminMenu.staffMgmt.StaffMgntContent;
 import in.istore.bitblue.app.adminMenu.suppInfo.SuppInfoContent;
+import in.istore.bitblue.app.cart.Cart;
+import in.istore.bitblue.app.category.Categories;
 import in.istore.bitblue.app.cloudprint.CloudPrint;
 import in.istore.bitblue.app.data.ExportData;
 import in.istore.bitblue.app.data.ImportData;
@@ -287,9 +289,13 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_exit) {
-            finish();
-            return false;
+        switch (id) {
+            case R.id.action_cart:
+                startActivity(new Intent(this, Cart.class));
+                break;
+            case R.id.action_category:
+                startActivity(new Intent(this, Categories.class));
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

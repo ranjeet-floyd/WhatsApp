@@ -103,24 +103,30 @@ public class DbProductAdapter {
         int soldquantity, remquantity;
         float sellprice;
 
-        Product product = new Product();
         ArrayList<Product> productArrayList = new ArrayList<Product>();
         openWritableDatabase();
-        String RAW_QUERY = "SELECT *" +
-                " FROM " + DBHelper.TABLE_PRODUCT + "," + DBHelper.TABLE_SOLD_ITEMS +
-                " LIMIT " + limitt +
-                " OFFSET " + rowCount;
-        Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
 
-        if ((c != null) && (c.moveToFirst() && c.moveToFirst())) {
+        String Columns = DBHelper.COL_PROD_ID + "," + DBHelper.COL_PROD_NAME + "," +
+                DBHelper.COL_PROD_IMAGE + "," + DBHelper.COL_PROD_SOLDQUANTITY + "," + DBHelper.COL_PROD_REMAINQUANTITY + ","
+                + DBHelper.COL_PROD_SELLPRICE + "," + DBHelper.COL_PROD_SOLDDATE;
+        String RAW_QUERY = "SELECT DISTINCT " + Columns +
+                " FROM " + DBHelper.TABLE_SOLD_ITEMS +
+                " GROUP BY " + DBHelper.COL_PROD_ID +
+                " ORDER BY " + DBHelper.COL_PROD_SOLDDATE + " DESC " +
+                " LIMIT " + limitt + " OFFSET " + rowCount;
+
+        Cursor csolDetails = sqLiteDb.rawQuery(RAW_QUERY, null);
+        if ((csolDetails != null) && csolDetails.moveToFirst()) {
             do {
-                id = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ID));
-                image = c.getBlob(1);
-                name = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_NAME));
-                soldquantity = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SOLDQUANTITY));
-                remquantity = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_REMAINQUANTITY));
-                sellprice = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SELLINGPRICE));
-                solddate = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_SOLDDATE));
+                Product product = new Product();
+
+                id = csolDetails.getString(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_ID));
+                name = csolDetails.getString(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_NAME));
+                image = csolDetails.getBlob(2);
+                soldquantity = csolDetails.getInt(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_SOLDQUANTITY));
+                remquantity = csolDetails.getInt(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_REMAINQUANTITY));
+                sellprice = csolDetails.getFloat(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_SELLPRICE));
+                solddate = csolDetails.getString(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_SOLDDATE));
                 product.setImage(image);
                 product.setName(name);
                 product.setId(id);
@@ -129,7 +135,7 @@ public class DbProductAdapter {
                 product.setSellingPrice(sellprice);
                 product.setSoldDate(solddate);
                 productArrayList.add(product);
-            } while (c.moveToNext());
+            } while (csolDetails.moveToNext());
             closeDatabase();
             return productArrayList;
         } else {
@@ -267,8 +273,6 @@ public class DbProductAdapter {
         int result = sqLiteDb.delete(DBHelper.TABLE_PRODUCT, null, null);
         closeDatabase();
         return result;
-
-
     }
 
     public ArrayList<Product> sortBy(String column) {

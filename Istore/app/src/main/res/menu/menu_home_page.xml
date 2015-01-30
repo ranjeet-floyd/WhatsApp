@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".HomePage">
     <item
-        android:title="@string/exit"
-        android:id="@+id/action_exit"
+        android:id="@+id/action_category"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        android:title="@string/Category"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_cart"
+        android:orderInCategory="100"
+        android:title="@string/viewcart"
+        app:showAsAction="always" />
 </menu>

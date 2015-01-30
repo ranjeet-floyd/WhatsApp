@@ -17,6 +17,7 @@ public class GlobalVariables extends Application {
     private String imagePath;
     private int storeId;
     private long adminMobile;
+    private long staffId;
 
     private ArrayList<Product> productsList;
 
@@ -102,5 +103,13 @@ public class GlobalVariables extends Application {
 
     public void setAdminMobile(long adminMobile) {
         this.adminMobile = adminMobile;
+    }
+
+    public long getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(long staffId) {
+        this.staffId = staffId;
     }
 }

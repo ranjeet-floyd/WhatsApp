@@ -56,7 +56,7 @@ public class QuantityAdapter extends BaseAdapter {
             holder = (ViewHolder) listRow.getTag();
         Product quantity = quantityList.get(position);
 
-        holder.addedquantity.setText(quantity.getQuantity());
+        holder.addedquantity.setText(String.valueOf(quantity.getQuantity()));
         holder.date.setText(quantity.getAddedDate());
 
         return listRow;

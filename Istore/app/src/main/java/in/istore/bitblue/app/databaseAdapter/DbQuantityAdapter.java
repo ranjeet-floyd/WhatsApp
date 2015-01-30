@@ -10,6 +10,7 @@ import java.util.Date;
 
 import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
+import in.istore.bitblue.app.utilities.DateUtil;
 
 public class DbQuantityAdapter {
     private DBHelper dbHelper;
@@ -33,7 +34,7 @@ public class DbQuantityAdapter {
 
     public long insertQuantityDetails(String Id, int Quantity) {
         Date date = new Date();
-        long todayDate = date.getTime();
+        String todayDate = DateUtil.convertToStringDate(date);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_ID, Id);
         row.put(DBHelper.COL_PROD_QUANTITY, Quantity);

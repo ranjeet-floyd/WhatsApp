@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.cart.Cart;
+import in.istore.bitblue.app.databaseAdapter.DbCartAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbSoldItemAdapter;
 import in.istore.bitblue.app.pojo.Product;
@@ -29,6 +31,7 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
 
     private DbProductAdapter dbProAdapter;
     private DbSoldItemAdapter dbSolItmAdapter;
+    private DbCartAdapter dbCartAdapter;
 
     private Bitmap bitmap;
     private String id, name, desc;
@@ -57,6 +60,8 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
     private void initViews() {
         dbProAdapter = new DbProductAdapter(this);
         dbSolItmAdapter = new DbSoldItemAdapter(this);
+        dbCartAdapter = new DbCartAdapter(this);
+
         ivProdImage = (ImageView) findViewById(R.id.iv_solditem_image);
         etbarcode = (EditText) findViewById(R.id.et_solditem_barcode_prod_id);
         etname = (EditText) findViewById(R.id.et_solditem_prod_name);
@@ -136,16 +141,24 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                     }
 
                     int remQuantity = maxlimit - soldQuantity;
+                    float totalAmount = soldQuantity * sellprice;
+                    long soldret = dbSolItmAdapter.insertSoldItemQuantityDetail(id, byteImage, name, soldQuantity, remQuantity, sellprice);
+                    long cartres = 0;
+                    if (isAlreadyinCart(id)) {
 
-                    long ret = dbSolItmAdapter.insertSoldItemQuantityDetail(id, soldQuantity, remQuantity, sellprice);
-                    // long ret1 = dbProAdapter.updateSoldProductDetails(id);  //update status to 'sold' in product table.
-                    long ret2 = dbProAdapter.updateProductQuantity(id, remQuantity);//update remaining quantity in product table
-
-                    if (ret < 0 || ret2 <= 0) {
-                        Toast.makeText(this, "Sold Record Not Updated: " + ret, Toast.LENGTH_SHORT).show();
+                        //update quantity and total amount
+                        cartres = dbCartAdapter.updateCartItemQuantityandAmount(id, soldQuantity, totalAmount);
                     } else {
-                        Toast.makeText(this, "Sold Record Updated", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, ListSoldItems.class));
+                        cartres = dbCartAdapter.addItemToCart(id, name, soldQuantity, sellprice, totalAmount);
+                    }
+                    long prodret = dbProAdapter.updateProductQuantity(id, remQuantity);
+
+                    //update remaining quantity in product table
+                    if (prodret < 0 || soldret <= 0 || cartres < 0) {
+                        Toast.makeText(this, "Not Updated ", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this, Cart.class));
                     }
                 }
                 break;
@@ -178,6 +191,10 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                 }
                 break;
         }
+    }
+
+    private boolean isAlreadyinCart(String id) {
+        return dbCartAdapter.isAlreadyinCart(id);
     }
 
     private void limitReached() {

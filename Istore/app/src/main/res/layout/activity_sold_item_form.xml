@@ -195,6 +195,7 @@
                     android:layout_marginRight="@dimen/padd15dp"
                     android:layout_marginTop="@dimen/padd5dp"
                     android:orientation="vertical"
+                    android:visibility="gone"
                     android:weightSum="2">
 
                     <TextView
@@ -232,7 +233,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@null"
-            android:text="@string/sell"
+            android:text="@string/addtocart"
             android:textColor="@color/material_blue_300"
             android:textStyle="bold" />
     </LinearLayout>
