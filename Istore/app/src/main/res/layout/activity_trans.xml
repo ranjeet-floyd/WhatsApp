@@ -1,12 +1,91 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="in.istore.bitblue.app.adminMenu.Trans">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="in.istore.bitblue.app.adminMenu.transactions.Trans">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar_actionbar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginLeft="@dimen/padd10dp"
+        android:layout_marginRight="@dimen/padd10dp"
+        android:orientation="vertical"
+        android:weightSum="6">
+
+        <Button
+            android:id="@+id/b_transaction_totalrevenue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padd10dp"
+            android:layout_weight="1"
+            android:background="@color/material_blue_grey_400"
+            android:text="Total Revenue" />
+
+        <TextView
+            android:id="@+id/tv_transaction_totalrevenue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/material_blue_grey_400"
+            android:gravity="center"
+            android:paddingBottom="@dimen/padd10dp"
+            android:text=""
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/b_transaction_todaySales"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padd10dp"
+            android:layout_weight="1"
+            android:background="@color/material_blue_grey_400"
+            android:text="Today Sales" />
+
+        <TextView
+            android:id="@+id/tv_transaction_todaysales"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/material_blue_grey_400"
+            android:gravity="center"
+            android:paddingBottom="@dimen/padd10dp"
+            android:text=""
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/b_transaction_outofstock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padd10dp"
+            android:layout_weight="1"
+            android:background="@color/material_blue_grey_400"
+            android:text="Out Of Stock" />
+
+        <TextView
+            android:id="@+id/tv_transaction_outofstockitems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/material_blue_grey_400"
+            android:gravity="center"
+            android:paddingBottom="@dimen/padd10dp"
+            android:text=""
+            android:textColor="@color/material_red_500"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </RelativeLayout>

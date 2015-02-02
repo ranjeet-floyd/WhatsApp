@@ -34,7 +34,7 @@ public class DbSoldItemAdapter {
 
     public long insertSoldItemQuantityDetail(String Id, byte[] Image, String Name, int SoldQuantity, int RemQuantity, float sellPrice) {
         Date date = new Date();
-        String todayDate = DateUtil.convertToStringDate(date);
+        String todayDate = DateUtil.convertToStringDateAndTime(date);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_ID, Id);
         row.put(DBHelper.COL_PROD_IMAGE, Image);

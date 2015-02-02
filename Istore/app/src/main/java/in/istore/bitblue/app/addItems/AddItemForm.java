@@ -154,7 +154,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                         actvcategory.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                         return true;
                     }
-                    proSubCatNameList = dbProSubCatAdapter.getAllProductNames(CategoryName);
+                    proSubCatNameList = dbProSubCatAdapter.getAllProductNamesIn(CategoryName);
                     ArrayAdapter subcatadapter = new ArrayAdapter
                             (getApplicationContext(), R.layout.dropdownlist, proSubCatNameList);
                     actvProdName.setThreshold(0);

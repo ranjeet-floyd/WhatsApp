@@ -127,7 +127,7 @@
             android:name=".adminMenu.suppInfo.SuppInfoContent"
             android:parentActivityName=".home.HomePage" />
         <activity
-            android:name=".adminMenu.Trans"
+            android:name=".adminMenu.transactions.Trans"
             android:parentActivityName=".home.HomePage" />
         <activity
             android:name=".adminMenu.custInfo.CusInfoContent"
@@ -141,6 +141,24 @@
         <activity
             android:name=".cart.Cart"
             android:parentActivityName=".soldItems.SoldItemForm" />
+        <activity
+            android:name=".adminMenu.transactions.totalrevenue.TotalRevSelectRange"
+            android:parentActivityName=".adminMenu.transactions.Trans" />
+        <activity
+            android:name=".adminMenu.transactions.todaysales.TodaySales"
+            android:parentActivityName=".adminMenu.transactions.Trans" />
+        <activity
+            android:name=".adminMenu.transactions.outofstock.OutOfStock"
+            android:parentActivityName=".adminMenu.transactions.Trans" />
+        <activity
+            android:name=".adminMenu.transactions.totalrevenue.TotalRevViewDetails"
+            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevSelectRange" />
+        <activity
+            android:name=".adminMenu.transactions.totalrevenue.filterby.FilterByProdName"
+            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevViewDetails" />
+        <activity
+            android:name=".adminMenu.transactions.totalrevenue.filterby.FilterByStaffId"
+            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevViewDetails" />
     </application>
 
 </manifest>

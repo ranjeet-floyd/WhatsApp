@@ -54,10 +54,10 @@ public class DbStaffAdapter {
         if (c != null && c.moveToFirst()) {
             do {
                 Staff staff = new Staff();
-                staff.setStaffId(c.getInt(c.getColumnIndexOrThrow("staffid")));
-                staff.setName(c.getString(c.getColumnIndexOrThrow("staffname")));
-                staff.setMobile(c.getLong(c.getColumnIndexOrThrow("staffmobile")));
-                staff.setTotalSales(c.getInt(c.getColumnIndexOrThrow("stafftotsale")));
+                staff.setStaffId(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_STAFFID)));
+                staff.setName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_NAME)));
+                staff.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_MOBNUM)));
+                staff.setTotalSales(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_TOTALSALES)));
                 staffArrayList.add(staff);
             } while (c.moveToNext());
             closeDatabase();
@@ -65,6 +65,22 @@ public class DbStaffAdapter {
         } else {
             return null;
         }
+    }
 
+    public ArrayList<Integer> getAllStaffIds() {
+        ArrayList<Integer> staffIdArrayList = new ArrayList<Integer>();
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_STAFFMGNT, new String[]{DBHelper.COL_STAFFMGNT_STAFFID},
+                null, null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                int staffId = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_STAFFID));
+                staffIdArrayList.add(staffId);
+            } while (c.moveToNext());
+            closeDatabase();
+            return staffIdArrayList;
+        } else {
+            return null;
+        }
     }
 }

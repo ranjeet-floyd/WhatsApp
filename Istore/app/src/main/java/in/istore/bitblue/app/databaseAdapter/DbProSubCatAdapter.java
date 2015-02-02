@@ -57,7 +57,7 @@ public class DbProSubCatAdapter {
         if (c != null && c.moveToFirst()) {
             do {
                 ProductSubCategory productSubCategory = new ProductSubCategory();
-                productSubCategory.setProductSubCategoryName(c.getString(c.getColumnIndexOrThrow("prosubcatName")));
+                productSubCategory.setProductSubCategoryName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUBCATEGORY_NAME)));
                 categoryArrayList.add(productSubCategory);
             } while (c.moveToNext());
             closeDatabase();
@@ -80,7 +80,7 @@ public class DbProSubCatAdapter {
         }
     }
 
-    public ArrayList<String> getAllProductNames(String Category) {
+    public ArrayList<String> getAllProductNamesIn(String Category) {
         ArrayList<String> prodCatNameList = new ArrayList<String>();
         openWritableDatabase();
         String CATEGORY_CATEGORYNAME = DBHelper.TABLE_CATEGORY + "." + DBHelper.COL_CATEGORY_NAME;
@@ -95,10 +95,29 @@ public class DbProSubCatAdapter {
         Cursor c = sqLiteDb.rawQuery(rawQuery, null);
         if (c != null && c.moveToFirst()) {
             do {
-                prodCatNameList.add(c.getString(c.getColumnIndexOrThrow("prosubcatName")));
+                prodCatNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUBCATEGORY_NAME)));
             } while (c.moveToNext());
             closeDatabase();
             return prodCatNameList;
+        } else {
+            return null;
+        }
+    }
+
+    public ArrayList<String> getAllProductNames() {
+        ArrayList<String> prodNameList = new ArrayList<String>();
+        openWritableDatabase();
+
+        String rawQuery = "SELECT " + DBHelper.COL_SUBCATEGORY_NAME +
+                " FROM " + DBHelper.TABLE_SUBCATEGORY;
+
+        Cursor c = sqLiteDb.rawQuery(rawQuery, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                prodNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUBCATEGORY_NAME)));
+            } while (c.moveToNext());
+            closeDatabase();
+            return prodNameList;
         } else {
             return null;
         }

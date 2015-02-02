@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:paddingLeft="@dimen/padd5dp"
     android:paddingRight="@dimen/padd5dp"
-    android:weightSum="2">
+    android:weightSum="3">
 
     <TextView
         android:id="@+id/tv_view_cust_mobile"
@@ -14,7 +14,12 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/black"/>
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight=".1"
+        android:text="@string/rs"
+        android:textColor="@color/black"/>
     <TextView
         android:id="@+id/tv_view_cust_amount"
         android:layout_width="wrap_content"

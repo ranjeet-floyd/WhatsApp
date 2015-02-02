@@ -51,8 +51,8 @@ public class DbSuppAdapter {
         if (c != null && c.moveToFirst()) {
             do {
                 Supplier supplier = new Supplier();
-                supplier.setName(c.getString(c.getColumnIndexOrThrow("suppname")));
-                supplier.setMobile(c.getLong(c.getColumnIndexOrThrow("suppmobile")));
+                supplier.setName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUPPINFO_NAME)));
+                supplier.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_SUPPINFO_MOBILE)));
                 supplierArrayList.add(supplier);
             } while (c.moveToNext());
             closeDatabase();
@@ -69,12 +69,25 @@ public class DbSuppAdapter {
                 null, null, null, null, null);
         if (c != null && c.moveToFirst()) {
             do {
-                supplierArrayList.add(c.getString(c.getColumnIndexOrThrow("suppname")));
+                supplierArrayList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUPPINFO_NAME)));
             } while (c.moveToNext());
             closeDatabase();
             return supplierArrayList;
         } else {
             return null;
+        }
+    }
+
+    public long getSuppMobile(String suppName) {
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_SUPPINFO, DBHelper.SUPPINFO_COLUMNS,
+                DBHelper.COL_SUPPINFO_NAME + "='" + suppName + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            closeDatabase();
+            return c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_SUPPINFO_MOBILE));
+        } else {
+            closeDatabase();
+            return 0;
         }
     }
 

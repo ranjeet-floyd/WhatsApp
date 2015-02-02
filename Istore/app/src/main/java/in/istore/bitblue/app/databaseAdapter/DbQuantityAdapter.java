@@ -34,7 +34,7 @@ public class DbQuantityAdapter {
 
     public long insertQuantityDetails(String Id, int Quantity) {
         Date date = new Date();
-        String todayDate = DateUtil.convertToStringDate(date);
+        String todayDate = DateUtil.convertToStringDateAndTime(date);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_ID, Id);
         row.put(DBHelper.COL_PROD_QUANTITY, Quantity);

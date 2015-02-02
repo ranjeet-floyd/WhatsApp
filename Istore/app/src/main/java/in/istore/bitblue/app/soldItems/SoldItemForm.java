@@ -18,8 +18,10 @@ import android.widget.Toast;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.cart.Cart;
 import in.istore.bitblue.app.databaseAdapter.DbCartAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbOutOfStockAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbSoldItemAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbSuppAdapter;
 import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.Check;
 
@@ -32,11 +34,14 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
     private DbProductAdapter dbProAdapter;
     private DbSoldItemAdapter dbSolItmAdapter;
     private DbCartAdapter dbCartAdapter;
+    private DbOutOfStockAdapter dbOutOfStockAdapter;
+    private DbSuppAdapter dbSuppAdapter;
 
     private Bitmap bitmap;
-    private String id, name, desc;
+    private String id, name, desc, supplier;
     private int quantity, maxlimit, minlimit = 0;
     private float sellprice;
+    private long suppMobile;
     private byte[] byteImage;
 
     @Override
@@ -61,6 +66,8 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
         dbProAdapter = new DbProductAdapter(this);
         dbSolItmAdapter = new DbSoldItemAdapter(this);
         dbCartAdapter = new DbCartAdapter(this);
+        dbOutOfStockAdapter = new DbOutOfStockAdapter(this);
+        dbSuppAdapter = new DbSuppAdapter(this);
 
         ivProdImage = (ImageView) findViewById(R.id.iv_solditem_image);
         etbarcode = (EditText) findViewById(R.id.et_solditem_barcode_prod_id);
@@ -100,6 +107,8 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
             sellprice = product.getSellingPrice();
             etprice.setText(String.valueOf(sellprice));
 
+            supplier = product.getSupplier();
+            suppMobile = dbSuppAdapter.getSuppMobile(supplier);
             byteImage = product.getImage();
             BitmapFactory.Options options = new BitmapFactory.Options();
             if (byteImage != null) {
@@ -145,15 +154,22 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                     long soldret = dbSolItmAdapter.insertSoldItemQuantityDetail(id, byteImage, name, soldQuantity, remQuantity, sellprice);
                     long cartres = 0;
                     if (isAlreadyinCart(id)) {
-
                         //update quantity and total amount
                         cartres = dbCartAdapter.updateCartItemQuantityandAmount(id, soldQuantity, totalAmount);
                     } else {
                         cartres = dbCartAdapter.addItemToCart(id, name, soldQuantity, sellprice, totalAmount);
                     }
-                    long prodret = dbProAdapter.updateProductQuantity(id, remQuantity);
 
                     //update remaining quantity in product table
+                    long prodret = dbProAdapter.updateProductQuantity(id, remQuantity);
+
+                    if (isbelowStock(id)) {
+                        long stockres = dbOutOfStockAdapter.addtoOutOfStockList(id, name, remQuantity, suppMobile);
+                        if (stockres <= 0) {
+                            Toast.makeText(this, "add out of stock item failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
                     if (prodret < 0 || soldret <= 0 || cartres < 0) {
                         Toast.makeText(this, "Not Updated ", Toast.LENGTH_SHORT).show();
                     } else {
@@ -191,6 +207,10 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                 }
                 break;
         }
+    }
+
+    private boolean isbelowStock(String id) {
+        return dbOutOfStockAdapter.isProductBelowStock(id);
     }
 
     private boolean isAlreadyinCart(String id) {

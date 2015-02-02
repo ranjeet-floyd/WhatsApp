@@ -32,7 +32,7 @@ public class DbLoginCredAdapter {
 
     public long insertAdminInfo(String Name, String Email, String Passwd, long Mobile, int StoreId) {
         Date d = new Date();
-        String CreationDate = DateUtil.convertToStringDate(d);
+        String CreationDate = DateUtil.convertToStringDateAndTime(d);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_LOGINCRED_STOREID, StoreId);
         row.put(DBHelper.COL_LOGINCRED_NAME, Name);
@@ -90,7 +90,7 @@ public class DbLoginCredAdapter {
                 DBHelper.COL_LOGINCRED_MOBNUM + "='" + Mobile + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
             closeDatabase();
-            return c.getInt(c.getColumnIndexOrThrow("storeid"));
+            return c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_LOGINCRED_STOREID));
         } else {
             closeDatabase();
             return 0;            //Store id is between 11111 and 99999 so return 0 if store id not found
@@ -103,7 +103,7 @@ public class DbLoginCredAdapter {
                 DBHelper.COL_LOGINCRED_EMAIL + "='" + email + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
             closeDatabase();
-            return c.getLong(c.getColumnIndexOrThrow("mobile"));
+            return c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_LOGINCRED_MOBNUM));
         } else {
             closeDatabase();
             return 0;            //Store id is between 11111 and 99999 so return 0 if store id not found

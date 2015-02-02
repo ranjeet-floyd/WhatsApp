@@ -36,7 +36,7 @@ import java.util.List;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.NavDrawAdapter;
 import in.istore.bitblue.app.addItems.AddItemsMenu;
-import in.istore.bitblue.app.adminMenu.Trans;
+import in.istore.bitblue.app.adminMenu.transactions.Trans;
 import in.istore.bitblue.app.adminMenu.custInfo.CusInfoContent;
 import in.istore.bitblue.app.adminMenu.staffMgmt.StaffMgntContent;
 import in.istore.bitblue.app.adminMenu.suppInfo.SuppInfoContent;

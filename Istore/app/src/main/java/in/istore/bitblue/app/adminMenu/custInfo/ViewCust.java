@@ -60,7 +60,7 @@ public class ViewCust extends Fragment {
                 dialog.dismiss();
                 if (result) {
                     custAdapter = new ViewCustAdapter(getActivity(), custArrayList);
-                    lvViewSupp = (ListView) view.findViewById(R.id.lv_viewSupp);
+                    lvViewSupp = (ListView) view.findViewById(R.id.lv_viewCust);
                     lvViewSupp.setAdapter(custAdapter);
                 }
             }

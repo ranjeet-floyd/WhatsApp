@@ -109,6 +109,13 @@
     <string name="title_activity_products">Products</string>
     <string name="title_activity_cart">Cart</string>
 
-    <!--Cart Item-->
+    <!-- Cart Item -->
     <string name="viewcart">Cart</string>
+    <string name="title_activity_total_sales">TotalSales</string>
+    <string name="title_activity_today_sales">TodaySales</string>
+    <string name="title_activity_out_of_stock">OutOfStock</string>
+    <string name="title_activity_total_rev_view_details">TotalRevViewDetails</string>
+    <string name="title_activity_filter_by_prod_name">FilterByProdName</string>
+    <string name="title_activity_filter_by_staff_id">FilterByStaffId</string>
+
 </resources>

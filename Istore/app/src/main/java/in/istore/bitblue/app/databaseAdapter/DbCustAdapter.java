@@ -31,7 +31,7 @@ public class DbCustAdapter {
         sqLiteDb.close();
     }
 
-    public long insertCustInfo(long Mobile, String PurchaseAmount) {
+    public long insertCustPurchaseInfo(long Mobile, float PurchaseAmount) {
 
         ContentValues updaterow = new ContentValues(); //if mobile number present update purchase amt
         updaterow.put(DBHelper.COL_CUSTPURCHASE_AMOUNT, PurchaseAmount);
@@ -56,10 +56,8 @@ public class DbCustAdapter {
         Cursor c = sqLiteDb.query(DBHelper.TABLE_CUSTINFO, DBHelper.CUSTPURCHASE_COLUMNS,
                 DBHelper.COL_CUSTPURCHASE_MOBILE + "='" + Mobile + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return true;
         } else {
-            closeDatabase();
             return false;
         }
     }
@@ -72,8 +70,8 @@ public class DbCustAdapter {
         if (c != null && c.moveToFirst()) {
             do {
                 Customer customer = new Customer();
-                customer.setMobile(c.getLong(c.getColumnIndexOrThrow("custmobile")));
-                customer.setPurchaseAmount(c.getLong(c.getColumnIndexOrThrow("custpurchaseAmt")));
+                customer.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTPURCHASE_MOBILE)));
+                customer.setPurchaseAmount(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTPURCHASE_AMOUNT)));
                 customerArrayList.add(customer);
             } while (c.moveToNext());
             closeDatabase();

@@ -35,7 +35,7 @@ public class DbProductAdapter {
 
     public long insertProductDetails(String Id, byte[] ImagePath, String Category, String Name, String Desc, int Quantity, int MinLimit, float CostPrice, float SellPrice, String Supplier) {
         Date date = new Date();
-        String todayDate = DateUtil.convertToStringDate(date);
+        String todayDate = DateUtil.convertToStringDateAndTime(date);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_ID, Id);
         row.put(DBHelper.COL_PROD_IMAGE, ImagePath);
@@ -209,7 +209,7 @@ public class DbProductAdapter {
 
     public int updateProductQuantity(String Id, int Quantity) {
         Date date = new Date();
-        String todayDate = DateUtil.convertToStringDate(date);
+        String todayDate = DateUtil.convertToStringDateAndTime(date);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_QUANTITY, Quantity);
         row.put(DBHelper.COL_PROD_ADDEDDATE, todayDate);
@@ -221,7 +221,7 @@ public class DbProductAdapter {
 
     public long updateProductDetails(String Id, byte[] ImagePath, String Category, String Name, String Desc, int Quantity, int MinLimit, float SellPrice, String Supplier) {
         Date date = new Date();
-        String todayDate = DateUtil.convertToStringDate(date);
+        String todayDate = DateUtil.convertToStringDateAndTime(date);
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_PROD_IMAGE, ImagePath);
         row.put(DBHelper.COL_PROD_CATEGORY, Category);
