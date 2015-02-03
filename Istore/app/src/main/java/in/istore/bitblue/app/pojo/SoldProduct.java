@@ -2,14 +2,14 @@ package in.istore.bitblue.app.pojo;
 
 public class SoldProduct {
 
-    String ItemId;
-    String ItemName;
-    int ItemSoldQuantity;
-    float ItemSellPrice;
-    float ItemTotalAmnt;
-    long Mobile;
-    long StaffId;
-    String Date;
+    private String ItemId;
+    private String ItemName;
+    private int ItemSoldQuantity;
+    private float ItemSellPrice;
+    private float ItemTotalAmnt;
+    private long Mobile;
+    private long StaffId;
+    private String Date;
 
     public SoldProduct() {
     }

@@ -1,6 +1,7 @@
 package in.istore.bitblue.app.cart;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import in.istore.bitblue.app.invoice.Invoice;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.CartAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbCartAdapter;
@@ -146,7 +148,8 @@ public class Cart extends ActionBarActivity {
                 quantity = cartItem.getItemSoldQuantity();
                 sellingprice = cartItem.getItemSellPrice();
                 totalprice = cartItem.getItemTotalAmnt();
-                long resulthist=custPurHistAdapter.addToSoldHistory(itemid, Mobile, name, quantity, sellingprice, totalprice, StaffId);
+                long resulthist = custPurHistAdapter.addToSoldHistory(itemid, Mobile, name, quantity, sellingprice, totalprice, StaffId);
+
             }
             long res = dbCustAdapter.insertCustPurchaseInfo(Mobile, totalPayAmount);
             if (res <= 0) {
@@ -156,11 +159,15 @@ public class Cart extends ActionBarActivity {
             if (res1 <= 0) {
                 Toast.makeText(getApplicationContext(), "Insert Total Amount Failed", Toast.LENGTH_SHORT).show();
             }
-            dbCartAdapter.emptyCart();
+            /*dbCartAdapter.emptyCart();
             dbCartAdapter.clearAllPurchases();
             cartItemArrayList.clear();
             cartAdapter = new CartAdapter(this, cartItemArrayList);
-            lvcartitems.setAdapter(cartAdapter);
+            lvcartitems.setAdapter(cartAdapter);*/
+
+            Intent invoice = new Intent(this, Invoice.class);
+            invoice.putExtra("Mobile", Mobile);
+            startActivity(invoice);
         }
 
     }

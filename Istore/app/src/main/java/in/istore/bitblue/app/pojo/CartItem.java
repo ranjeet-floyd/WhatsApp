@@ -2,11 +2,11 @@ package in.istore.bitblue.app.pojo;
 
 public class CartItem {
 
-    String ItemId;
-    String ItemName;
-    int ItemSoldQuantity;
-    float ItemSellPrice;
-    float ItemTotalAmnt;
+    private String ItemId;
+    private String ItemName;
+    private int ItemSoldQuantity;
+    private float ItemSellPrice;
+    private float ItemTotalAmnt;
 
     public CartItem() {
     }

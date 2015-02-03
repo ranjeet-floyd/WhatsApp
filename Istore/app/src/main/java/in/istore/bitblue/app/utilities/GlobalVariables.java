@@ -12,6 +12,7 @@ public class GlobalVariables extends Application {
     private String fbEmail;
     private String gName;
     private String gEmail;
+    private String Email;
     private Bitmap profPic;
     private static int prodImageCount = 1;
     private String imagePath;
@@ -111,5 +112,13 @@ public class GlobalVariables extends Application {
 
     public void setStaffId(long staffId) {
         this.staffId = staffId;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
     }
 }

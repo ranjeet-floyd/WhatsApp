@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="in.istore.bitblue.app.staffMenu.transactions.TransStaff">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar_actionbar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginLeft="@dimen/padd10dp"
+        android:layout_marginRight="@dimen/padd10dp"
+        android:orientation="vertical"
+        android:weightSum="4">
+
+        <Button
+            android:id="@+id/b_transaction_todaySalesstaff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padd10dp"
+            android:layout_weight="1"
+            android:background="@color/material_blue_grey_400"
+            android:text="Today Sales" />
+
+        <TextView
+            android:id="@+id/tv_transaction_todaysalesstaff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/material_blue_grey_400"
+            android:gravity="center"
+            android:paddingBottom="@dimen/padd10dp"
+            android:text=""
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/b_transaction_outofstockstaff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padd10dp"
+            android:layout_weight="1"
+            android:background="@color/material_blue_grey_400"
+            android:text="Out Of Stock" />
+
+        <TextView
+            android:id="@+id/tv_transaction_outofstockitemsstaff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/material_blue_grey_400"
+            android:gravity="center"
+            android:paddingBottom="@dimen/padd10dp"
+            android:text=""
+            android:textColor="@color/material_red_500"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</RelativeLayout>

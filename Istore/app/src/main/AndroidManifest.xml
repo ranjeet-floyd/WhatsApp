@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.istore.bitblue.app">
+    package="in.istore.bitblue.app" >
 
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -24,7 +24,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -35,7 +35,7 @@
         <!-- Receiver For GCM Notiications -->
         <receiver
             android:name="com.microsoft.windowsazure.notifications.NotificationsBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
@@ -46,7 +46,7 @@
         <activity
             android:name=".loginScreen.LoginPage"
             android:label="@string/name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -159,6 +159,18 @@
         <activity
             android:name=".adminMenu.transactions.totalrevenue.filterby.FilterByStaffId"
             android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevViewDetails" />
+        <activity
+            android:name=".staffMenu.transactions.TransStaff"
+            android:parentActivityName=".home.HomePage" />
+        <activity
+            android:name=".staffMenu.custInfo.CusInfoForStaffContent"
+            android:parentActivityName=".home.HomePage" />
+        <activity
+            android:name=".staffMenu.transactions.todaysales.TodaySalesStaff"
+            android:parentActivityName=".staffMenu.transactions.TransStaff" />
+        <activity
+            android:name=".invoice.Invoice" >
+        </activity>
     </application>
 
 </manifest>

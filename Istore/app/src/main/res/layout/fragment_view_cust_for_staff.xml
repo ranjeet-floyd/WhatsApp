@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.adminMenu.staffMgmt.ViewStaff">
+    tools:context="in.istore.bitblue.app.staffMenu.custInfo.ViewCustForStaff">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,43 +14,33 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padd5dp"
             android:orientation="horizontal"
-            android:weightSum="4">
+            android:paddingLeft="@dimen/padd5dp"
+            android:paddingRight="@dimen/padd5dp"
+            android:weightSum="2">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ID"
+                android:text="Mobile Number"
                 android:textColor="@color/black" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Name"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Mobile No"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Total Sales"
+                android:text="Purchase Amount"
                 android:textColor="@color/black" />
         </LinearLayout>
 
         <ListView
-            android:id="@+id/lv_viewStaff"
+            android:id="@+id/lv_viewCustForStaff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_header"
             android:layout_marginTop="@dimen/padd10dp"
-            android:dividerHeight="@dimen/padd5dp" />
+            android:dividerHeight="@dimen/padd5dp"
+            android:paddingLeft="@dimen/padd5dp"
+            android:paddingRight="@dimen/padd5dp" />
     </RelativeLayout>
 </FrameLayout>

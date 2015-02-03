@@ -83,4 +83,60 @@ public class DbStaffAdapter {
             return null;
         }
     }
+
+    public boolean isValidCred(long Mobile, String Passwd) {
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_STAFFMGNT, DBHelper.STAFFMGNT_COLUMNS,
+                DBHelper.COL_STAFFMGNT_MOBNUM + "=" + Mobile + " AND " +
+                        DBHelper.COL_STAFFMGNT_PASSWD + "='" + Passwd + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            closeDatabase();
+            return true;
+        } else {
+            closeDatabase();
+            return false;
+        }
+    }
+
+    public String getStaffName(long Mobile) {
+        String StaffName;
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_STAFFMGNT, DBHelper.STAFFMGNT_COLUMNS,
+                DBHelper.COL_STAFFMGNT_MOBNUM + "='" + Mobile + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            StaffName = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_NAME));
+            closeDatabase();
+            return StaffName;
+        } else {
+            return null;
+        }
+    }
+
+    public int getStaffId(long Mobile) {
+        int StaffName;
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_STAFFMGNT, DBHelper.STAFFMGNT_COLUMNS,
+                DBHelper.COL_STAFFMGNT_MOBNUM + "='" + Mobile + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            StaffName = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_STAFFID));
+            closeDatabase();
+            return StaffName;
+        } else {
+            return -1;
+        }
+    }
+
+    public int getStoreId(long Mobile) {
+        int StaffName;
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_STAFFMGNT, DBHelper.STAFFMGNT_COLUMNS,
+                DBHelper.COL_STAFFMGNT_MOBNUM + "='" + Mobile + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            StaffName = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_STOREID));
+            closeDatabase();
+            return StaffName;
+        } else {
+            return -1;
+        }
+    }
 }

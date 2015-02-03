@@ -84,7 +84,34 @@ public class DbCustPurHistAdapter {
         }
     }
 
-    public ArrayList<SoldProduct> getSoldHistoryForStaffId(String staffId) {
+    public ArrayList<SoldProduct> getCustomerInfoForStaffId(long StaffId) {
+        ArrayList<SoldProduct> soldProductArrayList = new ArrayList<SoldProduct>();
+        openWritableDatabase();
+        String COLUMNS =
+                DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE + "," +
+                        DBHelper.COL_CUSTCARTPURCHASE_MOBILE;
+
+        String RAW_QUERY = "SELECT " + COLUMNS +
+                " FROM " + DBHelper.TABLE_CUST_PURCHASE_HISTORY +
+                " WHERE " + DBHelper.COL_CUSTCARTPURCHASE_STAFF_ID + " ='" + StaffId + "'";
+        Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                SoldProduct soldProduct = new SoldProduct();
+                soldProduct.setItemTotalAmnt(c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE)));
+                soldProduct.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));
+
+                soldProductArrayList.add(soldProduct);
+            } while (c.moveToNext());
+            closeDatabase();
+            return soldProductArrayList;
+        } else {
+            return null;
+        }
+
+    }
+
+    public ArrayList<SoldProduct> getSoldHistoryForStaffId(int staffId) {
         ArrayList<SoldProduct> soldProductArrayList = new ArrayList<SoldProduct>();
         openWritableDatabase();
         String COLUMNS = DBHelper.COL_CUSTCARTPURCHASE_PROD_NAME + "," +
@@ -100,7 +127,7 @@ public class DbCustPurHistAdapter {
         if (c != null && c.moveToFirst()) {
             do {
                 SoldProduct soldProduct = new SoldProduct();
-                soldProduct.setStaffId(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_NAME)));
+                soldProduct.setItemName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_NAME)));
                 soldProduct.setItemSoldQuantity(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY)));
                 soldProduct.setItemTotalAmnt(c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE)));
                 soldProduct.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));
@@ -132,7 +159,27 @@ public class DbCustPurHistAdapter {
 
     }
 
-    public float getTotalSalesForStaffId(String staffId, String from, String to) {
+    public float getTodaySalesForStaffId(long StaffId) {
+        Date date = new Date();
+        String todayDate = DateUtil.convertToStringDateOnly(date);
+
+        String SUM_QUERY = "SELECT SUM(" + DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE + ")" +
+                " FROM " + DBHelper.TABLE_CUST_PURCHASE_HISTORY +
+                " WHERE " + DBHelper.COL_CUSTCARTPURCHASE_STAFF_ID + "='" + StaffId + "'" +
+                " AND " + DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE + "='" + todayDate + "'";
+        openWritableDatabase();
+        Cursor c = sqLiteDb.rawQuery(SUM_QUERY, null);
+        if (c != null && c.moveToFirst()) {
+            closeDatabase();
+            return c.getFloat(c.getColumnIndexOrThrow("SUM(" + DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE + ")"));
+        } else {
+            closeDatabase();
+            return 0;
+        }
+
+    }
+
+    public float getTotalSalesForStaffId(int staffId, String from, String to) {
         String SUM_QUERY = "SELECT SUM(" + DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE + ")" +
                 " FROM " + DBHelper.TABLE_CUST_PURCHASE_HISTORY +
                 " WHERE " + DBHelper.COL_CUSTCARTPURCHASE_STAFF_ID + "='" + staffId + "'" +
@@ -187,6 +234,32 @@ public class DbCustPurHistAdapter {
             do {
                 TodaysSale todaysSale = new TodaysSale();
                 todaysSale.setStaffId(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_STAFF_ID)));
+                todaysSale.setProdName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_NAME)));
+                todaysSale.setQuantity(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY)));
+                todaysSale.setPurchaseAmnt(c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE)));
+                todaysSale.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));
+                todaysSaleArrayList.add(todaysSale);
+            } while (c.moveToNext());
+            closeDatabase();
+            return todaysSaleArrayList;
+        } else {
+            return null;
+        }
+    }
+
+    public ArrayList<TodaysSale> getTodaysSaleForStaff(long StaffId) {
+        Date date = new Date();
+        String todayDate = DateUtil.convertToStringDateOnly(date);
+        ArrayList<TodaysSale> todaysSaleArrayList = new ArrayList<TodaysSale>();
+        openWritableDatabase();
+        String RAW_QUERY =
+                "SELECT * FROM " + DBHelper.TABLE_CUST_PURCHASE_HISTORY +
+                        " WHERE " + DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE + "='" + todayDate + "'" +
+                        " AND " + DBHelper.COL_CUSTCARTPURCHASE_STAFF_ID + "='" + StaffId + "'";
+        Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                TodaysSale todaysSale = new TodaysSale();
                 todaysSale.setProdName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_NAME)));
                 todaysSale.setQuantity(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY)));
                 todaysSale.setPurchaseAmnt(c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE)));

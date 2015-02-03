@@ -1,9 +1,12 @@
 package in.istore.bitblue.app.adminMenu.staffMgmt;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +22,14 @@ import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.utilities.DatePickerFragment;
 import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.Mail;
 import in.istore.bitblue.app.utilities.Store;
 
 public class AddStaff extends Fragment {
 
     private EditText etName, etMobile, etAddress;
     private Button bDate, baddStaff;
-    private String joinDate;
+    private String joinDate, StaffName, AdminEmail, StaffPass;
     private DbStaffAdapter staffAdapter;
     private DbLoginCredAdapter loginCredAdapter;
     private long adminMobile;
@@ -49,7 +53,7 @@ public class AddStaff extends Fragment {
         loginCredAdapter = new DbLoginCredAdapter(getActivity());
         globalVariable = (GlobalVariables) getActivity().getApplicationContext();
         adminMobile = globalVariable.getAdminMobile();
-
+        AdminEmail = globalVariable.getEmail();
         etName = (EditText) view.findViewById(R.id.et_addstaff_name);
         etMobile = (EditText) view.findViewById(R.id.et_addstaff_mobile);
         etAddress = (EditText) view.findViewById(R.id.et_addstaff_address);
@@ -68,15 +72,15 @@ public class AddStaff extends Fragment {
             public void onClick(View view) {
                 checkForValidation(allEditTexts);
                 int staffid = Store.generateStaffId();
-                String passwd = Store.generatePassword();
+                StaffPass = Store.generatePassword();
                 int storeId = loginCredAdapter.getStoreId(adminMobile);
-                String name = etName.getText().toString();
+                StaffName = etName.getText().toString();
                 long mobile = Long.parseLong(etMobile.getText().toString());
                 String address = etAddress.getText().toString();
-                long result = staffAdapter.insertStaffInfo(storeId, staffid, name, mobile, passwd, address, joinDate);
+                sendMailToUser(AdminEmail, StaffPass);
+                long result = staffAdapter.insertStaffInfo(storeId, staffid, StaffName, mobile, StaffPass, address, joinDate);
                 if (result <= 0) {
                     Toast.makeText(getActivity(), "Record Not Added", Toast.LENGTH_SHORT).show();
-
                 } else {
                     clearField(allEditTexts);
                     mTabHost = (FragmentTabHost) view.findViewById(android.R.id.tabhost);
@@ -132,4 +136,52 @@ public class AddStaff extends Fragment {
         }
     }
 
+    private void sendMailToUser(final String email, final String passwd) {
+        new AsyncTask<String, String, Boolean>() {
+            ProgressDialog dialog;
+
+            @Override
+            protected void onPreExecute() {
+                dialog = new ProgressDialog(getActivity());
+                dialog.setTitle("");
+                dialog.setMessage("Please Wait...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+
+            }
+
+            @Override
+            protected Boolean doInBackground(String... strings) {
+                return sendEmailTo(email, passwd);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                dialog.dismiss();
+                if (result != null && result) {
+                    Toast.makeText(getActivity(), "Message Sent", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+    }
+
+    private boolean sendEmailTo(String toPerson, String passwd) {
+        Mail mail = new Mail("bitstorehelpdesk@gmail.com", "bitbluetech");
+
+        String[] toArr = {toPerson};
+        mail.setTo(toArr);
+        mail.setFrom("bitstorehelpdesk@gmail.com");
+        mail.setSubject("Your Password for BitStore App");
+        mail.setBody("\nHi, " + StaffName +
+                "\n Your Password is:" + passwd);
+        try {
+            if (mail.send()) {
+                return true;
+            }
+        } catch (Exception e) {
+            Log.e("Could not send the mail", "");
+        }
+        return false;
+    }
 }

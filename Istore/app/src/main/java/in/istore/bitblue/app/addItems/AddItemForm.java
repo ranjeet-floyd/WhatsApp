@@ -332,7 +332,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     globalVariable.increaseProImgCount();
                     proImgCount = globalVariable.getProdImageCount();
 
-                    Uri uri = getImageContentUri(this, file);
+                    Uri uri = Uri.fromFile(file);
                     imagePath = getRealPathFromURI(uri);
                     Log.e("URI:", uri.toString());
                     Log.e("Path:", getRealPathFromURI(uri));

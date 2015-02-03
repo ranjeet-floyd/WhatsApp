@@ -3,6 +3,7 @@ package in.istore.bitblue.app.loginScreen;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -39,6 +40,7 @@ import java.util.Arrays;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.home.HomePage;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
@@ -54,10 +56,16 @@ public class LoginPage extends Activity implements View.OnClickListener {
     private static final int FACEBOOK = 2;
     private String userName, userEmail, regid;
     private long Mobile;
-    private String Pass;
+    private int StaffId, StoreId;
+    private String AdminName, Pass, StaffName, AdminEmail;
+
     private GlobalVariables globalVariable;
     private Bitmap bitmap;
-    private DbLoginCredAdapter loginCredAdapter;
+    private DbLoginCredAdapter dbloginCredAdapter;
+    private DbStaffAdapter dbStaffAdapter;
+
+    private final static String LOGIN = "login";
+    private SharedPreferences.Editor preflogin;
 
     //For Azure Notifications
     public static final String SENDER_ID = "838791774954";
@@ -115,8 +123,10 @@ public class LoginPage extends Activity implements View.OnClickListener {
     }
 
     private void initViews() {
+        preflogin = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
 
-        loginCredAdapter = new DbLoginCredAdapter(this);
+        dbloginCredAdapter = new DbLoginCredAdapter(this);
+        dbStaffAdapter = new DbStaffAdapter(this);
 
         bGmail = (SignInButton) findViewById(R.id.sign_in_button);
         bGmail.setOnClickListener(this);
@@ -161,7 +171,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
                 }
                 Pass = etPass.getText().toString();
                 if (Mobile > 0)
-                    new AsyncTask<String, String, Boolean>() {
+                    new AsyncTask<String, String, String>() {
                         ProgressDialog dialog = new ProgressDialog(LoginPage.this);
 
                         @Override
@@ -173,22 +183,46 @@ public class LoginPage extends Activity implements View.OnClickListener {
                         }
 
                         @Override
-                        protected Boolean doInBackground(String... strings) {
-                            boolean validCred = loginCredAdapter.isValidCred(Mobile, Pass);
-                            if (validCred)
-                                return true;
-                            else return false;
+                        protected String doInBackground(String... strings) {
+                            boolean validCredforAdmin = dbloginCredAdapter.isValidCred(Mobile, Pass);
+                            boolean validCredforStaff = dbStaffAdapter.isValidCred(Mobile, Pass);
+                            if (validCredforAdmin) {
+                                String[] adminNameAndEmail = dbloginCredAdapter.getAdminNameAndEmail(Mobile);
+                                StoreId = dbloginCredAdapter.getStoreId(Mobile);
+                                globalVariable.setStoreId(StoreId);
+                                AdminName = adminNameAndEmail[0];
+                                AdminEmail = adminNameAndEmail[1];
+                                return "credAdmin";
+                            } else if (validCredforStaff) {
+                                StaffName = dbStaffAdapter.getStaffName(Mobile);
+                                StaffId = dbStaffAdapter.getStaffId(Mobile);
+                                StoreId = dbStaffAdapter.getStoreId(Mobile);
+                                globalVariable.setStaffId(StaffId);
+                                globalVariable.setStoreId(StoreId);
+                                return "credStaff";
+                            } else return null;
                         }
 
                         @Override
-                        protected void onPostExecute(Boolean isValidCreds) {
+                        protected void onPostExecute(String creds) {
                             dialog.dismiss();
-                            if (!isValidCreds) {
+                            if (creds == null) {
                                 clearField(allEditTexts);
                                 Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
-                            } else {
+                            } else if (StaffId <= 0) {
                                 globalVariable.setAdminMobile(Mobile);
-                                startActivity(new Intent(LoginPage.this, HomePage.class));
+                                Intent HomePage = new Intent(LoginPage.this, HomePage.class);
+                                preflogin.putString("Name", AdminName);
+                                preflogin.putString("Email", AdminEmail);
+                                preflogin.putLong("Mobile", Mobile);
+                                preflogin.commit();
+                                startActivity(HomePage);
+                            } else if (StaffId > 0) {
+                                Intent HomePage = new Intent(LoginPage.this, HomePage.class);
+                                preflogin.putString("Name", StaffName);
+                                preflogin.putLong("Mobile", Mobile);
+                                preflogin.commit();
+                                startActivity(HomePage);
                             }
                         }
                     }.execute();
@@ -222,13 +256,6 @@ public class LoginPage extends Activity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-
-        //Not sure to use this
-
-       /* Session session = Session.getActiveSession();
-        if (session != null && (session.isClosed() || session.isOpened())) {
-            onSessionStateChanged(session, session.getState(), null);
-        }*/
         uiHelper.onResume();
     }
 
@@ -271,9 +298,9 @@ public class LoginPage extends Activity implements View.OnClickListener {
                         bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
                         String filePath = createImageFromBitmap(bitmap);
 
-                        boolean isEmailExist = loginCredAdapter.isEmailExists(userEmail);
+                        boolean isEmailExist = dbloginCredAdapter.isEmailExists(userEmail);
                         if (isEmailExist) {
-                            long adminMobile = loginCredAdapter.getAdminMobile(userEmail);
+                            long adminMobile = dbloginCredAdapter.getAdminMobile(userEmail);
                             Toast.makeText(getApplicationContext(), String.valueOf(adminMobile), Toast.LENGTH_SHORT).show();
                             globalVariable.setAdminMobile(adminMobile);
                             Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);

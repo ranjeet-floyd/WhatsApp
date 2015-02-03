@@ -38,8 +38,8 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
     private SparseBooleanArray mCollapsedStatus;
     private String scanContent;
     private GlobalVariables globalVariable;
-    private String id, category, name, desc, supplier;
-    private int quantity, minlimit;
+    private String id, name, desc, supplier;
+    private int quantity;
     private float costprice, sellprice;
     private byte[] byteImage;
     private Bitmap bitmap;

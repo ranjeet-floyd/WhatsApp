@@ -20,6 +20,7 @@ import in.istore.bitblue.app.adapters.FilterByProdNameAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbCustPurHistAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProSubCatAdapter;
 import in.istore.bitblue.app.pojo.SoldProduct;
+import in.istore.bitblue.app.utilities.DateUtil;
 
 public class FilterByProdName extends ActionBarActivity {
     private Toolbar toolbar;
@@ -67,7 +68,6 @@ public class FilterByProdName extends ActionBarActivity {
         dbCustPurHistAdapter = new DbCustPurHistAdapter(this);
 
         tvprodTotRev = (TextView) findViewById(R.id.tv_filterbyprodname_prodtotrev);
-        tvprodTotRev.setText(String.valueOf(getTotalRevenueByProduct()));
         lvfilterproname = (ListView) findViewById(R.id.lv_filterbyname);
         actvProdName = (AutoCompleteTextView) findViewById(R.id.actv_filterbyprodname_prodname);
         actvProdName.setOnTouchListener(new View.OnTouchListener() {
@@ -88,6 +88,7 @@ public class FilterByProdName extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 prodName = actvProdName.getText().toString();
+                tvprodTotRev.setText(String.valueOf(getTotalRevenueByProduct()));
                 soldProductArrayList = dbCustPurHistAdapter.getPurchaseHistoryFor(prodName);
                 if (soldProductArrayList != null) {
                     filtProNameAdapter = new FilterByProdNameAdapter(getApplicationContext(), soldProductArrayList);
@@ -100,6 +101,8 @@ public class FilterByProdName extends ActionBarActivity {
     }
 
     private float getTotalRevenueByProduct() {
-        return dbCustPurHistAdapter.getTotalSalesForProduct(prodName, fromdate, todate);
+        String formattedFrom = DateUtil.convertFromDD_MM_YYYYtoYYYY_MM_DD(fromdate);
+        String formattedTo = DateUtil.convertFromDD_MM_YYYYtoYYYY_MM_DD(todate);
+        return dbCustPurHistAdapter.getTotalSalesForProduct(prodName, formattedFrom, formattedTo);
     }
 }

@@ -84,6 +84,19 @@ public class DbLoginCredAdapter {
         }
     }
 
+    public boolean isMobileExists(long Mobile) {
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_LOGIN_CRED_ADMIN, DBHelper.LOGIN_CRED_ADMIN_COLUMNS,
+                DBHelper.COL_LOGINCRED_MOBNUM + "='" + Mobile + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            closeDatabase();
+            return true;
+        } else {
+            closeDatabase();
+            return false;
+        }
+    }
+
     public int getStoreId(long Mobile) {
         openWritableDatabase();
         Cursor c = sqLiteDb.query(DBHelper.TABLE_LOGIN_CRED_ADMIN, DBHelper.LOGIN_CRED_ADMIN_COLUMNS,
@@ -107,6 +120,21 @@ public class DbLoginCredAdapter {
         } else {
             closeDatabase();
             return 0;            //Store id is between 11111 and 99999 so return 0 if store id not found
+        }
+    }
+
+    public String[] getAdminNameAndEmail(long Mobile) {
+        String[] adminNameAndEmail = new String[2];
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_LOGIN_CRED_ADMIN, DBHelper.LOGIN_CRED_ADMIN_COLUMNS,
+                DBHelper.COL_LOGINCRED_MOBNUM + "='" + Mobile + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            adminNameAndEmail[0] = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_LOGINCRED_NAME)); //Name
+            adminNameAndEmail[1] = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_LOGINCRED_EMAIL));  //Email
+            return adminNameAndEmail;
+        } else {
+            closeDatabase();
+            return null;
         }
     }
 

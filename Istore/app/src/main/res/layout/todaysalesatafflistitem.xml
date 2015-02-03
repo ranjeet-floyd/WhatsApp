@@ -7,28 +7,28 @@
     android:weightSum="4">
 
     <TextView
-        android:id="@+id/tv_view_staff_staffid"
+        android:id="@+id/tv_todaysalestaff_prodname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/tv_view_staff_staffname"
+        android:id="@+id/tv_todaysalestaff_quantity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/tv_view_staff_staffmobile"
+        android:id="@+id/tv_todaysalestaff_purchaseamnt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/tv_view_staff_staffsales"
+        android:id="@+id/tv_todaysalestaff_mobile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"

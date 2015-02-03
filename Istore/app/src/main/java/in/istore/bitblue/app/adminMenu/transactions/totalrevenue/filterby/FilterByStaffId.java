@@ -20,6 +20,7 @@ import in.istore.bitblue.app.adapters.FilterByStaffIdAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbCustPurHistAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.pojo.SoldProduct;
+import in.istore.bitblue.app.utilities.DateUtil;
 
 public class FilterByStaffId extends ActionBarActivity {
     private Toolbar toolbar;
@@ -27,8 +28,9 @@ public class FilterByStaffId extends ActionBarActivity {
     private AutoCompleteTextView actvStaffId;
     private Button bSubmit;
     private ListView lvfilterproname;
-    private String fromdate, todate, StaffId;
-    private float totrevforrange, totalRevenueByStaff;
+    private String fromdate, todate;
+    private int StaffId;
+    private float totrevforrange;
     private final static String FROM_TO = "fromto";
 
     private ArrayList<Integer> staffIdList;
@@ -67,7 +69,6 @@ public class FilterByStaffId extends ActionBarActivity {
         dbStaffAdapter = new DbStaffAdapter(this);
         staffIdList = dbStaffAdapter.getAllStaffIds();
         tvstaffidTotRev = (TextView) findViewById(R.id.tv_filterbystaffid_stafftotrev);
-        tvstaffidTotRev.setText(String.valueOf(getTotalRevenueByStaff()));
         lvfilterproname = (ListView) findViewById(R.id.lv_filterbystaffid);
         actvStaffId = (AutoCompleteTextView) findViewById(R.id.actv_filterbystaffid_staffid);
         actvStaffId.setOnTouchListener(new View.OnTouchListener() {
@@ -75,10 +76,10 @@ public class FilterByStaffId extends ActionBarActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
 
-                ArrayAdapter subcatadapter = new ArrayAdapter
+                ArrayAdapter staffAdapter = new ArrayAdapter
                         (getApplicationContext(), R.layout.dropdownlist, staffIdList);
                 actvStaffId.setThreshold(0);
-                actvStaffId.setAdapter(subcatadapter);
+                actvStaffId.setAdapter(staffAdapter);
                 actvStaffId.showDropDown();
                 return false;
             }
@@ -88,7 +89,8 @@ public class FilterByStaffId extends ActionBarActivity {
         bSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                StaffId = actvStaffId.getText().toString();
+                StaffId = Integer.parseInt(actvStaffId.getText().toString());
+                tvstaffidTotRev.setText(String.valueOf(getTotalRevenueByStaff()));
                 soldProductArrayList = dbCustPurHistAdapter.getSoldHistoryForStaffId(StaffId);
                 if (soldProductArrayList != null) {
                     filtstaffidAdapter = new FilterByStaffIdAdapter(getApplicationContext(), soldProductArrayList);
@@ -101,6 +103,8 @@ public class FilterByStaffId extends ActionBarActivity {
     }
 
     public float getTotalRevenueByStaff() {
-        return dbCustPurHistAdapter.getTotalSalesForStaffId(StaffId, fromdate, todate);
+        String formattedFrom = DateUtil.convertFromDD_MM_YYYYtoYYYY_MM_DD(fromdate);
+        String formattedTo = DateUtil.convertFromDD_MM_YYYYtoYYYY_MM_DD(todate);
+        return dbCustPurHistAdapter.getTotalSalesForStaffId(StaffId, formattedFrom, formattedTo);
     }
 }

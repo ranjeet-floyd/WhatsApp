@@ -55,7 +55,6 @@ public class ViewStaffAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) listRow.getTag();
         }
-
         Staff staff = staffArrayList.get(position);
         holder.id.setText(String.valueOf(staff.getStaffId()));
         holder.name.setText(staff.getName());

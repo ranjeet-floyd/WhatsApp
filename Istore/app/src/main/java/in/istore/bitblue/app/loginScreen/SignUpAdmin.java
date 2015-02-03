@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -85,12 +84,12 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                 Name = etname.getText().toString();
                 Email = etEmail.getText().toString();
                 Mobile = Long.parseLong(etmobNum.getText().toString());
-                sendMailToUser(Email, StoreId, Passwd);
+                sendMailToUser(Email, Passwd);
                 break;
         }
     }
 
-    private void sendMailToUser(final String email, final int storeId, final String passwd) {
+    private void sendMailToUser(final String email, final String passwd) {
         new AsyncTask<String, String, Boolean>() {
             ProgressDialog dialog;
 
@@ -107,44 +106,51 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
 
             @Override
             protected Boolean doInBackground(String... strings) {
-                return sendEmailTo(email, storeId, passwd);
+                return sendEmailTo(email, passwd);
             }
 
             @Override
             protected void onPostExecute(Boolean result) {
                 dialog.dismiss();
                 if (result != null && result) {
-                    Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
-                    long dbresult = loginCredAdapter.insertAdminInfo(Name, Email, Passwd, Mobile, StoreId);
-                    if (dbresult <= 0) {
-                        Toast.makeText(SignUpAdmin.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    if (isAlredyExists(Mobile)) {
+                        Toast.makeText(getApplicationContext(), "Mobile Number Already Exists", Toast.LENGTH_LONG).show();
                     } else {
-                        Intent storeName = new Intent(SignUpAdmin.this, StoreName.class);
-                        storeName.putExtra("Mobile", Mobile);
-                        storeName.putExtra("StoreId", StoreId);
-                        startActivity(storeName);
+                        Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
+                        long dbresult = loginCredAdapter.insertAdminInfo(Name, Email, Passwd, Mobile, StoreId);
+                        if (dbresult <= 0) {
+                            Toast.makeText(SignUpAdmin.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent storeName = new Intent(SignUpAdmin.this, StoreName.class);
+                            storeName.putExtra("Mobile", Mobile);
+                            storeName.putExtra("StoreId", StoreId);
+                            startActivity(storeName);
+                        }
                     }
                 }
             }
         }.execute();
     }
 
-    private boolean sendEmailTo(String toPerson, int storeId, String passwd) {
+    private boolean isAlredyExists(long mobile) {
+        return loginCredAdapter.isMobileExists(mobile);
+    }
+
+    private boolean sendEmailTo(String toPerson, String passwd) {
         Mail mail = new Mail("bitstorehelpdesk@gmail.com", "bitbluetech");
 
         String[] toArr = {toPerson};
         mail.setTo(toArr);
         mail.setFrom("bitstorehelpdesk@gmail.com");
-        mail.setSubject("Your Store Id for BitStore App");
+        mail.setSubject("Your Password for BitStore App");
         mail.setBody("\nHi, " + Name +
-                "\n Your Store Id is: " + storeId +
                 "\n Your Password is:" + passwd);
         try {
             if (mail.send()) {
                 return true;
             }
         } catch (Exception e) {
-            Log.e("Exception: ", "Could not send Mail", e);
+            Toast.makeText(getApplicationContext(), "Could not send the mail", Toast.LENGTH_SHORT).show();
         }
         return false;
     }

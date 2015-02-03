@@ -165,7 +165,7 @@
                                     android:layout_marginRight="@dimen/padd5dp"
                                     android:layout_marginTop="@dimen/padd10dp"
                                     android:layout_weight="1"
-                                    android:text="@string/costPrice"
+                                    android:text="CP"
                                     android:textColor="@color/black"
                                     android:textSize="18sp" />
 
@@ -201,7 +201,7 @@
                                     android:layout_marginRight="@dimen/padd5dp"
                                     android:layout_marginTop="@dimen/padd10dp"
                                     android:layout_weight="1"
-                                    android:text="@string/sellPrice"
+                                    android:text="SP"
                                     android:textColor="@color/black"
                                     android:textSize="18sp" />
 
@@ -249,7 +249,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:background="@null"
-                                android:text="@string/sell"
+                                android:text="@string/addtocart"
                                 android:textColor="@color/material_red_300" />
                         </LinearLayout>
 

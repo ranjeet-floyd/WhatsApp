@@ -61,6 +61,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
         preftransaction.putFloat("TodaySales", TodaySales);
         preftransaction.putInt("OutOfStockItem", OutofStock);
         preftransaction.commit();
+
         tvTotalSales = (TextView) findViewById(R.id.tv_transaction_totalrevenue);
         tvTotalSales.setText(String.valueOf(TotalRevenue));
 

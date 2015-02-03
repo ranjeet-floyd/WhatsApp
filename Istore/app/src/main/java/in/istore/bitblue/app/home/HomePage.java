@@ -3,6 +3,7 @@ package in.istore.bitblue.app.home;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -36,21 +37,24 @@ import java.util.List;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.NavDrawAdapter;
 import in.istore.bitblue.app.addItems.AddItemsMenu;
-import in.istore.bitblue.app.adminMenu.transactions.Trans;
 import in.istore.bitblue.app.adminMenu.custInfo.CusInfoContent;
 import in.istore.bitblue.app.adminMenu.staffMgmt.StaffMgntContent;
 import in.istore.bitblue.app.adminMenu.suppInfo.SuppInfoContent;
+import in.istore.bitblue.app.adminMenu.transactions.Trans;
 import in.istore.bitblue.app.cart.Cart;
 import in.istore.bitblue.app.category.Categories;
 import in.istore.bitblue.app.cloudprint.CloudPrint;
 import in.istore.bitblue.app.data.ExportData;
 import in.istore.bitblue.app.data.ImportData;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.listStock.ListMyStock;
 import in.istore.bitblue.app.loginScreen.LoginPage;
 import in.istore.bitblue.app.navDrawer.NavDrawItems;
 import in.istore.bitblue.app.sellItems.SellItemsMenu;
 import in.istore.bitblue.app.soldItems.ListSoldItems;
+import in.istore.bitblue.app.staffMenu.custInfo.CusInfoForStaffContent;
+import in.istore.bitblue.app.staffMenu.transactions.TransStaff;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class HomePage extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -60,17 +64,24 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private ImageView ivuserPic;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private ListView navDrawList;
-    private List<NavDrawItems> navDrawItemsList;
-    private NavDrawAdapter navDrawAdapter;
-    private String FpersonName, Femail, GName, Gemail;
+    private ListView navDrawListAdmin, navDrawListStaff;
+
+    private String FpersonName, Femail, GName, Gemail, Name, Email;
     private int responseGmail, responseFacebook;
     private static final int G_LOGOUT = 1;
     private static final int F_LOGOUT = 2;
+    private long Mobile;
+    private final static String LOGIN = "login";
+    private int StaffId;
 
+    private SharedPreferences preflogin;
+    private List<NavDrawItems> navDrawItemsListForAdmin, navDrawItemsListForStaff;
+    private NavDrawAdapter navDrawAdapter;
     private Bitmap bitmap;
     private DbProductAdapter dbAdapter;
+    private DbStaffAdapter dbStaffAdapter;
     private GlobalVariables globalVariable;
+
     // Google client to interact with Google API
     private GoogleApiClient googleApiClient;
 
@@ -84,12 +95,19 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+
         //Check which button was selected on login page
         responseGmail = getIntent().getIntExtra("gresponse", 0);
         responseFacebook = getIntent().getIntExtra("facebook", 0);
+        preflogin = getSharedPreferences(LOGIN, MODE_PRIVATE);
         globalVariable = (GlobalVariables) getApplicationContext();
+
+        Mobile = preflogin.getLong("Mobile", 0);
+        dbStaffAdapter = new DbStaffAdapter(this);
+        StaffId = dbStaffAdapter.getStaffId(Mobile);
         initViews();
         if (responseGmail == 1) {
+
             //Hide Facebook Logout button in nav Drawer
             Flogout.setVisibility(View.GONE);
             GName = getIntent().getStringExtra("gName");
@@ -114,7 +132,18 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
             if (bitmap != null)
                 ivuserPic.setImageBitmap(bitmap);
-        } else {
+        } else if (StaffId <= 0) {
+            Name = preflogin.getString("Name", "");
+            tvuserName.setText(Name);
+            Email = preflogin.getString("Email", "");
+            globalVariable.setEmail(Email);
+            tvuserEmail.setText(Email);
+            Flogout.setVisibility(View.GONE);
+            Glogout.setVisibility(View.GONE);
+        } else if (StaffId > 0) {
+            Name = preflogin.getString("Name", "");
+            tvuserName.setText(Name);
+            tvuserEmail.setText("");
             Flogout.setVisibility(View.GONE);
             Glogout.setVisibility(View.GONE);
         }
@@ -132,21 +161,28 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private void initViews() {
 
         dbAdapter = new DbProductAdapter(this);
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer);
         drawer.setDrawerListener(actionBarDrawerToggle);
         drawer.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        if (StaffId <= 0) {
+            navDrawItemsListForAdmin = new ArrayList<NavDrawItems>();
 
-        navDrawItemsList = new ArrayList<NavDrawItems>();
+            navDrawItemsListForAdmin = getAdminListItems();
+            navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsListForAdmin);
 
-        navDrawItemsList = getAdminListItems();
-        navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsList);
+            navDrawListAdmin = (ListView) findViewById(R.id.lv_nav_drawer);
+            navDrawListAdmin.setAdapter(navDrawAdapter);
+            navDrawListAdmin.setOnItemClickListener(new DrawerItemClickListener());
+        } else if (StaffId > 0) {
+            navDrawItemsListForStaff = new ArrayList<NavDrawItems>();
+            navDrawItemsListForStaff = getStaffListItems();
+            navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsListForStaff);
 
-        navDrawList = (ListView) findViewById(R.id.lv_nav_drawer);
-        navDrawList.setAdapter(navDrawAdapter);
-        navDrawList.setOnItemClickListener(new DrawerItemClickListener());
-
+            navDrawListStaff = (ListView) findViewById(R.id.lv_nav_drawer);
+            navDrawListStaff.setAdapter(navDrawAdapter);
+            navDrawListStaff.setOnItemClickListener(new DrawerItemClickListener());
+        }
         blistStock = (Button) findViewById(R.id.b_list_my_stock);
         blistStock.setOnClickListener(this);
 
@@ -183,45 +219,58 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         return drawerList;
     }
 
-    private void selectItem(int position) {
-        switch (position) {
-            case 0: //Staff Managewment
-                startActivity(new Intent(this, StaffMgntContent.class));
-                break;
-
-            case 1: //Supplier Info
-                startActivity(new Intent(this, SuppInfoContent.class));
-                break;
-
-            case 2://Customer Info
-                startActivity(new Intent(this, CusInfoContent.class));
-                break;
-
-            case 3: //Transaction
-                startActivity(new Intent(this, Trans.class));
-                break;
-
-            case 4:// Import Data
-                startActivity(new Intent(this, ImportData.class));
-                break;
-
-            case 5: //Export Data
-                startActivity(new Intent(this, ExportData.class));
-                break;
-
-            case 6: //Cloud Print
-                showCloudPrintDialog();
-                break;
-        }
-        navDrawList.setItemChecked(position, true);
-        drawer.closeDrawer(Gravity.LEFT);
-    }
-
     private List<NavDrawItems> getStaffListItems() {
         ArrayList<NavDrawItems> drawerList = new ArrayList<NavDrawItems>();
         drawerList.add(new NavDrawItems("Customer Info", R.drawable.ic_action_computer));
         drawerList.add(new NavDrawItems("Transactions", R.drawable.ic_action_computer));
         return drawerList;
+    }
+
+    private void selectItem(int position) {
+        if (StaffId <= 0) {
+            switch (position) {
+                case 0: //Staff Managewment
+                    startActivity(new Intent(this, StaffMgntContent.class));
+                    break;
+
+                case 1: //Supplier Info
+                    startActivity(new Intent(this, SuppInfoContent.class));
+                    break;
+
+                case 2://Customer Info
+                    startActivity(new Intent(this, CusInfoContent.class));
+                    break;
+
+                case 3: //Transaction
+                    startActivity(new Intent(this, Trans.class));
+                    break;
+
+                case 4:// Import Data
+                    startActivity(new Intent(this, ImportData.class));
+                    break;
+
+                case 5: //Export Data
+                    startActivity(new Intent(this, ExportData.class));
+                    break;
+
+                case 6: //Cloud Print
+                    showCloudPrintDialog();
+                    break;
+            }
+            navDrawListAdmin.setItemChecked(position, true);
+        } else if (StaffId > 0) {
+            switch (position) {
+                case 0: //Customer Info for Staff
+                    startActivity(new Intent(this, CusInfoForStaffContent.class));
+                    break;
+
+                case 1: //Supplier Info
+                    startActivity(new Intent(this, TransStaff.class));
+                    break;
+            }
+            navDrawListStaff.setItemChecked(position, true);
+        }
+        drawer.closeDrawer(Gravity.LEFT);
     }
 
     @Override

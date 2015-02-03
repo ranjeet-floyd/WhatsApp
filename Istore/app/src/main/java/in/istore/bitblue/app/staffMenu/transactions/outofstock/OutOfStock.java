@@ -1,4 +1,4 @@
-package in.istore.bitblue.app.adminMenu.transactions.outofstock;
+package in.istore.bitblue.app.staffMenu.transactions.outofstock;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

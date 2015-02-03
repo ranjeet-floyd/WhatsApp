@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
-import in.istore.bitblue.app.home.HomePage;
 
 public class StoreName extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -66,7 +65,7 @@ public class StoreName extends ActionBarActivity implements View.OnClickListener
                     int result = loginCredAdapter.updateAdminInfo(Mobile, StoreId, storeName);
                     if (result <= 0) {
                         Toast.makeText(this, "Not Updated", Toast.LENGTH_SHORT).show();
-                    } else startActivity(new Intent(this, HomePage.class));
+                    } else startActivity(new Intent(this, LoginPage.class));
                 }
                 break;
         }
