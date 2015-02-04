@@ -40,6 +40,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_invoice_one"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_invoice"
@@ -200,7 +201,8 @@
                     <ListView
                         android:id="@+id/lv_invoice_products"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/padd30dp" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -211,8 +213,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/material_blue_100"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/padd5dp"
+        android:paddingTop="@dimen/padd5dp">
 
         <TextView
             android:layout_width="wrap_content"

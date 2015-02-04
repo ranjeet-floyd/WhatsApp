@@ -38,6 +38,7 @@ public class DbStaffAdapter {
         row.put(DBHelper.COL_STAFFMGNT_MOBNUM, Mobile);
         row.put(DBHelper.COL_STAFFMGNT_PASSWD, Passwd);
         row.put(DBHelper.COL_STAFFMGNT_ADDRESS, Address);
+        row.put(DBHelper.COL_STAFFMGNT_STAFFEMAIL, " ");
         row.put(DBHelper.COL_STAFFMGNT_JOIN_DATE, Joindate);
 
         openWritableDatabase();
@@ -96,6 +97,29 @@ public class DbStaffAdapter {
             closeDatabase();
             return false;
         }
+    }
+
+    public boolean isEmailExists(String Email) {
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_STAFFMGNT, DBHelper.STAFFMGNT_COLUMNS,
+                DBHelper.COL_STAFFMGNT_STAFFEMAIL + "='" + Email + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            closeDatabase();
+            return true;
+        } else {
+            closeDatabase();
+            return false;
+        }
+    }
+
+    public long addEmailforMobile(long Mobile, String Email) {
+        ContentValues row = new ContentValues();
+        row.put(DBHelper.COL_STAFFMGNT_STAFFEMAIL, Email);
+
+        openWritableDatabase();
+        long result = sqLiteDb.update(DBHelper.TABLE_STAFFMGNT, row, DBHelper.COL_STAFFMGNT_MOBNUM + "='" + Mobile + "'", null);
+        closeDatabase();
+        return result;
     }
 
     public String getStaffName(long Mobile) {

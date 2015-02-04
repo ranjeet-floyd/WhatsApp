@@ -119,7 +119,7 @@ public class DbLoginCredAdapter {
             return c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_LOGINCRED_MOBNUM));
         } else {
             closeDatabase();
-            return 0;            //Store id is between 11111 and 99999 so return 0 if store id not found
+            return 0;
         }
     }
 

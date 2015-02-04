@@ -80,6 +80,7 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                 //If everything is ok send email to user with randomly generated store id
                 StoreId = Store.generateStoreId();
                 Passwd = Store.generatePassword();
+                globalVariable.setAdminPass(Passwd);
                 globalVariable.setStoreId(StoreId);
                 Name = etname.getText().toString();
                 Email = etEmail.getText().toString();

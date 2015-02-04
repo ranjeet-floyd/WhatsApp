@@ -19,7 +19,8 @@ public class GlobalVariables extends Application {
     private int storeId;
     private long adminMobile;
     private long staffId;
-
+    private String AdminPass;
+    private String StaffPass;
     private ArrayList<Product> productsList;
 
     public String getFbEmail() {
@@ -120,5 +121,21 @@ public class GlobalVariables extends Application {
 
     public void setEmail(String email) {
         Email = email;
+    }
+
+    public String getAdminPass() {
+        return AdminPass;
+    }
+
+    public void setAdminPass(String adminPass) {
+        AdminPass = adminPass;
+    }
+
+    public String getStaffPass() {
+        return StaffPass;
+    }
+
+    public void setStaffPass(String staffPass) {
+        StaffPass = staffPass;
     }
 }

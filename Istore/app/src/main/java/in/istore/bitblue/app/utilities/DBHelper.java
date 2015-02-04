@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "istore.db";
-    public static final int DATABASE_VERSION = 31;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
+    public static final int DATABASE_VERSION = 35;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
 
     public static final String TABLE_PRODUCT = "product";
     public static final String TABLE_QUANTITY_HISTORY = "quantityhistory";
@@ -58,6 +58,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //StaffManagement Table Columns
     public static final String COL_STAFFMGNT_STOREID = "storeid";
     public static final String COL_STAFFMGNT_STAFFID = "staffid";
+    public static final String COL_STAFFMGNT_STAFFEMAIL = "staffemail";
     public static final String COL_STAFFMGNT_NAME = "staffname";
     public static final String COL_STAFFMGNT_MOBNUM = "staffmobile";
     public static final String COL_STAFFMGNT_ADDRESS = "staffaddress";
@@ -114,7 +115,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String[] QUANTITY_DATE_COLUMNS = {COL_PROD_ID, COL_PROD_QUANTITY, COL_PROD_ADDEDDATE};
     public static final String[] SOLD_ITEM_COLUMNS = {COL_PROD_ID, COL_PROD_NAME, COL_PROD_IMAGE, COL_PROD_SOLDQUANTITY, COL_PROD_REMAINQUANTITY, COL_PROD_SOLDDATE, COL_PROD_SELLPRICE};
     public static final String[] LOGIN_CRED_ADMIN_COLUMNS = {COL_LOGINCRED_NAME, COL_LOGINCRED_EMAIL, COL_LOGINCRED_MOBNUM, COL_LOGINCRED_PASSWD, COL_LOGINCRED_STOREID, COL_LOGINCRED_CREATION_DATE};
-    public static final String[] STAFFMGNT_COLUMNS = {COL_STAFFMGNT_STOREID, COL_STAFFMGNT_STAFFID, COL_STAFFMGNT_NAME, COL_STAFFMGNT_MOBNUM, COL_STAFFMGNT_ADDRESS, COL_STAFFMGNT_PASSWD, COL_STAFFMGNT_JOIN_DATE, COL_STAFFMGNT_TOTALSALES};
+    public static final String[] STAFFMGNT_COLUMNS = {COL_STAFFMGNT_STOREID, COL_STAFFMGNT_STAFFID, COL_STAFFMGNT_STAFFEMAIL, COL_STAFFMGNT_NAME, COL_STAFFMGNT_MOBNUM, COL_STAFFMGNT_ADDRESS, COL_STAFFMGNT_PASSWD, COL_STAFFMGNT_JOIN_DATE, COL_STAFFMGNT_TOTALSALES};
     public static final String[] SUPPINFO_COLUMNS = {COL_SUPPINFO_NAME, COL_SUPPINFO_MOBILE, COL_SUPPINFO_ADDRESS, COL_SUPPINFO_STARTING_DATE};
     public static final String[] CUSTPURCHASE_COLUMNS = {COL_CUSTPURCHASE_MOBILE, COL_CUSTPURCHASE_AMOUNT};
     public static final String[] CATEGORY_COLUMNS = {COL_CATEGORY_ID, COL_CATEGORY_NAME};
@@ -176,6 +177,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     COL_STAFFMGNT_MOBNUM + " INTEGER PRIMARY KEY," +
                     COL_STAFFMGNT_STOREID + " INTEGER," +
                     COL_STAFFMGNT_STAFFID + " INTEGER UNIQUE," +
+                    COL_STAFFMGNT_STAFFEMAIL + " TEXT," +
                     COL_STAFFMGNT_NAME + " TEXT," +
                     COL_STAFFMGNT_PASSWD + " TEXT," +
                     COL_STAFFMGNT_ADDRESS + " TEXT," +

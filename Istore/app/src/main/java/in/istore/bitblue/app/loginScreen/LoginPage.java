@@ -48,7 +48,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
     private SignInButton bGmail;
     private LoginButton bFacebook;
     private ImageView userImage;
-    private Button bsignup, blogin;
+    private Button bsignup, blogin, bForgotPass;
     private EditText etmobNum, etPass;
     private EditText[] allEditTexts;
 
@@ -144,6 +144,8 @@ public class LoginPage extends Activity implements View.OnClickListener {
         blogin = (Button) findViewById(R.id.b_login_login);
         blogin.setOnClickListener(this);
 
+        bForgotPass = (Button) findViewById(R.id.b_login_forgotpass);
+        bForgotPass.setOnClickListener(this);
         etmobNum = (EditText) findViewById(R.id.et_login_mob_num);
         etPass = (EditText) findViewById(R.id.et_login_password);
         allEditTexts = new EditText[]{etmobNum, etPass};
@@ -153,13 +155,16 @@ public class LoginPage extends Activity implements View.OnClickListener {
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.sign_in_button:
-                Intent googleplus = new Intent(getApplicationContext(), GooglePlus.class);
-                googleplus.putExtra("gmail", GMAIL);
+                Intent googleplus = new Intent(getApplicationContext(), HomePage.class);
+                googleplus.putExtra("google", GMAIL);
                 startActivity(googleplus);
                 break;
             case R.id.b_login_signup:
                 clearField(allEditTexts);
                 startActivity(new Intent(this, SignUpAdmin.class));
+                break;
+            case R.id.b_login_forgotpass:
+                startActivity(new Intent(this, ForgotPass.class));
                 break;
             case R.id.b_login_login:
                 checkForValidation(allEditTexts);
@@ -280,7 +285,6 @@ public class LoginPage extends Activity implements View.OnClickListener {
     // METHODS FACEBOOK
     public void onSessionStateChanged(final Session session, final SessionState state, final Exception exception) {
         if (session != null && session.isOpened()) {
-            Log.e("Script", "Connection success");
             Request.newMeRequest(session, new Request.GraphUserCallback() {
                 @Override
                 public void onCompleted(GraphUser user, Response response) {
@@ -291,22 +295,30 @@ public class LoginPage extends Activity implements View.OnClickListener {
                         globalVariable.setFbName(userName);
                         globalVariable.setFbEmail(userEmail);
 
-
                         ProfilePictureView ppv = (ProfilePictureView) findViewById(R.id.fbImg);
                         // ppv.setProfileId(user.getId());
                         userImage = ((ImageView) ppv.getChildAt(0));
                         bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
                         String filePath = createImageFromBitmap(bitmap);
 
-                        boolean isEmailExist = dbloginCredAdapter.isEmailExists(userEmail);
-                        if (isEmailExist) {
+                        boolean isEmailExistForAdmin = dbloginCredAdapter.isEmailExists(userEmail);
+                        boolean isEmailExistForStaff = dbStaffAdapter.isEmailExists(userEmail);
+                        if (isEmailExistForAdmin) {
                             long adminMobile = dbloginCredAdapter.getAdminMobile(userEmail);
-                            Toast.makeText(getApplicationContext(), String.valueOf(adminMobile), Toast.LENGTH_SHORT).show();
                             globalVariable.setAdminMobile(adminMobile);
                             Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
                             homePageFacebook.putExtra("facebook", FACEBOOK);
                             homePageFacebook.putExtra("filePath", filePath);
                             startActivity(homePageFacebook);
+                        } else if (isEmailExistForStaff) {
+                            Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
+                            homePageFacebook.putExtra("facebook", FACEBOOK);
+                            homePageFacebook.putExtra("filePath", filePath);
+                            startActivity(homePageFacebook);
+                        } else {
+                            Intent staffMobile = new Intent(getApplicationContext(), StaffMobile.class);
+                            staffMobile.putExtra("facebook", FACEBOOK);
+                            startActivity(staffMobile);
                         }
                     }
                 }

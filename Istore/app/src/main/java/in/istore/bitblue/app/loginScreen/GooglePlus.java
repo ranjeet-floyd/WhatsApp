@@ -24,26 +24,32 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.home.HomePage;
+import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final int RC_SIGN_IN = 0;
     private boolean intentInProgress, signInClicked;
     private String GpersonName, Gemail;
     private static final int PROFILE_PIC_SIZE = 400;
-    private static final int GMAIL = 1;
     private int Gresponse;
+    private String filePath;
+    private GlobalVariables globalVariable;
     private GoogleApiClient googleApiClient;
-
     private ConnectionResult connectionResult;
+    private DbLoginCredAdapter dbloginCredAdapter;
+    private DbStaffAdapter dbStaffAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_googleplus);
-        startActivity(new Intent(this, HomePage.class));
-        Gresponse = getIntent().getIntExtra("gmail", 0);
-
+        dbloginCredAdapter = new DbLoginCredAdapter(this);
+        dbStaffAdapter = new DbStaffAdapter(this);
+        Gresponse = getIntent().getIntExtra("google", 0);
+        globalVariable = (GlobalVariables) getApplicationContext();
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
@@ -63,7 +69,7 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
     protected void onStop() {
         super.onStop();
         if (googleApiClient.isConnected()) {
-            googleApiClient.disconnect();
+           // googleApiClient.disconnect();
         }
     }
 
@@ -90,17 +96,32 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
                 String personPhotoUrl = currentPerson.getImage().getUrl();
                 Gemail = Plus.AccountApi.getAccountName(googleApiClient);
 
+                globalVariable.setgName(GpersonName);
+                globalVariable.setgEmail(Gemail);
+
                 personPhotoUrl = personPhotoUrl.substring(0,
                         personPhotoUrl.length() - 2)
                         + PROFILE_PIC_SIZE;
                 new LoadProfileImage().execute(personPhotoUrl);
-                Intent homepage = new Intent(this, HomePage.class);
-                homepage.putExtra("gresponse", Gresponse);
-                homepage.putExtra("gName", GpersonName);
-                homepage.putExtra("gEmail", Gemail);
-                Toast.makeText(this, GpersonName, Toast.LENGTH_SHORT).show();
-                Toast.makeText(this, Gemail, Toast.LENGTH_SHORT).show();
-                //startActivity(homepage);
+                boolean isEmailExistForAdmin = dbloginCredAdapter.isEmailExists(Gemail);
+                boolean isEmailExistForStaff = dbStaffAdapter.isEmailExists(Gemail);
+                if (isEmailExistForAdmin) {
+                    long adminMobile = dbloginCredAdapter.getAdminMobile(Gemail);
+                    globalVariable.setAdminMobile(adminMobile);
+                    Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
+                    homePageFacebook.putExtra("gresponse", Gresponse);
+                    homePageFacebook.putExtra("filePath", filePath);
+                    startActivity(homePageFacebook);
+                } else if (isEmailExistForStaff) {
+                    Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
+                    homePageFacebook.putExtra("gresponse", Gresponse);
+                    homePageFacebook.putExtra("filePath", filePath);
+                    startActivity(homePageFacebook);
+                } else {
+                    Intent staffMobile = new Intent(getApplicationContext(), StaffMobile.class);
+                    staffMobile.putExtra("gresponse", Gresponse);
+                    startActivity(staffMobile);
+                }
             } else {
                 Toast.makeText(this, "Login Failed.Check Network", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(this, LoginPage.class));
@@ -179,7 +200,7 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
 
         protected void onPostExecute(Bitmap profImage) {
             if (profImage != null) {
-                String filePath = createImageFromBitmap(profImage);
+                filePath = createImageFromBitmap(profImage);
             }
         }
     }

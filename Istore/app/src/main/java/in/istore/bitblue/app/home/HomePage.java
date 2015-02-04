@@ -1,12 +1,16 @@
 package in.istore.bitblue.app.home;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -28,9 +32,19 @@ import android.widget.Toast;
 
 import com.facebook.Session;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,10 +60,12 @@ import in.istore.bitblue.app.category.Categories;
 import in.istore.bitblue.app.cloudprint.CloudPrint;
 import in.istore.bitblue.app.data.ExportData;
 import in.istore.bitblue.app.data.ImportData;
+import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.listStock.ListMyStock;
 import in.istore.bitblue.app.loginScreen.LoginPage;
+import in.istore.bitblue.app.loginScreen.StaffMobile;
 import in.istore.bitblue.app.navDrawer.NavDrawItems;
 import in.istore.bitblue.app.sellItems.SellItemsMenu;
 import in.istore.bitblue.app.soldItems.ListSoldItems;
@@ -66,25 +82,29 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private ListView navDrawListAdmin, navDrawListStaff;
 
-    private String FpersonName, Femail, GName, Gemail, Name, Email;
-    private int responseGmail, responseFacebook;
+    private String FpersonName, Femail, GpersonName, Gemail, Name, Email;
+    private int responseGmail, responseFacebook, StaffId, Gresponse;
     private static final int G_LOGOUT = 1;
     private static final int F_LOGOUT = 2;
+    private static final int RC_SIGN_IN = 0;
+    private static final int PROFILE_PIC_SIZE = 400;
     private long Mobile;
     private final static String LOGIN = "login";
-    private int StaffId;
+    private boolean intentInProgress, signInClicked;
 
     private SharedPreferences preflogin;
     private List<NavDrawItems> navDrawItemsListForAdmin, navDrawItemsListForStaff;
     private NavDrawAdapter navDrawAdapter;
     private Bitmap bitmap;
     private DbProductAdapter dbAdapter;
-    private DbStaffAdapter dbStaffAdapter;
+    private String filePath;
     private GlobalVariables globalVariable;
+    private ConnectionResult connectionResult;
+    private DbLoginCredAdapter dbloginCredAdapter;
+    private DbStaffAdapter dbStaffAdapter;
 
     // Google client to interact with Google API
     private GoogleApiClient googleApiClient;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,23 +117,26 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
 
         //Check which button was selected on login page
-        responseGmail = getIntent().getIntExtra("gresponse", 0);
+        responseGmail = getIntent().getIntExtra("google", 0);
         responseFacebook = getIntent().getIntExtra("facebook", 0);
         preflogin = getSharedPreferences(LOGIN, MODE_PRIVATE);
         globalVariable = (GlobalVariables) getApplicationContext();
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this).addApi(Plus.API)
+                .addScope(Plus.SCOPE_PLUS_LOGIN).build();
 
         Mobile = preflogin.getLong("Mobile", 0);
         dbStaffAdapter = new DbStaffAdapter(this);
         StaffId = dbStaffAdapter.getStaffId(Mobile);
         initViews();
         if (responseGmail == 1) {
-
             //Hide Facebook Logout button in nav Drawer
             Flogout.setVisibility(View.GONE);
-            GName = getIntent().getStringExtra("gName");
-            Gemail = getIntent().getStringExtra("gEmail");
+            if (!googleApiClient.isConnected()) {
+                onConnected(savedInstanceState);
+            }
         } else if (responseFacebook == 2) {
-
             //Hide Google+ Logout button in nav Drawer
             Glogout.setVisibility(View.GONE);
 
@@ -122,7 +145,6 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             Femail = globalVariable.getFbEmail();
             //bitmap = globalVariable.getProfPic();
             String path = getIntent().getStringExtra("filePath");
-            Toast.makeText(this, path, Toast.LENGTH_LONG).show();
             bitmap = BitmapFactory.decodeFile(path);
             if (FpersonName != null) {
                 tvuserName.setText(FpersonName);
@@ -161,6 +183,9 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private void initViews() {
 
         dbAdapter = new DbProductAdapter(this);
+        dbloginCredAdapter = new DbLoginCredAdapter(this);
+        dbStaffAdapter = new DbStaffAdapter(this);
+
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer);
         drawer.setDrawerListener(actionBarDrawerToggle);
@@ -206,15 +231,12 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         Flogout.setOnClickListener(this);
     }
 
-
     private List<NavDrawItems> getAdminListItems() {
         ArrayList<NavDrawItems> drawerList = new ArrayList<NavDrawItems>();
         drawerList.add(new NavDrawItems("Staff Management", R.drawable.ic_action_computer));
         drawerList.add(new NavDrawItems("Supplier Info", R.drawable.ic_action_computer));
         drawerList.add(new NavDrawItems("Customer Info", R.drawable.ic_action_computer));
         drawerList.add(new NavDrawItems("Transactions", R.drawable.ic_action_computer));
-        drawerList.add(new NavDrawItems("Import Data", R.drawable.ic_action_computer));
-        drawerList.add(new NavDrawItems("Export Data", R.drawable.ic_action_computer));
         drawerList.add(new NavDrawItems("Print Invoice", R.drawable.ic_action_computer));
         return drawerList;
     }
@@ -271,21 +293,6 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             navDrawListStaff.setItemChecked(position, true);
         }
         drawer.closeDrawer(Gravity.LEFT);
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
     }
 
     private class DrawerItemClickListener implements
@@ -420,10 +427,18 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         if (responseGmail == 1) {
             if (googleApiClient.isConnected()) {
                 Plus.AccountApi.clearDefaultAccount(googleApiClient);
-                googleApiClient.disconnect();
-                // googleApiClient.connect();
+                Plus.AccountApi.revokeAccessAndDisconnect(googleApiClient)
+                        .setResultCallback(new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(Status status) {
+                                Toast.makeText(getApplicationContext(), "Signed Out from Google+", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                 drawer.closeDrawer(Gravity.LEFT);
-                Toast.makeText(this, "Signed Out from Google+", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, LoginPage.class));
+                finish();
+            } else {
+                Toast.makeText(getApplicationContext(), "Signed Out from Google+", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, LoginPage.class));
                 finish();
             }
@@ -436,6 +451,228 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         if (drawer.isDrawerOpen(Gravity.LEFT)) {
             drawer.closeDrawer(Gravity.LEFT);
         } else {
+        }
+    }
+
+    protected void onStart() {
+        super.onStart();
+        if (responseGmail == 1) {
+            if (!googleApiClient.isConnected()) {
+                googleApiClient.connect();
+            }
+        }
+    }
+
+    protected void onStop() {
+        super.onStop();
+        if (responseGmail == 1) {
+            if (googleApiClient.isConnected()) {
+                googleApiClient.disconnect();
+            }
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        signInClicked = false;
+        signInWithGplus();
+    }
+
+    private void signInWithGplus() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog;
+
+            @Override
+            protected String doInBackground(String... strings) {
+                resolveSignInError();
+                return "";
+            }
+
+            @Override
+            protected void onPreExecute() {
+                dialog = new ProgressDialog(HomePage.this);
+                dialog.setMessage("Please Wait...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                dialog.dismiss();
+                getProfileInformationforGmail();
+            }
+        }.execute();
+        if (!googleApiClient.isConnecting()) {
+            signInClicked = true;
+        }
+    }
+
+    private void resolveSignInError() {
+        if (connectionResult != null && connectionResult.hasResolution()) {
+            try {
+                intentInProgress = true;
+                connectionResult.startResolutionForResult(HomePage.this, RC_SIGN_IN);
+            } catch (IntentSender.SendIntentException e) {
+                intentInProgress = false;
+                googleApiClient.connect();
+            }
+        }
+    }
+
+    private void getProfileInformationforGmail() {
+        try {
+            if (Plus.PeopleApi.getCurrentPerson(googleApiClient) != null) {
+                Person currentPerson = Plus.PeopleApi
+                        .getCurrentPerson(googleApiClient);
+                GpersonName = currentPerson.getDisplayName();
+                String personPhotoUrl = currentPerson.getImage().getUrl();
+                Gemail = Plus.AccountApi.getAccountName(googleApiClient);
+
+                globalVariable.setgName(GpersonName);
+                globalVariable.setgEmail(Gemail);
+
+                personPhotoUrl = personPhotoUrl.substring(0,
+                        personPhotoUrl.length() - 2)
+                        + PROFILE_PIC_SIZE;
+                new LoadProfileImage().execute(personPhotoUrl);
+                verifyEmailWithDB();
+            } else {
+                startActivity(new Intent(getApplicationContext(), LoginPage.class));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap profImage = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                profImage = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return profImage;
+        }
+
+        protected void onPostExecute(Bitmap profImage) {
+            if (profImage != null) {
+                filePath = createImageFromBitmap(profImage);
+                ivuserPic.setImageBitmap(profImage);
+            }
+        }
+    }
+
+    private void verifyEmailWithDB() {
+        new AsyncTask<String, String, Boolean>() {
+            ProgressDialog dialog;
+            boolean isEmailExistForAdmin
+                    ,
+                    isEmailExistForStaff;
+
+            @Override
+            protected Boolean doInBackground(String... strings) {
+                isEmailExistForAdmin = dbloginCredAdapter.isEmailExists(Gemail);
+                isEmailExistForStaff = dbStaffAdapter.isEmailExists(Gemail);
+                return isEmailExistForAdmin || isEmailExistForStaff;
+            }
+
+            @Override
+            protected void onPreExecute() {
+                dialog = new ProgressDialog(HomePage.this);
+                dialog.setMessage("Please Wait...Obtaining Info");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(Boolean isEmailExist) {
+                dialog.dismiss();
+                if (isEmailExist) {
+                    long adminMobile = dbloginCredAdapter.getAdminMobile(Gemail);
+                    globalVariable.setAdminMobile(adminMobile);
+                    tvuserName.setText(GpersonName);
+                    tvuserEmail.setText(Gemail);
+                } else {
+                    Intent staffMobile = new Intent(getApplicationContext(), StaffMobile.class);
+                    staffMobile.putExtra("gresponse", Gresponse);
+                    startActivity(staffMobile);
+                }
+            }
+        }.execute();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int responseCode,
+                                    Intent intent) {
+        super.onActivityResult(requestCode, responseCode, intent);
+        if (responseGmail == 1) {
+            if (requestCode == RC_SIGN_IN) {
+                if (responseCode != RESULT_OK) {
+                    signInClicked = false;
+                    startActivity(new Intent(this, LoginPage.class));
+                }
+                intentInProgress = false;
+                if (!googleApiClient.isConnecting()) {
+                    googleApiClient.connect();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int arg0) {
+        if (responseGmail == 1)
+            googleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        if (responseGmail == 1) {
+
+            if (!result.hasResolution()) {
+                GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this,
+                        0).show();
+                return;
+            }
+            if (!intentInProgress) {
+                // Store the ConnectionResult for later usage
+                connectionResult = result;
+                if (signInClicked) {
+                    // The user has already clicked 'sign-in' so we attempt to resolve all
+                    // errors until the user is signed in, or they cancel.
+                    resolveSignInError();
+                }
+            }
+        }
+    }
+
+    public String createImageFromBitmap(Bitmap bmp) {
+        try {
+            int size = 0;
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(size);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, bos);
+            byte[] bArr = bos.toByteArray();
+            bos.flush();
+            bos.close();
+            File mFile = new File(Environment.getExternalStorageDirectory(), "GoogleImage.png");
+
+            FileOutputStream fos = new FileOutputStream(mFile);
+            fos.write(bArr);
+            fos.flush();
+            fos.close();
+            return mFile.getAbsolutePath();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

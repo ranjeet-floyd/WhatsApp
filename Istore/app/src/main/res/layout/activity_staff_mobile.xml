@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="in.istore.bitblue.app.loginScreen.StaffMobile">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/abc_action_bar_default_height_material">
+
+        <include
+            android:id="@+id/toolbar_actionbar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padd40dp"
+        android:paddingRight="@dimen/padd40dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter Staff Mobile Number:"
+            android:textColor="@color/black" />
+
+        <EditText
+            android:id="@+id/et_staffmobile_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Number"
+            android:inputType="number"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/b_staffmobile_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="Submit" />
+
+        <Button
+            android:id="@+id/b_staffmobile_skip"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/padd40dp"
+            android:text="Skip" />
+    </LinearLayout>
+</RelativeLayout>

@@ -120,5 +120,7 @@
     <string name="title_activity_trans_staff">TransStaff</string>
     <string name="title_activity_today_sales_staff">TodaySalesStaff</string>
     <string name="title_activity_invoice">Invoice</string>
+    <string name="title_activity_staff_mobile">StaffMobile</string>
+    <string name="title_activity_forgot_pass">ForgotPass</string>
 
 </resources>
