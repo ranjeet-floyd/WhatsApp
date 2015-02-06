@@ -2,6 +2,7 @@ package in.istore.bitblue.app.cart;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,13 +17,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import in.istore.bitblue.app.invoice.Invoice;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.CartAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbCartAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbCustAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbCustPurHistAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbTotSaleAmtByDateAdapter;
+import in.istore.bitblue.app.invoice.Invoice;
 import in.istore.bitblue.app.pojo.CartItem;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
@@ -39,9 +40,13 @@ public class Cart extends ActionBarActivity {
     private GlobalVariables globalVariable;
     private DbCustPurHistAdapter custPurHistAdapter;
     private DbTotSaleAmtByDateAdapter dbTotSaleAmtByDateAdapter;
+    private SharedPreferences.Editor prefCustMobile;
+    public static String CUST_MOBILE = "custmobile";
+
     private long Mobile;
     private float totalPayAmount;
     private long StaffId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,8 @@ public class Cart extends ActionBarActivity {
     }
 
     private void initViews() {
+        prefCustMobile = getSharedPreferences(CUST_MOBILE, MODE_PRIVATE).edit();
+
         StaffId = globalVariable.getStaffId();
         lvcartitems = (ListView) findViewById(R.id.lv_cart_itemlist);
         tvTotalPayAmnt = (TextView) findViewById(R.id.tv_cart_totalpayamount);
@@ -113,6 +120,7 @@ public class Cart extends ActionBarActivity {
                 dialog.dismiss();
                 try {
                     Mobile = Long.parseLong(etMobile.getText().toString());
+                    prefCustMobile.putLong("custMobile", Mobile).commit();
                     totalPayAmount = Float.parseFloat(tvTotalPayAmnt.getText().toString());
                     showSoldItemsToCustomer();
                 } catch (NumberFormatException nfe) {
@@ -125,9 +133,9 @@ public class Cart extends ActionBarActivity {
     }
 
     private void showSoldItemsToCustomer() {
-        String itemid = null, name = null;
-        int quantity = 0;
-        float sellingprice = 0, totalprice = 0;
+        String itemid, name;
+        int quantity;
+        float sellingprice, totalprice;
         long result = 0;
 
         for (CartItem cartItem : cartItemArrayList) {

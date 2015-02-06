@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
@@ -29,16 +28,15 @@ import in.istore.bitblue.app.utilities.GlobalVariables;
 public class SellItem extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
 
-    private Button bEdit, bSell;
+    private Button bEdit, baddtocart;
     private TextView tvbarcode, tvname, tvquantity, tvcostprice, tvsellprice;
     private ExpandableTextView etvdesc;
     private ImageView ivProdImage;
     private ListView lvquanthist;
 
     private SparseBooleanArray mCollapsedStatus;
-    private String scanContent;
     private GlobalVariables globalVariable;
-    private String id, name, desc, supplier;
+    private String id, scanContent, name, desc, supplier;
     private int quantity;
     private float costprice, sellprice;
     private byte[] byteImage;
@@ -78,14 +76,15 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
             getProductfor(id);
             quantityList = getQuantityDetails(id);
         } else if (scanContent != null) {
-            getProductvia(scanContent);
-            quantityList = getQuantityDetails(scanContent);
+            id = scanContent;
+            getProductfor(id);
+            quantityList = getQuantityDetails(id);
         } else {
-            Toast.makeText(this, "Nothing was found", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, SellItemsMenu.class));
         }
 
-        bSell = (Button) findViewById(R.id.b_sellitems_submit);
-        bSell.setOnClickListener(this);
+        baddtocart = (Button) findViewById(R.id.b_sellitems_addtocart);
+        baddtocart.setOnClickListener(this);
 
         bEdit = (Button) findViewById(R.id.b_sellitems_edit);
         bEdit.setOnClickListener(this);
@@ -100,7 +99,8 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
             tvbarcode.setText(scanContent);
         } else if (id != null) {
             tvbarcode.setText(id);
-        } else Toast.makeText(this, "Id not found", Toast.LENGTH_SHORT).show();
+        } else startActivity(new Intent(this, SellItemsMenu.class));
+
 
         tvname = (TextView) findViewById(R.id.tv_sellitems_prod_name);
         tvname.setText(name);
@@ -128,21 +128,6 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
         return dbQuanAdapter.getQuatityDetailsfor(id);
     }
 
-    private void getProductvia(String scanContent) {
-        Product product = dbProAdapter.getProductDetails(scanContent);
-        if (product != null) {
-            name = product.getName();
-            desc = product.getDesc();
-            quantity = product.getQuantity();
-            costprice = product.getCostPrice();
-            sellprice = product.getSellingPrice();
-            supplier = product.getSupplier();
-            byteImage = product.getImage();
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            bitmap = BitmapFactory.decodeByteArray(byteImage, 0, byteImage.length, options);
-        }
-    }
-
     private void getProductfor(String id) {
         Product product = dbProAdapter.getProductDetails(id);
         if (product != null) {
@@ -166,7 +151,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
                 startEditItemActivity();
                 break;
 
-            case R.id.b_sellitems_submit:
+            case R.id.b_sellitems_addtocart:
                 startSoldItemActivity();
                 break;
         }

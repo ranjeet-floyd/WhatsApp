@@ -26,10 +26,6 @@ public class DbOutOfStockAdapter {
         return this;
     }
 
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long addtoOutOfStockList(String Id, String Name, int RemQuantity, long SuppMobile) {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_OUTOFSTOCK_PRODID, Id);
@@ -38,7 +34,6 @@ public class DbOutOfStockAdapter {
         row.put(DBHelper.COL_OUTOFSTOCK_SUPPMOBILE, SuppMobile);
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_OUTOFSTOCK_ITEMS, null, row);
-        closeDatabase();
         return result;
     }
 
@@ -54,7 +49,6 @@ public class DbOutOfStockAdapter {
                 outofstock.setSuppMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_OUTOFSTOCK_SUPPMOBILE)));
                 outofstockArrayList.add(outofstock);
             } while (c.moveToNext());
-            closeDatabase();
             return outofstockArrayList;
         } else {
             return null;

@@ -10,7 +10,7 @@
     <string name="title_activity_login_page">LoginPage</string>
     <string name="signWithGmail">Connect with Google</string>
     <string name="signWithFacebook">Connect with Facebook</string>
-
+    <string name="ForgotPassword"><u>Forgot Password </u></string>
     <!-- Home Page -->
     <string name="listmystock">List my Stock</string>
     <string name="viewsolditems">View Sold Items</string>
@@ -122,5 +122,7 @@
     <string name="title_activity_invoice">Invoice</string>
     <string name="title_activity_staff_mobile">StaffMobile</string>
     <string name="title_activity_forgot_pass">ForgotPass</string>
-
+    <!--FaceBook Sign in-->
+    <string name="com_facebook_loginview_log_in_button">Log In</string>
+    <string name="com_facebook_loginview_log_out_button">Log Out</string>
 </resources>

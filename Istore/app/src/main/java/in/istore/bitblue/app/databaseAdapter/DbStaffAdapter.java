@@ -26,10 +26,6 @@ public class DbStaffAdapter {
         return this;
     }
 
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long insertStaffInfo(int StoreId, int StaffId, String Name, long Mobile, String Passwd, String Address, String Joindate) {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_STAFFMGNT_STOREID, StoreId);
@@ -43,7 +39,6 @@ public class DbStaffAdapter {
 
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_STAFFMGNT, null, row);
-        closeDatabase();
         return result;
     }
 
@@ -61,7 +56,6 @@ public class DbStaffAdapter {
                 staff.setTotalSales(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_TOTALSALES)));
                 staffArrayList.add(staff);
             } while (c.moveToNext());
-            closeDatabase();
             return staffArrayList;
         } else {
             return null;
@@ -78,7 +72,6 @@ public class DbStaffAdapter {
                 int staffId = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_STAFFID));
                 staffIdArrayList.add(staffId);
             } while (c.moveToNext());
-            closeDatabase();
             return staffIdArrayList;
         } else {
             return null;
@@ -91,10 +84,8 @@ public class DbStaffAdapter {
                 DBHelper.COL_STAFFMGNT_MOBNUM + "=" + Mobile + " AND " +
                         DBHelper.COL_STAFFMGNT_PASSWD + "='" + Passwd + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return true;
         } else {
-            closeDatabase();
             return false;
         }
     }
@@ -104,10 +95,8 @@ public class DbStaffAdapter {
         Cursor c = sqLiteDb.query(DBHelper.TABLE_STAFFMGNT, DBHelper.STAFFMGNT_COLUMNS,
                 DBHelper.COL_STAFFMGNT_STAFFEMAIL + "='" + Email + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return true;
         } else {
-            closeDatabase();
             return false;
         }
     }
@@ -118,7 +107,6 @@ public class DbStaffAdapter {
 
         openWritableDatabase();
         long result = sqLiteDb.update(DBHelper.TABLE_STAFFMGNT, row, DBHelper.COL_STAFFMGNT_MOBNUM + "='" + Mobile + "'", null);
-        closeDatabase();
         return result;
     }
 
@@ -129,7 +117,6 @@ public class DbStaffAdapter {
                 DBHelper.COL_STAFFMGNT_MOBNUM + "='" + Mobile + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
             StaffName = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_NAME));
-            closeDatabase();
             return StaffName;
         } else {
             return null;
@@ -143,7 +130,6 @@ public class DbStaffAdapter {
                 DBHelper.COL_STAFFMGNT_MOBNUM + "='" + Mobile + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
             StaffName = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_STAFFID));
-            closeDatabase();
             return StaffName;
         } else {
             return -1;
@@ -157,7 +143,6 @@ public class DbStaffAdapter {
                 DBHelper.COL_STAFFMGNT_MOBNUM + "='" + Mobile + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
             StaffName = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_STOREID));
-            closeDatabase();
             return StaffName;
         } else {
             return -1;

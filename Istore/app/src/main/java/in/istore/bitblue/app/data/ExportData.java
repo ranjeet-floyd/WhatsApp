@@ -66,16 +66,18 @@ public class ExportData extends ActionBarActivity {
                     file = new File(path);
                 }
                 try {
-                    if (file.exists()) {
-                        showAlertDialog("DUPLICATE FILE", "File Already Exists.\nCreate a new file to export data", R.drawable.erroricon);
-                    } else {
-                        file.createNewFile();
-                        Toast.makeText(this, path, Toast.LENGTH_LONG).show();
-                        if (checkifCSVFile(file)) {
-                            new exportdata().execute(file.getName().toLowerCase());
+                    if (file != null) {
+                        if (file.exists()) {
+                            showAlertDialog("DUPLICATE FILE", "File Already Exists.\nCreate a new file to export data", R.drawable.erroricon);
                         } else {
-                            FileUtils.forceDelete(file);
-                            showAlertDialog("Error", "Enter correct format (filename.csv)", R.drawable.erroricon);
+                            file.createNewFile();
+                            Toast.makeText(this, path, Toast.LENGTH_LONG).show();
+                            if (checkifCSVFile(file)) {
+                                new exportdata().execute(file.getName().toLowerCase());
+                            } else {
+                                FileUtils.forceDelete(file);
+                                showAlertDialog("Error", "Enter correct format (filename.csv)", R.drawable.erroricon);
+                            }
                         }
                     }
                 } catch (IOException e) {
@@ -85,7 +87,6 @@ public class ExportData extends ActionBarActivity {
         } else if (resultCode == Activity.RESULT_CANCELED) {
             Toast.makeText(this, "File Not Selected", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private boolean checkifCSVFile(File file) {

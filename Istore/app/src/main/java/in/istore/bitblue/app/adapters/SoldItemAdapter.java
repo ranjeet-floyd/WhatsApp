@@ -13,7 +13,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class SoldItemAdapter extends BaseAdapter {
             holder.image = (ImageView) listRow.findViewById(R.id.iv_soldlistitem_img);
             holder.name = (TextView) listRow.findViewById(R.id.tv_soldlistitem_name);
             holder.date = (TextView) listRow.findViewById(R.id.tv_soldlistitem_date);
-            holder.favorite = (ToggleButton) listRow.findViewById(R.id.ib_soldlistitem_favorite);
+          //  holder.favorite = (ToggleButton) listRow.findViewById(R.id.ib_soldlistitem_favorite);
             listRow.setTag(holder);
         } else {
             holder = (ViewHolder) listRow.getTag();
@@ -80,12 +79,12 @@ public class SoldItemAdapter extends BaseAdapter {
 
         holder.name.setText(product.getName());
         holder.date.setText(product.getSoldDate());
-        if (product.getIsFavorite() == 1) {
+       /* if (product.getIsFavorite() == 1) {
             holder.favorite.setChecked(true);
         } else if (product.getIsFavorite() == 0) {
             holder.favorite.setChecked(false);
-        }
-        holder.favorite.setOnClickListener(new View.OnClickListener() {
+        }*/
+       /* holder.favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (holder.favorite.isChecked()) {
@@ -95,7 +94,7 @@ public class SoldItemAdapter extends BaseAdapter {
                 }
                 dbProAdapter.updateFavoriteProductDetails(product.getId(), product.getIsFavorite());
             }
-        });
+        });*/
         listRow.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -120,6 +119,6 @@ public class SoldItemAdapter extends BaseAdapter {
     private static class ViewHolder {
         TextView id, name, date;
         ImageView image;
-        ToggleButton favorite;
+       // ToggleButton favorite;
     }
 }

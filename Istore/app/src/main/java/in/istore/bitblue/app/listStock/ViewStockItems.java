@@ -70,7 +70,7 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
         if ((id != null) && (!id.equals(""))) {
             product = getProductDetails(id);
             if (product != null) {
-                origquantity = product.getRemQuantity();
+                origquantity = product.getQuantity();
                 etbarcode.setText(id);
                 etname.setText(product.getName());
                 etquantity.setText(String.valueOf(origquantity));
@@ -96,7 +96,7 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
                 startActivity(new Intent(this, AddItemsMenu.class));
                 break;
             case R.id.b_viewstockitem_update:
-                int addedquantity = 0;
+                int addedquantity;
                 try {
                     addedquantity = Integer.parseInt(etquantity.getText().toString());
                 } catch (Exception e) {

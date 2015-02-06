@@ -26,10 +26,6 @@ public class DbSuppAdapter {
         return this;
     }
 
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long insertSuppInfo(String Name, long Mobile, String Address, String Joindate) {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_SUPPINFO_NAME, Name);
@@ -39,7 +35,6 @@ public class DbSuppAdapter {
 
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_SUPPINFO, null, row);
-        closeDatabase();
         return result;
     }
 
@@ -55,7 +50,6 @@ public class DbSuppAdapter {
                 supplier.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_SUPPINFO_MOBILE)));
                 supplierArrayList.add(supplier);
             } while (c.moveToNext());
-            closeDatabase();
             return supplierArrayList;
         } else {
             return null;
@@ -71,7 +65,6 @@ public class DbSuppAdapter {
             do {
                 supplierArrayList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUPPINFO_NAME)));
             } while (c.moveToNext());
-            closeDatabase();
             return supplierArrayList;
         } else {
             return null;
@@ -83,10 +76,8 @@ public class DbSuppAdapter {
         Cursor c = sqLiteDb.query(DBHelper.TABLE_SUPPINFO, DBHelper.SUPPINFO_COLUMNS,
                 DBHelper.COL_SUPPINFO_NAME + "='" + suppName + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_SUPPINFO_MOBILE));
         } else {
-            closeDatabase();
             return 0;
         }
     }

@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -45,6 +44,7 @@ import in.istore.bitblue.app.home.HomePage;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class LoginPage extends Activity implements View.OnClickListener {
+
     private SignInButton bGmail;
     private LoginButton bFacebook;
     private ImageView userImage;
@@ -130,12 +130,12 @@ public class LoginPage extends Activity implements View.OnClickListener {
 
         bGmail = (SignInButton) findViewById(R.id.sign_in_button);
         bGmail.setOnClickListener(this);
-        setGooglePlusButtonText(bGmail, "Log in with Google+");
+        setGooglePlusButtonText(bGmail, "Sign In");
 
         bFacebook = (LoginButton) findViewById(R.id.authButton);
         bFacebook.setOnClickListener(this);
         bFacebook.setPublishPermissions(Arrays.asList("email", "public_profile", "user_friends"));
-
+        bFacebook.setText("Sign In");
         globalVariable = (GlobalVariables) getApplicationContext();
 
         bsignup = (Button) findViewById(R.id.b_login_signup);
@@ -162,6 +162,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
             case R.id.b_login_signup:
                 clearField(allEditTexts);
                 startActivity(new Intent(this, SignUpAdmin.class));
+                overridePendingTransition(R.anim.right_in, R.anim.left_out);
                 break;
             case R.id.b_login_forgotpass:
                 startActivity(new Intent(this, ForgotPass.class));
@@ -213,7 +214,6 @@ public class LoginPage extends Activity implements View.OnClickListener {
                             dialog.dismiss();
                             if (creds == null) {
                                 clearField(allEditTexts);
-                                Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
                             } else if (StaffId <= 0) {
                                 globalVariable.setAdminMobile(Mobile);
                                 Intent HomePage = new Intent(LoginPage.this, HomePage.class);
@@ -354,7 +354,6 @@ public class LoginPage extends Activity implements View.OnClickListener {
 
     protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
 
-        // Find the TextView that is inside of the SignInButton and set its text
         for (int i = 0; i < signInButton.getChildCount(); i++) {
             View v = signInButton.getChildAt(i);
 

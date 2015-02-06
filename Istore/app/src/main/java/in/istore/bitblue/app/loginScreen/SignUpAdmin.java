@@ -2,6 +2,7 @@ package in.istore.bitblue.app.loginScreen;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -33,6 +34,9 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
     private DbLoginCredAdapter loginCredAdapter;
     private GlobalVariables globalVariable;
 
+    private final static String STORE_ID = "StoreId";
+    private SharedPreferences.Editor prefstoreid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +58,7 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
 
     private void initViews() {
 
+        prefstoreid = getSharedPreferences(STORE_ID, MODE_PRIVATE).edit();
         etname = (EditText) findViewById(R.id.et_signup_name);
         etmobNum = (EditText) findViewById(R.id.et_signup_mobnum);
         etEmail = (EditText) findViewById(R.id.et_signup_email);
@@ -69,6 +74,7 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.b_signup_continue:
+                overridePendingTransition(R.anim.right_in, R.anim.left_out);
                 CharSequence email = etEmail.getText().toString();
                 checkForValidation(allEditTexts);
                 boolean isValidEmail = checkEmailValidation(email);
@@ -77,11 +83,13 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                     break;
                 }
 
-                //If everything is ok send email to user with randomly generated store id
+                //If everything is ok send email to user with randomly generated password
                 StoreId = Store.generateStoreId();
                 Passwd = Store.generatePassword();
                 globalVariable.setAdminPass(Passwd);
                 globalVariable.setStoreId(StoreId);
+                prefstoreid.putInt("storeid", StoreId);
+                prefstoreid.commit();
                 Name = etname.getText().toString();
                 Email = etEmail.getText().toString();
                 Mobile = Long.parseLong(etmobNum.getText().toString());
@@ -114,13 +122,14 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
             protected void onPostExecute(Boolean result) {
                 dialog.dismiss();
                 if (result != null && result) {
-                    if (isAlredyExists(Mobile)) {
+                    if (isMobileExists(Mobile)) {
                         Toast.makeText(getApplicationContext(), "Mobile Number Already Exists", Toast.LENGTH_LONG).show();
+                    } else if (isEmailExists(Email)) {
+                        Toast.makeText(getApplicationContext(), "Email Already Exists", Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
                         long dbresult = loginCredAdapter.insertAdminInfo(Name, Email, Passwd, Mobile, StoreId);
                         if (dbresult <= 0) {
-                            Toast.makeText(SignUpAdmin.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                         } else {
                             Intent storeName = new Intent(SignUpAdmin.this, StoreName.class);
                             storeName.putExtra("Mobile", Mobile);
@@ -128,13 +137,19 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                             startActivity(storeName);
                         }
                     }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Mail sending failed Check Network", Toast.LENGTH_SHORT).show();
                 }
             }
         }.execute();
     }
 
-    private boolean isAlredyExists(long mobile) {
+    private boolean isMobileExists(long mobile) {
         return loginCredAdapter.isMobileExists(mobile);
+    }
+
+    private boolean isEmailExists(String Email) {
+        return loginCredAdapter.isEmailExists(Email);
     }
 
     private boolean sendEmailTo(String toPerson, String passwd) {
@@ -151,7 +166,7 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                 return true;
             }
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Could not send the mail", Toast.LENGTH_SHORT).show();
+            return false;
         }
         return false;
     }

@@ -1,6 +1,7 @@
 package in.istore.bitblue.app.invoice;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,7 +29,8 @@ public class Invoice extends ActionBarActivity {
     private int StoreId;
     private Date date;
     private String todayDate;
-
+    private SharedPreferences prefCustMobile;
+    public static String CUST_MOBILE = "custmobile";
     private ArrayList<CartItem> invoiceArrayList;
     private GlobalVariables globalVariable;
     private InvoiceAdapter invoiceAdapter;
@@ -53,6 +55,7 @@ public class Invoice extends ActionBarActivity {
     }
 
     private void initViews() {
+        prefCustMobile = getSharedPreferences(CUST_MOBILE, MODE_PRIVATE);
         globalVariable = (GlobalVariables) getApplicationContext();
         dbCartAdapter = new DbCartAdapter(this);
         tvinvoicenumber = (TextView) findViewById(R.id.tv_invoice_number);
@@ -65,7 +68,7 @@ public class Invoice extends ActionBarActivity {
         invoiceNumber = Store.generateInVoiceNumber();
         StaffId = globalVariable.getStaffId();
         StoreId = globalVariable.getStoreId();
-        Mobile = getIntent().getLongExtra("Mobile", 0);
+        Mobile = prefCustMobile.getLong("custMobile", 0);
         date = new Date();
         todayDate = DateUtil.convertFromYYYY_MM_DDtoDD_MM_YYYY(DateUtil.convertToStringDateOnly(date));
         tvinvoicenumber.setText(String.valueOf(invoiceNumber));
@@ -82,8 +85,8 @@ public class Invoice extends ActionBarActivity {
             invoiceAdapter = new InvoiceAdapter(this, invoiceArrayList);
             lvProductList.setAdapter(invoiceAdapter);
             tvTotalBillPay.setText(String.valueOf(dbCartAdapter.getTotalPayAmount()));
-            dbCartAdapter.emptyCart();
-            dbCartAdapter.clearAllPurchases();
+           // dbCartAdapter.emptyCart();
+           // dbCartAdapter.clearAllPurchases();
         } else {
             startActivity(new Intent(this, Cart.class));
         }

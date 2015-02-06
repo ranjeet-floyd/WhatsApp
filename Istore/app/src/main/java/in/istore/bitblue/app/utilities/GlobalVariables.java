@@ -1,7 +1,10 @@
 package in.istore.bitblue.app.utilities;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import java.util.ArrayList;
 
@@ -137,5 +140,12 @@ public class GlobalVariables extends Application {
 
     public void setStaffPass(String staffPass) {
         StaffPass = staffPass;
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

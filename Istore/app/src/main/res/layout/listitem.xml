@@ -45,7 +45,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="2">
+                    android:weightSum="1">
 
                     <TextView
                         android:id="@+id/tv_listitem_name"
@@ -57,21 +57,6 @@
                         android:textColor="@color/myPrimaryColor"
                         android:textSize="20sp"
                         android:textStyle="bold|italic" />
-
-
-                    <ToggleButton
-                        android:id="@+id/ib_listitem_favorite"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="right"
-                        android:layout_weight="0"
-                        android:background="@drawable/favorite"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"
-                        android:gravity="right"
-                        android:textColor="@color/myPrimaryColor"
-                        android:textOff=""
-                        android:textOn="" />
                 </LinearLayout>
 
                 <!--<LinearLayout

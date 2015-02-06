@@ -59,7 +59,7 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        toolTitle.setText("SOLD ITEM FORM");
+        toolTitle.setText("SELL ITEM FORM");
     }
 
     private void initViews() {
@@ -85,7 +85,7 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
         bDec = (Button) findViewById(R.id.b_solditem_dec);
         bDec.setOnClickListener(this);
 
-        if (id != null)
+        if (id   != null)
             getProductfor(id);
     }
 

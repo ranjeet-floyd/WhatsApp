@@ -26,10 +26,6 @@ public class DbTotSaleAmtByDateAdapter {
         return this;
     }
 
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long insertTodaySales(float TotalSalesAmount) {
         Date date = new Date();
         String todayDate = DateUtil.convertToStringDateOnly(date);
@@ -49,7 +45,6 @@ public class DbTotSaleAmtByDateAdapter {
             //insert
             result = sqLiteDb.insert(DBHelper.TABLE_TOTAL_SALES_BY_DATE, null, insertAmount);
         }
-        closeDatabase();
         return result;
     }
 
@@ -75,10 +70,8 @@ public class DbTotSaleAmtByDateAdapter {
         openWritableDatabase();
         Cursor c = sqLiteDb.rawQuery(SUM_QUERY, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return c.getFloat(c.getColumnIndexOrThrow("SUM(" + DBHelper.COL_TOTALSALES_PERDAY_SALESAMOUNT + ")"));
         } else {
-            closeDatabase();
             return 0;
         }
     }
@@ -102,10 +95,8 @@ public class DbTotSaleAmtByDateAdapter {
         openWritableDatabase();
         Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return c.getFloat(c.getColumnIndexOrThrow("SUM(" + DBHelper.COL_TOTALSALES_PERDAY_SALESAMOUNT + ")"));
         } else {
-            closeDatabase();
             return 0;
         }
     }

@@ -1,9 +1,10 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/myAccentColor"
     android:fitsSystemWindows="false"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".HomePage">
 
     <RelativeLayout
@@ -11,9 +12,9 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/linearLayout"
             android:orientation="vertical">
 
             <include
@@ -30,130 +31,109 @@
             android:layout_below="@+id/linearLayout">
 
             <LinearLayout
-                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:weightSum="4">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padd10dp"
-                    android:layout_weight="1"
-                    android:weightSum="2"
-                    android:orientation="horizontal"
                     android:layout_marginLeft="@dimen/padd5dp"
-                    android:layout_marginRight="@dimen/padd5dp">
+                    android:layout_marginRight="@dimen/padd5dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/padd10dp"
+                    android:weightSum="2">
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/stock_list_stock" />
 
                     <Button
                         android:id="@+id/b_list_my_stock"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/listmystock"
                         android:layout_gravity="center"
+                        android:layout_weight="1"
                         android:background="@color/material_brown_300"
-                        android:layout_weight="1" />
+                        android:text="@string/listmystock" />
                 </LinearLayout>
 
                 <View
-                    android:layout_marginTop="@dimen/padd5dp"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/padd5dp"
                     android:background="@color/material_blue_grey_950" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padd10dp"
-                    android:layout_weight="1"
-                    android:weightSum="2"
                     android:layout_marginLeft="@dimen/padd5dp"
-                    android:layout_marginRight="@dimen/padd5dp">
+                    android:layout_marginRight="@dimen/padd5dp"
+                    android:layout_weight="1"
+                    android:paddingTop="@dimen/padd10dp"
+                    android:weightSum="2">
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/stock_sold_item" />
 
                     <Button
                         android:id="@+id/b_view_sold_items"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/viewsolditems"
-                        android:layout_weight="1"
                         android:layout_gravity="center"
-                        android:background="@color/material_blue_300" />
+                        android:layout_weight="1"
+                        android:background="@color/material_blue_300"
+                        android:text="@string/viewsolditems" />
                 </LinearLayout>
 
                 <View
-                    android:layout_marginTop="@dimen/padd5dp"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/padd5dp"
                     android:background="@color/material_blue_grey_950" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padd10dp"
-                    android:layout_weight="1"
-                    android:weightSum="2"
                     android:layout_marginLeft="@dimen/padd5dp"
-                    android:layout_marginRight="@dimen/padd5dp">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/stock_add_item" />
+                    android:layout_marginRight="@dimen/padd5dp"
+                    android:layout_weight="1"
+                    android:paddingTop="@dimen/padd10dp"
+                    android:weightSum="2">
 
                     <Button
                         android:id="@+id/b_add_items"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:text="@string/additems"
                         android:layout_weight="1"
-                        android:background="@color/material_yellow_300" />
+                        android:background="@color/material_yellow_300"
+                        android:text="@string/additems" />
                 </LinearLayout>
 
                 <View
-                    android:layout_marginTop="@dimen/padd5dp"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/padd5dp"
                     android:background="@color/material_blue_grey_950" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padd10dp"
-                    android:layout_weight="1"
-                    android:weightSum="2"
+                    android:layout_marginBottom="@dimen/padd5dp"
                     android:layout_marginLeft="@dimen/padd5dp"
                     android:layout_marginRight="@dimen/padd5dp"
-                    android:layout_marginBottom="@dimen/padd5dp">
+                    android:layout_weight="1"
+                    android:paddingTop="@dimen/padd10dp"
+                    android:weightSum="2">
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/stock_sell_item" />
 
                     <Button
                         android:id="@+id/b_sell_items"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:text="@string/sellitems"
                         android:layout_weight="1"
-                        android:background="@color/material_green_500" />
+                        android:background="@color/material_green_500"
+                        android:text="@string/sellitems" />
                 </LinearLayout>
 
                 <View

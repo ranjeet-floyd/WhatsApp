@@ -93,5 +93,4 @@ public class StoreName extends ActionBarActivity implements View.OnClickListener
 // notificationID allows you to update the notification later on.
         mNotificationManager.notify(1, mBuilder.build());
     }
-
 }

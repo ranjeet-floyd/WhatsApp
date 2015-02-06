@@ -3,7 +3,6 @@
 
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
-
     <!-- Colors specific to Material themes. -->
         <color name="background_material_dark">#ff212121</color>
         <color name="background_material_light">#fffafafa</color>

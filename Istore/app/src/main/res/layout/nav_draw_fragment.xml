@@ -78,30 +78,32 @@
             android:id="@+id/lv_nav_drawer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="3"/>
+            android:layout_weight="3" />
 
         <View
             android:id="@+id/separator"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/lv_nav_drawer"
-            android:background="@color/primary_material_light"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:background="@color/primary_material_light" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_below="@+id/separator"
+            android:layout_weight="3"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/padd15dp"
             android:paddingRight="@dimen/padd15dp"
-            android:paddingTop="@dimen/padd15dp"
-            android:layout_weight="1">
+            android:paddingTop="@dimen/padd15dp">
+
             <Button
                 android:id="@+id/b_google_logout"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
+                android:layout_weight="1"
                 android:background="@drawable/gplus" />
 
             <com.facebook.widget.LoginButton
@@ -110,7 +112,17 @@
                 android:layout_height="45dp"
                 android:layout_marginLeft="@dimen/padd10dp"
                 android:layout_marginRight="@dimen/padd10dp"
+                android:layout_weight="1"
                 fb:logout_text="Log Out" />
+
+            <Button
+                android:id="@+id/b_homepage_logout"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@color/material_blue_grey_100"
+                android:text="LOG OUT"
+                android:textColor="@color/black" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

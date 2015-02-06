@@ -59,10 +59,10 @@ import in.istore.bitblue.app.cart.Cart;
 import in.istore.bitblue.app.category.Categories;
 import in.istore.bitblue.app.cloudprint.CloudPrint;
 import in.istore.bitblue.app.data.ExportData;
-import in.istore.bitblue.app.data.ImportData;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
+import in.istore.bitblue.app.invoice.Invoice;
 import in.istore.bitblue.app.listStock.ListMyStock;
 import in.istore.bitblue.app.loginScreen.LoginPage;
 import in.istore.bitblue.app.loginScreen.StaffMobile;
@@ -75,7 +75,7 @@ import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class HomePage extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Toolbar toolbar;
-    private Button blistStock, bviewSoldItems, bAddItems, bSellItems, Glogout, Flogout;
+    private Button blistStock, bviewSoldItems, bAddItems, bSellItems, Glogout, Flogout, blogout;
     private TextView tvuserName, tvuserEmail;
     private ImageView ivuserPic;
     private DrawerLayout drawer;
@@ -162,6 +162,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             tvuserEmail.setText(Email);
             Flogout.setVisibility(View.GONE);
             Glogout.setVisibility(View.GONE);
+
         } else if (StaffId > 0) {
             Name = preflogin.getString("Name", "");
             tvuserName.setText(Name);
@@ -169,7 +170,6 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             Flogout.setVisibility(View.GONE);
             Glogout.setVisibility(View.GONE);
         }
-        //Setup Facebook profile
     }
 
     private void setToolbar() {
@@ -229,6 +229,9 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
         Flogout = (Button) findViewById(R.id.b_facebook_logout);
         Flogout.setOnClickListener(this);
+
+        blogout = (Button) findViewById(R.id.b_homepage_logout);
+        blogout.setOnClickListener(this);
     }
 
     private List<NavDrawItems> getAdminListItems() {
@@ -237,7 +240,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         drawerList.add(new NavDrawItems("Supplier Info", R.drawable.ic_action_computer));
         drawerList.add(new NavDrawItems("Customer Info", R.drawable.ic_action_computer));
         drawerList.add(new NavDrawItems("Transactions", R.drawable.ic_action_computer));
-        drawerList.add(new NavDrawItems("Print Invoice", R.drawable.ic_action_computer));
+        drawerList.add(new NavDrawItems("Invoice", R.drawable.ic_action_computer));
         return drawerList;
     }
 
@@ -268,7 +271,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                     break;
 
                 case 4:// Import Data
-                    startActivity(new Intent(this, ImportData.class));
+                    startActivity(new Intent(this, Invoice.class));
                     break;
 
                 case 5: //Export Data
@@ -381,6 +384,11 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             case R.id.b_facebook_logout:
                 showConfirmationDialog("Facebook", F_LOGOUT);
                 break;
+
+            case R.id.b_homepage_logout:
+                preflogin.edit().clear().apply();
+                startActivity(new Intent(this, LoginPage.class));
+                break;
         }
     }
 
@@ -491,7 +499,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             @Override
             protected void onPreExecute() {
                 dialog = new ProgressDialog(HomePage.this);
-                dialog.setMessage("Please Wait...");
+                dialog.setMessage("Please Wait...Signing In");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.setCancelable(false);
                 dialog.show();

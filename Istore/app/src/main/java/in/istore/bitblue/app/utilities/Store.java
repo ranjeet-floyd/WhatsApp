@@ -22,7 +22,6 @@ public class Store {
         int max = 99;
         Random random = new Random();
 
-        // nextInt is normally exclusive so add 1 to make it inclusive
         return random.nextInt((max - min) + 1) + min;
     }
 
@@ -36,7 +35,17 @@ public class Store {
         int max = 999999999;
         Random random = new Random();
 
-        // nextInt is normally exclusive so add 1 to make it inclusive
         return random.nextInt((max - min) + 1) + min;
+    }
+
+    public static String generateProdId(String CategoryName, String ProSubcatName) {
+
+        int min = 1111;
+        int max = 9999;
+        Random random = new Random();
+
+        int id = random.nextInt((max - min) + 1) + min;
+
+        return CategoryName + "_" + ProSubcatName + "_" + id;
     }
 }

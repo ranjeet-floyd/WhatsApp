@@ -45,7 +45,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="2">
+                    android:weightSum="1">
 
                     <TextView
                         android:id="@+id/tv_soldlistitem_name"
@@ -57,37 +57,7 @@
                         android:textColor="@color/myPrimaryColor"
                         android:textSize="20sp"
                         android:textStyle="bold|italic" />
-
-
-                    <ToggleButton
-                        android:id="@+id/ib_soldlistitem_favorite"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="right"
-                        android:layout_weight="0"
-                        android:background="@drawable/favorite"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"
-                        android:gravity="right"
-                        android:textColor="@color/myPrimaryColor"
-                        android:textOff=""
-                        android:textOn="" />
                 </LinearLayout>
-
-                <!--<LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/padd5dp"
-                    android:weightSum="2">
-
-                    <TextView
-                        android:id="@+id/tv_listitem_id"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="1"
-                        android:textColor="@color/myPrimaryColor" />
-                </LinearLayout>-->
 
                 <LinearLayout
                     android:layout_width="match_parent"

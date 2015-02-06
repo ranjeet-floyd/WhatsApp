@@ -68,34 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd15dp"
-                    android:orientation="vertical"
-                    android:weightSum="2">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/barcodenoorproductID"
-                        android:textColor="@color/primary_material_dark"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/et_additems_barcode_prod_id"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:textColor="@color/material_dark_teal_A400" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padd15dp"
-                    android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd25dp"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -122,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd5dp"
+                    android:layout_marginTop="@dimen/padd15dp"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -149,7 +122,34 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd5dp"
+                    android:layout_marginTop="@dimen/padd15dp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/barcodenoorproductID"
+                        android:textColor="@color/primary_material_dark"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_additems_barcode_prod_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:textColor="@color/material_dark_teal_A400" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padd15dp"
+                    android:layout_marginRight="@dimen/padd15dp"
+                    android:layout_marginTop="@dimen/padd15dp"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -175,7 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd5dp"
+                    android:layout_marginTop="@dimen/padd15dp"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -202,7 +202,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd5dp"
+                    android:layout_marginTop="@dimen/padd15dp"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -229,7 +229,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/padd10dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd5dp"
+                    android:layout_marginTop="@dimen/padd15dp"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
@@ -266,7 +266,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd5dp"
+                    android:layout_marginTop="@dimen/padd15dp"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
@@ -303,7 +303,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/padd15dp"
                     android:layout_marginRight="@dimen/padd15dp"
-                    android:layout_marginTop="@dimen/padd5dp"
+                    android:layout_marginTop="@dimen/padd15dp"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -336,7 +336,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/padd5dp"
+        android:layout_marginTop="@dimen/padd15dp"
         android:background="@color/myWindowBackground"
         android:orientation="horizontal"
         android:weightSum="2">

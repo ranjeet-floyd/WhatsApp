@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "istore.db";
-    public static final int DATABASE_VERSION = 35;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
+    public static final int DATABASE_VERSION = 36;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
 
     public static final String TABLE_PRODUCT = "product";
     public static final String TABLE_QUANTITY_HISTORY = "quantityhistory";

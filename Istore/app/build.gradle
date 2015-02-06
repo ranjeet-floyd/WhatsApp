@@ -45,5 +45,6 @@ dependencies {
     compile files('D:/Azhar/githubIstore/Istore/.idea/libraries/activation.jar')
     compile files('D:/Azhar/githubIstore/Istore/.idea/libraries/additionnal.jar')
     compile files('D:/Azhar/githubIstore/Istore/.idea/libraries/mail.jar')
+    compile files('libs/DraggableGridView.jar')
 }
 

@@ -60,7 +60,7 @@
         <activity android:name=".home.HomePage" />
         <activity
             android:name=".listStock.ListMyStock"
-            android:parentActivityName=".category.Categories"
+            android:parentActivityName=".home.HomePage"
             android:screenOrientation="portrait" />
         <activity
             android:name=".addItems.AddItemsMenu"
@@ -114,6 +114,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".loginScreen.SignUpAdmin"
+            android:parentActivityName=".loginScreen.LoginPage"
             android:screenOrientation="portrait" />
         <activity
             android:name=".loginScreen.StoreName"
@@ -168,13 +169,15 @@
         <activity
             android:name=".staffMenu.transactions.todaysales.TodaySalesStaff"
             android:parentActivityName=".staffMenu.transactions.TransStaff" />
-        <activity android:name=".invoice.Invoice" />
+        <activity
+            android:name=".invoice.Invoice"
+            android:parentActivityName=".listStock.ListMyStock" />
         <activity
             android:name=".loginScreen.StaffMobile"
             android:parentActivityName=".loginScreen.LoginPage" />
         <activity
             android:name=".loginScreen.ForgotPass"
             android:parentActivityName=".loginScreen.LoginPage" />
-</application>
+    </application>
 
-    </manifest>
+</manifest>

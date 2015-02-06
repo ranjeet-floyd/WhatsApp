@@ -30,13 +30,13 @@ public class ImportData extends ActionBarActivity {
     private final static int REQUEST_LOAD = 200;
     private Button bBrowse;
     private String path, filePath, fileName;
-    private DbProductAdapter dbAdapter;
+    private DbProductAdapter dbProductAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_data);
-        dbAdapter = new DbProductAdapter(this);
+        dbProductAdapter = new DbProductAdapter(this);
         bBrowse = (Button) findViewById(R.id.b_import_browse);
         bBrowse.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +115,7 @@ public class ImportData extends ActionBarActivity {
                     desc = row[3];
                     quantity = row[4];
                     price = row[5];
-                    if (dbAdapter.idAlreadyPresent(id))
+                    if (dbProductAdapter.idAlreadyPresent(id))
                         continue;
                    /* else            REMOVE THIS
                         result = dbAdapter.insertProductDetails(id, imageByteValue, name, desc, quantity, price);*/
@@ -124,10 +124,7 @@ public class ImportData extends ActionBarActivity {
                 e.printStackTrace();
                 return "FileNotExists";
             }
-            if (result < 0) {
-                return "ErrorReadingFile";
-            } else
-                return "Success";
+            return "Success";
         }
 
         @Override

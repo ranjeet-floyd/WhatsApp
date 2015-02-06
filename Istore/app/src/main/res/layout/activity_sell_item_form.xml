@@ -120,39 +120,6 @@
                                 android:textColor="@color/black"
                                 android:textSize="15sp" />
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Description:"
-                                android:textColor="@color/black"
-                                android:textSize="15sp" />
-
-                            <com.ms.square.android.expandabletextview.ExpandableTextView
-                                android:id="@+id/expand_text_view"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                expandableTextView:animDuration="200"
-                                expandableTextView:maxCollapsedLines="1">
-
-                                <TextView
-                                    android:id="@id/expandable_text"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="10dp"
-                                    android:layout_marginRight="10dp"
-                                    android:textColor="#666666"
-                                    android:textSize="15sp" />
-
-                                <ImageButton
-                                    android:id="@id/expand_collapse"
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:layout_gravity="right|bottom"
-                                    android:layout_margin="16dp"
-                                    android:background="@android:color/transparent" />
-                            </com.ms.square.android.expandabletextview.ExpandableTextView>
-
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -244,7 +211,7 @@
                                 android:textColor="@color/black" />
 
                             <Button
-                                android:id="@+id/b_sellitems_submit"
+                                android:id="@+id/b_sellitems_addtocart"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -254,6 +221,45 @@
                         </LinearLayout>
 
                     </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Description:"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <com.ms.square.android.expandabletextview.ExpandableTextView
+                        android:id="@+id/expand_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        expandableTextView:animDuration="200"
+                        expandableTextView:maxCollapsedLines="1">
+
+                        <TextView
+                            android:id="@id/expandable_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:textColor="#666666"
+                            android:textSize="15sp" />
+
+                        <ImageButton
+                            android:id="@id/expand_collapse"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right|bottom"
+                            android:layout_margin="16dp"
+                            android:background="@android:color/transparent" />
+                    </com.ms.square.android.expandabletextview.ExpandableTextView>
                 </LinearLayout>
 
                 <LinearLayout
@@ -318,6 +324,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
+                        android:layout_marginBottom="@dimen/padd50dp"
                         android:layout_weight="1"
                         android:background="@color/white"
                         android:orientation="vertical">

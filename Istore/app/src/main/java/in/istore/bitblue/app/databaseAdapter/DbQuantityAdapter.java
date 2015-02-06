@@ -28,10 +28,6 @@ public class DbQuantityAdapter {
         return this;
     }
 
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long insertQuantityDetails(String Id, int Quantity) {
         Date date = new Date();
         String todayDate = DateUtil.convertToStringDateAndTime(date);
@@ -42,7 +38,6 @@ public class DbQuantityAdapter {
 
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_QUANTITY_HISTORY, null, row);
-        closeDatabase();
         return result;
     }
 
@@ -59,7 +54,6 @@ public class DbQuantityAdapter {
                 product.setAddedDate(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_PROD_ADDEDDATE)));
                 productArrayList.add(product);
             } while (c.moveToNext());
-            closeDatabase();
             return productArrayList;
         } else {
             return null;

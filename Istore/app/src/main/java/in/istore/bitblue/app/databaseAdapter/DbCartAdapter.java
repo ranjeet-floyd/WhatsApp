@@ -25,11 +25,6 @@ public class DbCartAdapter {
         sqLiteDb = dbHelper.getWritableDatabase();
         return this;
     }
-
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long addItemToCart(String Id, String Name, int Quantity, float SellingPrice, float Total) {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_CARTITEM_ID, Id);
@@ -40,7 +35,6 @@ public class DbCartAdapter {
 
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_CART, null, row);
-        closeDatabase();
         return result;
     }
 
@@ -59,7 +53,6 @@ public class DbCartAdapter {
                 cartItem.setItemTotalAmnt(c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_CARTITEM_TOTALPRICE)));
                 cartArrayList.add(cartItem);
             } while (c.moveToNext());
-            closeDatabase();
             return cartArrayList;
         } else {
             return null;
@@ -71,10 +64,8 @@ public class DbCartAdapter {
         Cursor c = sqLiteDb.query(DBHelper.TABLE_CART, DBHelper.CARTITEM_COLUMNS,
                 DBHelper.COL_CARTITEM_ID + "='" + id + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return true;
         } else {
-            closeDatabase();
             return false;
         }
     }
@@ -85,7 +76,6 @@ public class DbCartAdapter {
         row.put(DBHelper.COL_CARTITEM_TOTALPRICE, totalAmount);
         openWritableDatabase();
         int result = sqLiteDb.update(DBHelper.TABLE_CART, row, DBHelper.COL_CARTITEM_ID + "='" + Id + "'", null);
-        closeDatabase();
         return result;
     }
 
@@ -96,10 +86,8 @@ public class DbCartAdapter {
         openWritableDatabase();
         Cursor c = sqLiteDb.rawQuery(SUM_QUERY, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return c.getFloat(c.getColumnIndexOrThrow("SUM(" + DBHelper.COL_CARTITEM_TOTALPRICE + ")"));
         } else {
-            closeDatabase();
             return 0;
         }
     }
@@ -116,7 +104,6 @@ public class DbCartAdapter {
 
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_CUST_CART_PURCHASE, null, row);
-        closeDatabase();
         return result;
     }
 
@@ -124,7 +111,6 @@ public class DbCartAdapter {
     public int emptyCart() {
         openWritableDatabase();
         int result = sqLiteDb.delete(DBHelper.TABLE_CART, null, null);
-        closeDatabase();
         return result;
     }
 
@@ -132,7 +118,6 @@ public class DbCartAdapter {
     public int clearAllPurchases() {
         openWritableDatabase();
         int result = sqLiteDb.delete(DBHelper.TABLE_CUST_CART_PURCHASE, null, null);
-        closeDatabase();
         return result;
     }
 

@@ -28,10 +28,6 @@ public class DbSoldItemAdapter {
         return this;
     }
 
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long insertSoldItemQuantityDetail(String Id, byte[] Image, String Name, int SoldQuantity, int RemQuantity, float sellPrice) {
         Date date = new Date();
         String todayDate = DateUtil.convertToStringDateAndTime(date);
@@ -46,7 +42,6 @@ public class DbSoldItemAdapter {
 
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_SOLD_ITEMS, null, row);
-        closeDatabase();
         return result;
     }
 
@@ -79,8 +74,6 @@ public class DbSoldItemAdapter {
         } else {
             return null;
         }
-
-        closeDatabase();
         return product;
     }
 
@@ -98,7 +91,6 @@ public class DbSoldItemAdapter {
                 product.setSellPrice(csolDetails.getFloat(csolDetails.getColumnIndexOrThrow(DBHelper.COL_PROD_SELLPRICE)));
                 productList.add(product);
             } while (csolDetails.moveToNext());
-            closeDatabase();
             return productList;
         } else {
             return null;

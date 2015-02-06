@@ -26,16 +26,11 @@ public class DbCategoryAdapter {
         return this;
     }
 
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long addNewCategory(String Name) {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_CATEGORY_NAME, Name);
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_CATEGORY, null, row);
-        closeDatabase();
         return result;
     }
 
@@ -50,7 +45,6 @@ public class DbCategoryAdapter {
                 category.setCategoryName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CATEGORY_NAME)));
                 categoryArrayList.add(category);
             } while (c.moveToNext());
-            closeDatabase();
             return categoryArrayList;
         } else {
             return null;
@@ -62,10 +56,8 @@ public class DbCategoryAdapter {
         Cursor c = sqLiteDb.query(DBHelper.TABLE_CATEGORY, DBHelper.CATEGORY_COLUMNS,
                 DBHelper.COL_CATEGORY_NAME + "='" + CategoryName + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return true;
         } else {
-            closeDatabase();
             return false;
         }
     }
@@ -79,7 +71,6 @@ public class DbCategoryAdapter {
             do {
                 categoryNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CATEGORY_NAME)));
             } while (c.moveToNext());
-            closeDatabase();
             return categoryNameList;
         } else {
             return null;

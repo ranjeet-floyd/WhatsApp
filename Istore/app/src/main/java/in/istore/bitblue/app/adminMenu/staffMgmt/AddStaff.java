@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -161,6 +160,8 @@ public class AddStaff extends Fragment {
                 dialog.dismiss();
                 if (result != null && result) {
                     Toast.makeText(getActivity(), "Message Sent", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Mail sending failed Check Network", Toast.LENGTH_SHORT).show();
                 }
             }
         }.execute();
@@ -180,7 +181,7 @@ public class AddStaff extends Fragment {
                 return true;
             }
         } catch (Exception e) {
-            Log.e("Could not send the mail", "");
+            return false;
         }
         return false;
     }

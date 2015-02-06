@@ -30,10 +30,6 @@ public class DbCustPurHistAdapter {
         return this;
     }
 
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long addToSoldHistory(String Id, long Mobile, String Name, int Quantity, float SellingPrice, float Total, long StaffId) {
         Date date = new Date();
         String purchaseDate = DateUtil.convertToStringDateOnly(date);
@@ -49,7 +45,6 @@ public class DbCustPurHistAdapter {
 
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_CUST_PURCHASE_HISTORY, null, row);
-        closeDatabase();
         return result;
     }
 
@@ -77,7 +72,6 @@ public class DbCustPurHistAdapter {
 
                 soldProductArrayList.add(soldProduct);
             } while (c.moveToNext());
-            closeDatabase();
             return soldProductArrayList;
         } else {
             return null;
@@ -103,7 +97,6 @@ public class DbCustPurHistAdapter {
 
                 soldProductArrayList.add(soldProduct);
             } while (c.moveToNext());
-            closeDatabase();
             return soldProductArrayList;
         } else {
             return null;
@@ -135,7 +128,6 @@ public class DbCustPurHistAdapter {
 
                 soldProductArrayList.add(soldProduct);
             } while (c.moveToNext());
-            closeDatabase();
             return soldProductArrayList;
         } else {
             return null;
@@ -150,10 +142,8 @@ public class DbCustPurHistAdapter {
         openWritableDatabase();
         Cursor c = sqLiteDb.rawQuery(SUM_QUERY, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return c.getFloat(c.getColumnIndexOrThrow("SUM(" + DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE + ")"));
         } else {
-            closeDatabase();
             return 0;
         }
 
@@ -170,10 +160,8 @@ public class DbCustPurHistAdapter {
         openWritableDatabase();
         Cursor c = sqLiteDb.rawQuery(SUM_QUERY, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return c.getFloat(c.getColumnIndexOrThrow("SUM(" + DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE + ")"));
         } else {
-            closeDatabase();
             return 0;
         }
 
@@ -187,10 +175,8 @@ public class DbCustPurHistAdapter {
         openWritableDatabase();
         Cursor c = sqLiteDb.rawQuery(SUM_QUERY, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return c.getFloat(c.getColumnIndexOrThrow("SUM(" + DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE + ")"));
         } else {
-            closeDatabase();
             return 0;
         }
 
@@ -214,7 +200,6 @@ public class DbCustPurHistAdapter {
                 totRevDetails.setDate(DateUtil.convertFromYYYY_MM_DDtoDD_MM_YYYY(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE))));
                 totRevDetailsArrayList.add(totRevDetails);
             } while (c.moveToNext());
-            closeDatabase();
             return totRevDetailsArrayList;
         } else {
             return null;
@@ -240,7 +225,6 @@ public class DbCustPurHistAdapter {
                 todaysSale.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));
                 todaysSaleArrayList.add(todaysSale);
             } while (c.moveToNext());
-            closeDatabase();
             return todaysSaleArrayList;
         } else {
             return null;
@@ -266,7 +250,6 @@ public class DbCustPurHistAdapter {
                 todaysSale.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));
                 todaysSaleArrayList.add(todaysSale);
             } while (c.moveToNext());
-            closeDatabase();
             return todaysSaleArrayList;
         } else {
             return null;

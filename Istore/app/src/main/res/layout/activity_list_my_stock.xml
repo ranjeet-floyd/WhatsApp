@@ -8,14 +8,13 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/abc_action_bar_default_height_material"
-        android:background="@color/material_blue_500">
+        android:layout_height="@dimen/abc_action_bar_default_height_material">
 
         <include
             android:id="@+id/toolbar_actionbar"
-            layout="@layout/toolbar"
+            layout="@layout/listtoolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

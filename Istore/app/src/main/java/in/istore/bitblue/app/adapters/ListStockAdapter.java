@@ -15,7 +15,6 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -68,7 +67,7 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
             holder.image = (ImageView) listRow.findViewById(R.id.iv_listitem_img);
             holder.name = (TextView) listRow.findViewById(R.id.tv_listitem_name);
             holder.date = (TextView) listRow.findViewById(R.id.tv_listitem_date);
-            holder.favorite = (ToggleButton) listRow.findViewById(R.id.ib_listitem_favorite);
+          //  holder.favorite = (ToggleButton) listRow.findViewById(R.id.ib_listitem_favorite);
             listRow.setTag(holder);
         } else {
             holder = (ViewHolder) listRow.getTag();
@@ -84,23 +83,6 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
         }
 
         holder.name.setText(product.getName());
-        holder.date.setText(product.getAddedDate());
-        if (product.getIsFavorite() == 1) {
-            holder.favorite.setChecked(true);
-        } else if (product.getIsFavorite() == 0) {
-            holder.favorite.setChecked(false);
-        }
-        holder.favorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (holder.favorite.isChecked()) {
-                    product.setIsFavorite(1);
-                } else {
-                    product.setIsFavorite(0);
-                }
-                dbProAdapter.updateFavoriteProductDetails(product.getId(), product.getIsFavorite());
-            }
-        });
 
         //This is used to select clicked listItem and get its details
         listRow.setOnClickListener(new View.OnClickListener() {
@@ -170,6 +152,6 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
     private static class ViewHolder {
         TextView id, name, date;
         ImageView image;
-        ToggleButton favorite;
+       // ToggleButton favorite;
     }
 }

@@ -27,10 +27,6 @@ public class DbCustAdapter {
         return this;
     }
 
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long insertCustPurchaseInfo(long Mobile, float PurchaseAmount) {
 
         ContentValues updaterow = new ContentValues(); //if mobile number present update purchase amt
@@ -46,7 +42,6 @@ public class DbCustAdapter {
         } else {
             result = sqLiteDb.insert(DBHelper.TABLE_CUSTINFO, null, insertrow);
         }
-        closeDatabase();
         Log.e("Customer Information Db Result: ", String.valueOf(result));
         return result;
     }
@@ -74,7 +69,6 @@ public class DbCustAdapter {
                 customer.setPurchaseAmount(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTPURCHASE_AMOUNT)));
                 customerArrayList.add(customer);
             } while (c.moveToNext());
-            closeDatabase();
             return customerArrayList;
         } else {
             return null;

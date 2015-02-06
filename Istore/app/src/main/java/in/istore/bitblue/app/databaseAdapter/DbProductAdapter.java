@@ -29,10 +29,6 @@ public class DbProductAdapter {
         return this;
     }
 
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long insertProductDetails(String Id, byte[] ImagePath, String Category, String Name, String Desc, int Quantity, int MinLimit, float CostPrice, float SellPrice, String Supplier) {
         Date date = new Date();
         String todayDate = DateUtil.convertToStringDateAndTime(date);
@@ -50,7 +46,6 @@ public class DbProductAdapter {
         row.put(DBHelper.COL_PROD_ADDEDDATE, todayDate);   //Insert current date in Unix Time format.
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_PRODUCT, null, row);
-        closeDatabase();
         return result;
     }
 
@@ -136,7 +131,6 @@ public class DbProductAdapter {
                 product.setSoldDate(solddate);
                 productArrayList.add(product);
             } while (csolDetails.moveToNext());
-            closeDatabase();
             return productArrayList;
         } else {
             return null;
@@ -169,7 +163,6 @@ public class DbProductAdapter {
                 Product product = new Product(id, image, category, name, desc, quantity, minlimit, costprice, sellprice, supplier, addedDate);
                 productArrayList.add(product);
             } while (c.moveToNext());
-            closeDatabase();
             return productArrayList;
         } else {
             return null;
@@ -199,7 +192,6 @@ public class DbProductAdapter {
                 Product product = new Product(id, image, category, name, quantity, desc, minlimit, costprice, sellprice, supplier);
                 productArrayList.add(product);
             } while (c.moveToNext());
-            closeDatabase();
             return productArrayList;
         } else {
             return null;
@@ -215,7 +207,6 @@ public class DbProductAdapter {
         row.put(DBHelper.COL_PROD_ADDEDDATE, todayDate);
         openWritableDatabase();
         int result = sqLiteDb.update(DBHelper.TABLE_PRODUCT, row, DBHelper.COL_PROD_ID + "='" + Id + "'", null);
-        closeDatabase();
         return result;
     }
 
@@ -235,7 +226,6 @@ public class DbProductAdapter {
 
         openWritableDatabase();
         long result = sqLiteDb.update(DBHelper.TABLE_PRODUCT, row, DBHelper.COL_PROD_ID + "='" + Id + "'", null);
-        closeDatabase();
         return result;
     }
 
@@ -244,7 +234,6 @@ public class DbProductAdapter {
         row.put(DBHelper.COL_PROD_FAVORITE, isFavorite);
         openWritableDatabase();
         long result = sqLiteDb.update(DBHelper.TABLE_PRODUCT, row, DBHelper.COL_PROD_ID + "='" + Id + "'", null);
-        closeDatabase();
         return result;
     }
 
@@ -252,18 +241,15 @@ public class DbProductAdapter {
         openWritableDatabase();
         int result = sqLiteDb.delete(DBHelper.TABLE_PRODUCT,
                 DBHelper.COL_PROD_ID + "='" + Id + "'", null);
-        closeDatabase();
         return result;
     }
 
-    public boolean idAlreadyPresent(String id) {
+    public boolean idAlreadyPresent(String Id) {
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS, DBHelper.COL_PROD_ID + "=" + id, null, null, null, null, null);
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS, DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, null, null);
         if (c != null && c.getCount() != 0) {
-            closeDatabase();
             return true;
         } else {
-            closeDatabase();
             return false;
         }
     }
@@ -271,7 +257,6 @@ public class DbProductAdapter {
     public int deleteAllProduct() {
         openWritableDatabase();
         int result = sqLiteDb.delete(DBHelper.TABLE_PRODUCT, null, null);
-        closeDatabase();
         return result;
     }
 
@@ -297,7 +282,6 @@ public class DbProductAdapter {
                 Product product = new Product(id, image, category, name, desc, quantity, minlimit, costprice, sellprice, supplier, addedDate);
                 productArrayList.add(product);
             } while (c.moveToNext());
-            closeDatabase();
             return productArrayList;
         } else {
             return null;
@@ -346,10 +330,8 @@ public class DbProductAdapter {
         Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
                 DBHelper.COL_PROD_ID + "='" + id + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return true;
         } else {
-            closeDatabase();
             return false;
         }
     }
@@ -359,7 +341,6 @@ public class DbProductAdapter {
         Cursor c = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
                 null, null, null, null, null);
         int rowCount = c.getCount();
-        closeDatabase();
         return rowCount;
     }
 }

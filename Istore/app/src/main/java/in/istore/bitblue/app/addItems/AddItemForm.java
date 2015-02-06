@@ -38,6 +38,7 @@ import in.istore.bitblue.app.listStock.ListMyStock;
 import in.istore.bitblue.app.listStock.ViewStockItems;
 import in.istore.bitblue.app.utilities.Check;
 import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.Store;
 
 public class AddItemForm extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -129,7 +130,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
             startActivity(viewStockItem);
         } else {
             etbarcode.setText(scanContent);
-
+            disableFocus(etbarcode);
             ivProdImage = (ImageView) findViewById(R.id.iv_additems_image);
 
             actvcategory.setOnTouchListener(new View.OnTouchListener() {
@@ -148,21 +149,36 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
             actvProdName.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
-                    String CategoryName = actvcategory.getText().toString();
-                    if (Check.ifNull(CategoryName)) {
+                    category = actvcategory.getText().toString();
+                    if (Check.ifNull(category)) {
                         actvcategory.setHint("Field Required");
                         actvcategory.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                         return true;
                     }
-                    proSubCatNameList = dbProSubCatAdapter.getAllProductNamesIn(CategoryName);
-                    ArrayAdapter subcatadapter = new ArrayAdapter
-                            (getApplicationContext(), R.layout.dropdownlist, proSubCatNameList);
+                    proSubCatNameList = dbProSubCatAdapter.getAllProductNamesIn(category);
+                    ArrayAdapter subcatadapter = null;
+                    if (proSubCatNameList != null) {
+                        subcatadapter = new ArrayAdapter
+                                (getApplicationContext(), R.layout.dropdownlist, proSubCatNameList);
+                    } else {
+                        actvProdName.setHint("No Product Specified");
+                        actvProdName.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    }
+                    if (subcatadapter != null) {
+                        actvProdName.setAdapter(subcatadapter);
+                    }
                     actvProdName.setThreshold(0);
-                    actvProdName.setAdapter(subcatadapter);
                     actvProdName.showDropDown();
+                    id = etbarcode.getText().toString();
+                    if (Check.ifNull(id)) {
+                        name = actvProdName.getText().toString();
+                        etbarcode.setText(Store.generateProdId(category, name));
+                        disableFocus(etbarcode);
+                    }
                     return false;
                 }
             });
+
             etdesc = (EditText) findViewById(R.id.et_additems_prod_desc);
             etquantity = (EditText) findViewById(R.id.et_additems_prod_quantity);
             etminlimit = (EditText) findViewById(R.id.et_additems_prod_minlimit);
@@ -184,6 +200,11 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
 
         }
 
+    }
+
+    private void disableFocus(EditText etbarcode) {
+        etbarcode.setFocusable(false);
+        etbarcode.setFocusableInTouchMode(false);
     }
 
     private boolean checkForExistingProduct(String id) {

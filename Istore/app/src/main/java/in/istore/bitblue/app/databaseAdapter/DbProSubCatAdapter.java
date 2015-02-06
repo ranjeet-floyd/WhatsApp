@@ -26,17 +26,12 @@ public class DbProSubCatAdapter {
         return this;
     }
 
-    public void closeDatabase() {
-        sqLiteDb.close();
-    }
-
     public long addNewProSubCategory(String CategoryName, String SubCategoryName) {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_CATEGORY_NAME, CategoryName);
         row.put(DBHelper.COL_SUBCATEGORY_NAME, SubCategoryName);
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_SUBCATEGORY, null, row);
-        closeDatabase();
         return result;
     }
 
@@ -60,7 +55,6 @@ public class DbProSubCatAdapter {
                 productSubCategory.setProductSubCategoryName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUBCATEGORY_NAME)));
                 categoryArrayList.add(productSubCategory);
             } while (c.moveToNext());
-            closeDatabase();
             return categoryArrayList;
         } else {
             return null;
@@ -72,10 +66,8 @@ public class DbProSubCatAdapter {
         Cursor c = sqLiteDb.query(DBHelper.TABLE_SUBCATEGORY, DBHelper.PROSUBCAT_COLUMNS,
                 DBHelper.COL_SUBCATEGORY_NAME + "='" + SubCategoryName + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
-            closeDatabase();
             return true;
         } else {
-            closeDatabase();
             return false;
         }
     }
@@ -97,7 +89,6 @@ public class DbProSubCatAdapter {
             do {
                 prodCatNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUBCATEGORY_NAME)));
             } while (c.moveToNext());
-            closeDatabase();
             return prodCatNameList;
         } else {
             return null;
@@ -116,7 +107,6 @@ public class DbProSubCatAdapter {
             do {
                 prodNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUBCATEGORY_NAME)));
             } while (c.moveToNext());
-            closeDatabase();
             return prodNameList;
         } else {
             return null;
