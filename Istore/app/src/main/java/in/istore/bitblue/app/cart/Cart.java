@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,9 @@ public class Cart extends ActionBarActivity {
     private TextView toolTitle;
     private ListView lvcartitems;
     private TextView tvTotalPayAmnt;
+    private RadioGroup rdSellDeliver;
+    private RadioButton rbSell;
+    private RadioButton rbDeliver;
 
     private ArrayList<CartItem> cartItemArrayList;
     private DbCartAdapter dbCartAdapter;
@@ -43,10 +48,11 @@ public class Cart extends ActionBarActivity {
     private SharedPreferences.Editor prefCustMobile;
     public static String CUST_MOBILE = "custmobile";
 
+    private int optype;
     private long Mobile;
     private float totalPayAmount;
     private long StaffId;
-
+    private String OpType, DeliveryAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +107,7 @@ public class Cart extends ActionBarActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_sell:
+
                 showAddCustMobileDialog();
                 break;
         }
@@ -109,17 +116,29 @@ public class Cart extends ActionBarActivity {
 
     private void showAddCustMobileDialog() {
         final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.add_cust_mobile_dialog);
-        dialog.setTitle("Customer Mobile Number");
+        dialog.setContentView(R.layout.add_cust_mobile_address_dialog);
+        dialog.setTitle("Customer Details");
 
         final EditText etMobile = (EditText) dialog.findViewById(R.id.et_addcust_dialog_mobile);
+        final EditText etDeliver = (EditText) dialog.findViewById(R.id.et_cart_deliveryAddress);
         Button add = (Button) dialog.findViewById(R.id.b_addcust_dialog_addMobile);
+        rdSellDeliver = (RadioGroup) dialog.findViewById(R.id.rg_cart_sell_deliver_group);
+        rbSell = (RadioButton) dialog.findViewById(R.id.rb_cart_sale);
+        rbDeliver = (RadioButton) dialog.findViewById(R.id.rb_cart_delivery);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
                 try {
                     Mobile = Long.parseLong(etMobile.getText().toString());
+                    optype = rdSellDeliver.getCheckedRadioButtonId();
+                    if (optype == R.id.rb_cart_sale) {
+                        OpType = rbSell.getText().toString();
+                    } else if (optype == R.id.rb_cart_delivery) {
+                        OpType = rbDeliver.getText().toString();
+                        etDeliver.setVisibility(View.VISIBLE);
+                        DeliveryAddress = etDeliver.getText().toString();
+                    }
                     prefCustMobile.putLong("custMobile", Mobile).commit();
                     totalPayAmount = Float.parseFloat(tvTotalPayAmnt.getText().toString());
                     showSoldItemsToCustomer();
@@ -156,7 +175,7 @@ public class Cart extends ActionBarActivity {
                 quantity = cartItem.getItemSoldQuantity();
                 sellingprice = cartItem.getItemSellPrice();
                 totalprice = cartItem.getItemTotalAmnt();
-                long resulthist = custPurHistAdapter.addToSoldHistory(itemid, Mobile, name, quantity, sellingprice, totalprice, StaffId);
+                long resulthist = custPurHistAdapter.addToSoldHistory(itemid, Mobile, name, quantity, sellingprice, totalprice, StaffId, "Sale", "Mumbai");
 
             }
             long res = dbCustAdapter.insertCustPurchaseInfo(Mobile, totalPayAmount);
@@ -167,7 +186,7 @@ public class Cart extends ActionBarActivity {
             if (res1 <= 0) {
                 Toast.makeText(getApplicationContext(), "Insert Total Amount Failed", Toast.LENGTH_SHORT).show();
             }
-            /*dbCartAdapter.emptyCart();
+           /* dbCartAdapter.emptyCart();
             dbCartAdapter.clearAllPurchases();
             cartItemArrayList.clear();
             cartAdapter = new CartAdapter(this, cartItemArrayList);
@@ -177,7 +196,5 @@ public class Cart extends ActionBarActivity {
             invoice.putExtra("Mobile", Mobile);
             startActivity(invoice);
         }
-
     }
-
 }

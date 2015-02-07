@@ -121,4 +121,17 @@ public class DbLoginCredAdapter {
         }
     }
 
+    public String getAdminEmail(int StoreId) {
+        String AdminEmail;
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_LOGIN_CRED_ADMIN, DBHelper.LOGIN_CRED_ADMIN_COLUMNS,
+                DBHelper.COL_LOGINCRED_STOREID + "='" + StoreId + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            AdminEmail = c.getString(c.getColumnIndexOrThrow(DBHelper.COL_LOGINCRED_EMAIL));  //Email
+            return AdminEmail;
+        } else {
+            return null;
+        }
+    }
+
 }

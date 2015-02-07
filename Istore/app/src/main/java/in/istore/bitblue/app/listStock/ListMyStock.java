@@ -160,7 +160,7 @@ public class ListMyStock extends ActionBarActivity
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
-        toolTitle.setText("CURRENT STOCL ITEMS");
+        toolTitle.setText("CURRENT STOCK ITEMS");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

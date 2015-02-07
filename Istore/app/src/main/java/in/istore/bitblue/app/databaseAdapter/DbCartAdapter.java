@@ -25,6 +25,7 @@ public class DbCartAdapter {
         sqLiteDb = dbHelper.getWritableDatabase();
         return this;
     }
+
     public long addItemToCart(String Id, String Name, int Quantity, float SellingPrice, float Total) {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_CARTITEM_ID, Id);
@@ -70,12 +71,12 @@ public class DbCartAdapter {
         }
     }
 
-    public int updateCartItemQuantityandAmount(String Id, int Quantity, float totalAmount) {
+    public int updateCartItemQuantityandAmount(String Id, String Name, int Quantity, float totalAmount) {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_CARTITEM_QUANTITY, Quantity);
         row.put(DBHelper.COL_CARTITEM_TOTALPRICE, totalAmount);
         openWritableDatabase();
-        int result = sqLiteDb.update(DBHelper.TABLE_CART, row, DBHelper.COL_CARTITEM_ID + "='" + Id + "'", null);
+        int result = sqLiteDb.update(DBHelper.TABLE_CART, row, DBHelper.COL_CARTITEM_ID + "='" + Id + "'OR " + DBHelper.COL_CARTITEM_NAME + "='" + Name + "'", null);
         return result;
     }
 

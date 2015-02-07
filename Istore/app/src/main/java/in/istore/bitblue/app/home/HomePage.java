@@ -133,12 +133,14 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         if (responseGmail == 1) {
             //Hide Facebook Logout button in nav Drawer
             Flogout.setVisibility(View.GONE);
+            blogout.setVisibility(View.GONE);
             if (!googleApiClient.isConnected()) {
                 onConnected(savedInstanceState);
             }
         } else if (responseFacebook == 2) {
             //Hide Google+ Logout button in nav Drawer
             Glogout.setVisibility(View.GONE);
+            blogout.setVisibility(View.GONE);
 
             //If facebook then get all values
             FpersonName = globalVariable.getFbName();

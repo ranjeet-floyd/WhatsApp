@@ -6,6 +6,8 @@ public class TodaysSale {
     private int Quantity;
     private float PurchaseAmnt;
     private long Mobile;
+    private String Optype;
+    private String DeliveryAddress;
 
     public TodaysSale() {
     }
@@ -56,6 +58,22 @@ public class TodaysSale {
 
     public void setMobile(long mobile) {
         Mobile = mobile;
+    }
+
+    public String getOptype() {
+        return Optype;
+    }
+
+    public void setOptype(String optype) {
+        Optype = optype;
+    }
+
+    public String getDeliveryAddress() {
+        return DeliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        DeliveryAddress = deliveryAddress;
     }
 }
 

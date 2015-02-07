@@ -7,6 +7,8 @@ public class TotRevDetails {
     private float PurchaseAmnt;
     private long Mobile;
     private String Date;
+    private String Optype;
+    private String DeliveryAddress;
 
     public TotRevDetails() {
     }
@@ -65,5 +67,21 @@ public class TotRevDetails {
 
     public void setDate(String date) {
         Date = date;
+    }
+
+    public String getOptype() {
+        return Optype;
+    }
+
+    public void setOptype(String optype) {
+        Optype = optype;
+    }
+
+    public String getDeliveryAddress() {
+        return DeliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        DeliveryAddress = deliveryAddress;
     }
 }

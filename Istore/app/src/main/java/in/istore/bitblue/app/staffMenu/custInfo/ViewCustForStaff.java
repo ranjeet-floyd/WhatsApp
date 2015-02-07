@@ -18,7 +18,7 @@ import in.istore.bitblue.app.pojo.SoldProduct;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class ViewCustForStaff extends Fragment {
-    private ListView lvViewSupp;
+    private ListView lvViewCust;
 
     private ViewCustForStaffAdapter custAdapter;
     private ArrayList<SoldProduct> soldprodArrayList;
@@ -68,8 +68,8 @@ public class ViewCustForStaff extends Fragment {
                 dialog.dismiss();
                 if (result) {
                     custAdapter = new ViewCustForStaffAdapter(getActivity(), soldprodArrayList);
-                    lvViewSupp = (ListView) view.findViewById(R.id.lv_viewCustForStaff);
-                    lvViewSupp.setAdapter(custAdapter);
+                    lvViewCust = (ListView) view.findViewById(R.id.lv_viewCustForStaff);
+                    lvViewCust.setAdapter(custAdapter);
                 }
             }
         }.execute();

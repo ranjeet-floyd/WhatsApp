@@ -85,8 +85,8 @@ public class Invoice extends ActionBarActivity {
             invoiceAdapter = new InvoiceAdapter(this, invoiceArrayList);
             lvProductList.setAdapter(invoiceAdapter);
             tvTotalBillPay.setText(String.valueOf(dbCartAdapter.getTotalPayAmount()));
-           // dbCartAdapter.emptyCart();
-           // dbCartAdapter.clearAllPurchases();
+           dbCartAdapter.emptyCart();
+            dbCartAdapter.clearAllPurchases();
         } else {
             startActivity(new Intent(this, Cart.class));
         }

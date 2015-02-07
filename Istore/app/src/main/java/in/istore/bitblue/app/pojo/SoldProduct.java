@@ -10,6 +10,8 @@ public class SoldProduct {
     private long Mobile;
     private long StaffId;
     private String Date;
+    private String Optype;
+    private String DeliveryAddress;
 
     public SoldProduct() {
     }
@@ -87,5 +89,21 @@ public class SoldProduct {
 
     public void setDate(String date) {
         Date = date;
+    }
+
+    public String getOptype() {
+        return Optype;
+    }
+
+    public void setOptype(String optype) {
+        Optype = optype;
+    }
+
+    public String getDeliveryAddress() {
+        return DeliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        DeliveryAddress = deliveryAddress;
     }
 }

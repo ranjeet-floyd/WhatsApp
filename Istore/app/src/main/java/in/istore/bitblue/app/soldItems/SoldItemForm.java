@@ -85,7 +85,7 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
         bDec = (Button) findViewById(R.id.b_solditem_dec);
         bDec.setOnClickListener(this);
 
-        if (id   != null)
+        if (id != null)
             getProductfor(id);
     }
 
@@ -124,17 +124,13 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
             case R.id.b_solditem_sell:
                 int quant;
                 id = etbarcode.getText().toString();
-                try {
-                    quant = quantity;
-                } catch (NumberFormatException nfe) {
-                    quant = 0;
-                }
+                quant = quantity;
                 if (Check.ifNull(etquantity.getText().toString())) {
                     etquantity.setHint("Field Required");
                     etquantity.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
                 } else if (quant > maxlimit) {
-                    limitReached();
+                 //   limitReached();
                     break;
                 } else if (Check.ifNull(etprice.getText().toString())) {
                     etprice.setHint("Field Required");
@@ -155,7 +151,7 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                     long cartres = 0;
                     if (isAlreadyinCart(id)) {
                         //update quantity and total amount
-                        cartres = dbCartAdapter.updateCartItemQuantityandAmount(id, soldQuantity, totalAmount);
+                        cartres = dbCartAdapter.updateCartItemQuantityandAmount(id, name, soldQuantity, totalAmount);
                     } else {
                         cartres = dbCartAdapter.addItemToCart(id, name, soldQuantity, sellprice, totalAmount);
                     }

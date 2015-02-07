@@ -20,7 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.sellItems.SellItem;
 
@@ -32,14 +31,12 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
     private ViewHolder holder;
     private int lastPosition = -1;
     private ArrayList<Product> origproductArrayList;
-    private DbProductAdapter dbProAdapter;
 
     public ListStockAdapter(Context context, ArrayList<Product> productArrayList) {
         if (context != null && productArrayList != null) {
             this.productArrayList = productArrayList;
             this.context = context;
             mInflater = LayoutInflater.from(context);
-            dbProAdapter = new DbProductAdapter(context);
         }
     }
 
@@ -67,7 +64,6 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
             holder.image = (ImageView) listRow.findViewById(R.id.iv_listitem_img);
             holder.name = (TextView) listRow.findViewById(R.id.tv_listitem_name);
             holder.date = (TextView) listRow.findViewById(R.id.tv_listitem_date);
-          //  holder.favorite = (ToggleButton) listRow.findViewById(R.id.ib_listitem_favorite);
             listRow.setTag(holder);
         } else {
             holder = (ViewHolder) listRow.getTag();
@@ -104,7 +100,6 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
         //Animation when listview is scrolled
         Animation animation = AnimationUtils.loadAnimation(context, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
 
-        //  Animation animation = AnimationUtils.loadAnimation(context, R.anim.up_from_bottom);
         listRow.startAnimation(animation);
         lastPosition = position;
         return listRow;
@@ -152,6 +147,5 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
     private static class ViewHolder {
         TextView id, name, date;
         ImageView image;
-       // ToggleButton favorite;
     }
 }

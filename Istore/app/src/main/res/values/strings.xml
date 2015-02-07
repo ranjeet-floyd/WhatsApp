@@ -122,7 +122,9 @@
     <string name="title_activity_invoice">Invoice</string>
     <string name="title_activity_staff_mobile">StaffMobile</string>
     <string name="title_activity_forgot_pass">ForgotPass</string>
-    <!--FaceBook Sign in-->
+    <!-- FaceBook Sign in -->
     <string name="com_facebook_loginview_log_in_button">Log In</string>
     <string name="com_facebook_loginview_log_out_button">Log Out</string>
+    <string name="title_activity_cust_details_for_sale">CustDetailsForSale</string>
+
 </resources>

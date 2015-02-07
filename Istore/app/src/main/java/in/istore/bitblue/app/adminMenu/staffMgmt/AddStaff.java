@@ -52,7 +52,6 @@ public class AddStaff extends Fragment {
         loginCredAdapter = new DbLoginCredAdapter(getActivity());
         globalVariable = (GlobalVariables) getActivity().getApplicationContext();
         adminMobile = globalVariable.getAdminMobile();
-        AdminEmail = globalVariable.getEmail();
         etName = (EditText) view.findViewById(R.id.et_addstaff_name);
         etMobile = (EditText) view.findViewById(R.id.et_addstaff_mobile);
         etAddress = (EditText) view.findViewById(R.id.et_addstaff_address);
@@ -73,6 +72,7 @@ public class AddStaff extends Fragment {
                 int staffid = Store.generateStaffId();
                 StaffPass = Store.generatePassword();
                 int storeId = loginCredAdapter.getStoreId(adminMobile);
+                AdminEmail = loginCredAdapter.getAdminEmail(storeId);
                 StaffName = etName.getText().toString();
                 long mobile = Long.parseLong(etMobile.getText().toString());
                 String address = etAddress.getText().toString();
@@ -135,7 +135,7 @@ public class AddStaff extends Fragment {
         }
     }
 
-    private void sendMailToUser(final String email, final String passwd) {
+    private void sendMailToUser(final String AdminEmail, final String passwd) {
         new AsyncTask<String, String, Boolean>() {
             ProgressDialog dialog;
 
@@ -152,7 +152,7 @@ public class AddStaff extends Fragment {
 
             @Override
             protected Boolean doInBackground(String... strings) {
-                return sendEmailTo(email, passwd);
+                return sendEmailTo(AdminEmail, passwd);
             }
 
             @Override
@@ -167,10 +167,10 @@ public class AddStaff extends Fragment {
         }.execute();
     }
 
-    private boolean sendEmailTo(String toPerson, String passwd) {
+    private boolean sendEmailTo(String AdminEmail, String passwd) {
         Mail mail = new Mail("bitstorehelpdesk@gmail.com", "bitbluetech");
 
-        String[] toArr = {toPerson};
+        String[] toArr = {AdminEmail};
         mail.setTo(toArr);
         mail.setFrom("bitstorehelpdesk@gmail.com");
         mail.setSubject("Your Password for BitStore App");
