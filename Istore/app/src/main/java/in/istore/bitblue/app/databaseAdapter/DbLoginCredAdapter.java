@@ -133,5 +133,4 @@ public class DbLoginCredAdapter {
             return null;
         }
     }
-
 }

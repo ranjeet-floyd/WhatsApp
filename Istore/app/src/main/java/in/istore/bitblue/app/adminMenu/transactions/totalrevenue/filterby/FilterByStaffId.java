@@ -97,6 +97,7 @@ public class FilterByStaffId extends ActionBarActivity {
                     lvfilterproname.setAdapter(filtstaffidAdapter);
                 } else {
                     Toast.makeText(getApplicationContext(), "No Data", Toast.LENGTH_SHORT).show();
+                    lvfilterproname.setAdapter(null);
                 }
             }
         });

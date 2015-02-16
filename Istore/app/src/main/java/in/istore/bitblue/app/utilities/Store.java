@@ -46,6 +46,6 @@ public class Store {
 
         int id = random.nextInt((max - min) + 1) + min;
 
-        return CategoryName + "_" + ProSubcatName + "_" + id;
+        return ProSubcatName + id;
     }
 }

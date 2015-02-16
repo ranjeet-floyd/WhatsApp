@@ -30,11 +30,11 @@ public class DbTotSaleAmtByDateAdapter {
         Date date = new Date();
         String todayDate = DateUtil.convertToStringDateOnly(date);
         ContentValues insertAmount = new ContentValues();
-        insertAmount.put(DBHelper.COL_TOTALSALES_PERDAY_SALESAMOUNT, TotalSalesAmount);
+        insertAmount.put(DBHelper.COL_TOTALSALES_PERDAY_SALESAMOUNT, TotalSalesAmount + getTodaySales());
         insertAmount.put(DBHelper.COL_TOTALSALES_PERDAY_DATE, todayDate);
 
         ContentValues updateAmount = new ContentValues();
-        updateAmount.put(DBHelper.COL_TOTALSALES_PERDAY_SALESAMOUNT, TotalSalesAmount);
+        updateAmount.put(DBHelper.COL_TOTALSALES_PERDAY_SALESAMOUNT, TotalSalesAmount + getTodaySales());
 
         openWritableDatabase();
         long result = 0;

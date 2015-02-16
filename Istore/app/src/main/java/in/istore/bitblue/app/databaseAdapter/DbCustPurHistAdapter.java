@@ -30,7 +30,7 @@ public class DbCustPurHistAdapter {
         return this;
     }
 
-    public long addToSoldHistory(String Id, long Mobile, String Name, int Quantity, float SellingPrice, float Total, long StaffId, String Optype, String DeliveryAdd) {
+    public long addToSoldHistory(String Id, long Mobile, String Name, int Quantity, float SellingPrice, float Total, long StaffId) {
         Date date = new Date();
         String purchaseDate = DateUtil.convertToStringDateOnly(date);
         ContentValues row = new ContentValues();
@@ -41,13 +41,12 @@ public class DbCustPurHistAdapter {
         row.put(DBHelper.COL_CUSTCARTPURCHASE_PROD_SELLING_PRICE, SellingPrice);
         row.put(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE, Total);
         row.put(DBHelper.COL_CUSTCARTPURCHASE_STAFF_ID, StaffId);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE, purchaseDate);
+        row.put(DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE, purchaseDate);/*
         row.put(DBHelper.COL_CUSTCARTPURCHASE_OPTYPE, Optype);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS, DeliveryAdd);
+        row.put(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS, DeliveryAdd);*/
 
         openWritableDatabase();
-        long result = sqLiteDb.insert(DBHelper.TABLE_CUST_PURCHASE_HISTORY, null, row);
-        return result;
+        return sqLiteDb.insert(DBHelper.TABLE_CUST_PURCHASE_HISTORY, null, row);
     }
 
     public ArrayList<SoldProduct> getPurchaseHistoryFor(String prodName) {
@@ -57,8 +56,8 @@ public class DbCustPurHistAdapter {
                 DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY + "," +
                 DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE + "," +
                 DBHelper.COL_CUSTCARTPURCHASE_MOBILE + "," +
-                DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE + "'" +
-                DBHelper.COL_CUSTCARTPURCHASE_OPTYPE + "'" +
+                DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE + "," +
+                DBHelper.COL_CUSTCARTPURCHASE_OPTYPE + "," +
                 DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS;
 
         String RAW_QUERY = "SELECT " + COLUMNS +
@@ -72,9 +71,9 @@ public class DbCustPurHistAdapter {
                 soldProduct.setItemSoldQuantity(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY)));
                 soldProduct.setItemTotalAmnt(c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE)));
                 soldProduct.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));
-                soldProduct.setDate(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE)));
+                soldProduct.setDate(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE)));/*
                 soldProduct.setOptype(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_OPTYPE)));
-                soldProduct.setDeliveryAddress(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS)));
+                soldProduct.setDeliveryAddress(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS)));*/
                 soldProductArrayList.add(soldProduct);
             } while (c.moveToNext());
             return soldProductArrayList;
@@ -115,7 +114,7 @@ public class DbCustPurHistAdapter {
                 DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY + "," +
                 DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE + "," +
                 DBHelper.COL_CUSTCARTPURCHASE_MOBILE + "," +
-                DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE + "'" +
+                DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE + "," +
                 DBHelper.COL_CUSTCARTPURCHASE_OPTYPE;
 
         String RAW_QUERY = "SELECT " + COLUMNS +
@@ -129,9 +128,9 @@ public class DbCustPurHistAdapter {
                 soldProduct.setItemSoldQuantity(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY)));
                 soldProduct.setItemTotalAmnt(c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE)));
                 soldProduct.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));
-                soldProduct.setDate(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE)));
+                soldProduct.setDate(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE)));/*
                 soldProduct.setOptype(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_OPTYPE)));
-                soldProduct.setDeliveryAddress(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS)));
+                soldProduct.setDeliveryAddress(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS)));*/
 
                 soldProductArrayList.add(soldProduct);
             } while (c.moveToNext());
@@ -204,9 +203,9 @@ public class DbCustPurHistAdapter {
                 totRevDetails.setQuantity(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY)));
                 totRevDetails.setPurchaseAmnt(c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE)));
                 totRevDetails.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));
-                totRevDetails.setDate(DateUtil.convertFromYYYY_MM_DDtoDD_MM_YYYY(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE))));
+                totRevDetails.setDate(DateUtil.convertFromYYYY_MM_DDtoDD_MM_YYYY(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE))));/*
                 totRevDetails.setOptype(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_OPTYPE)));
-                totRevDetails.setDeliveryAddress(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS)));
+                totRevDetails.setDeliveryAddress(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS)));*/
                 totRevDetailsArrayList.add(totRevDetails);
             } while (c.moveToNext());
             return totRevDetailsArrayList;
@@ -231,9 +230,9 @@ public class DbCustPurHistAdapter {
                 todaysSale.setProdName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_NAME)));
                 todaysSale.setQuantity(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY)));
                 todaysSale.setPurchaseAmnt(c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE)));
-                todaysSale.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));
+                todaysSale.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));/*
                 todaysSale.setOptype(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_OPTYPE)));
-                todaysSale.setDeliveryAddress(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS)));
+                todaysSale.setDeliveryAddress(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS)));*/
 
                 todaysSaleArrayList.add(todaysSale);
             } while (c.moveToNext());
@@ -259,9 +258,9 @@ public class DbCustPurHistAdapter {
                 todaysSale.setProdName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_NAME)));
                 todaysSale.setQuantity(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY)));
                 todaysSale.setPurchaseAmnt(c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE)));
-                todaysSale.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));
+                todaysSale.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_MOBILE)));/*
                 todaysSale.setOptype(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_OPTYPE)));
-                todaysSale.setDeliveryAddress(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS)));
+                todaysSale.setDeliveryAddress(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS)));*/
                 todaysSaleArrayList.add(todaysSale);
             } while (c.moveToNext());
             return todaysSaleArrayList;

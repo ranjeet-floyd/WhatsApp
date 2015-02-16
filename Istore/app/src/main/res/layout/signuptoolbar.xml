@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ToolBarStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/signuptoolshadow"
+    android:minHeight="@dimen/abc_action_bar_default_height_material">
+
+    <TextView
+        android:id="@+id/toolbar_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textStyle="bold|italic"
+        android:textColor="@color/material_blue_A400"
+        android:textSize="20sp" />
+</android.support.v7.widget.Toolbar>

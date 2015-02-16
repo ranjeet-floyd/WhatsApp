@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.pojo.Product;
-import in.istore.bitblue.app.sellItems.SellItem;
+import in.istore.bitblue.app.Stocks.sellItem.SellItem;
 
 public class ListStockAdapter extends BaseAdapter implements Filterable {
 
@@ -79,7 +79,7 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
         }
 
         holder.name.setText(product.getName());
-
+        holder.date.setText(product.getAddedDate());
         //This is used to select clicked listItem and get its details
         listRow.setOnClickListener(new View.OnClickListener() {
 

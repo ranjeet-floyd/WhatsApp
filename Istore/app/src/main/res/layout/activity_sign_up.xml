@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/com_facebook_likeboxcountview_text_color"
+    android:background="@color/material_blue_100"
     tools:context="in.istore.bitblue.app.loginScreen.SignUpAdmin">
 
     <LinearLayout
@@ -13,7 +13,7 @@
 
         <include
             android:id="@+id/toolbar_actionbar"
-            layout="@layout/toolbar"
+            layout="@layout/signuptoolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -29,65 +29,83 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padd10dp"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:layout_marginBottom="@dimen/padd20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:text="Name:"
+                android:textColor="@color/material_blue_A400"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/et_signup_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:hint="Your Name"
                 android:inputType="text"
-                android:textColor="@color/black"
-                android:textColorHint="@color/material_blue_300" />
+                android:textColor="@color/material_blue_grey_500"
+                android:textColorHint="@color/grey" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padd10dp"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:layout_marginBottom="@dimen/padd20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:text="Mobile:"
+                android:textColor="@color/material_blue_A400"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/et_signup_mobnum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:hint="Mobile Number"
                 android:inputType="number"
-                android:textColor="@color/black"
-                android:textColorHint="@color/material_blue_300" />
+                android:textColor="@color/material_blue_grey_500"
+                android:textColorHint="@color/grey" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:layout_marginBottom="@dimen/padd20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:text="Email:"
+                android:textColor="@color/material_blue_A400"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/et_signup_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:hint="Email Address"
                 android:inputType="text"
-                android:textColor="@color/black"
-                android:textColorHint="@color/material_blue_300" />
+                android:textColor="@color/material_blue_grey_500"
+                android:textColorHint="@color/grey" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padd10dp"
-            android:gravity="right">
+            android:layout_marginTop="@dimen/padd10dp">
 
             <Button
                 android:id="@+id/b_signup_continue"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/button_shadow"
                 android:paddingLeft="@dimen/padd10dp"

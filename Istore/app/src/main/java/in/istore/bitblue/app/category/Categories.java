@@ -1,6 +1,8 @@
 package in.istore.bitblue.app.category;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +19,12 @@ import android.widget.Toast;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
@@ -24,6 +32,9 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.CategoryAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbCategoryAdapter;
 import in.istore.bitblue.app.pojo.Category;
+import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.api.API;
 
 public class Categories extends ActionBarActivity implements View.OnClickListener,
         SearchView.OnQueryTextListener,
@@ -38,6 +49,15 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
     private ArrayList<Category> categoryArrayList;
     private DbCategoryAdapter dbCategoryAdapter;
     private CategoryAdapter categoryAdapter;
+    private GlobalVariables globalVariable;
+
+    private JSONParser jsonParser = new JSONParser();
+    private JSONArray jsonArray;
+    private JSONObject jsonObject;
+    private ArrayList<NameValuePair> nameValuePairs;
+
+    private String CategoryName;
+    private String Key, UserType, Status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +74,10 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
         toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("CATEGORIES");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initViews() {
-
+        globalVariable = (GlobalVariables) getApplicationContext();
         itemMenu = (FloatingActionsMenu) findViewById(R.id.fab_category_menu);
         itemMenu.setOnFloatingActionsMenuUpdateListener(this);
 
@@ -70,8 +89,20 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
         lvcategories = (ListView) findViewById(R.id.lv_category);
 
         lvcategories.setTextFilterEnabled(true);
-        dbCategoryAdapter = new DbCategoryAdapter(this);
-        categoryArrayList = dbCategoryAdapter.getAllCategories();
+
+        UserType = globalVariable.getUserType();
+        if (UserType.equals("Admin")) {
+            Key = globalVariable.getAdminKey();
+        } else if (UserType.equals("Staff")) {
+            Key = globalVariable.getStaffKey();
+        }
+
+        /*dbCategoryAdapter = new DbCategoryAdapter(this);                          //Remove this if using api
+        categoryArrayList = dbCategoryAdapter.getAllCategories();*/                 //
+
+        //get All Categories list from server                                   //UnComment this when code to retrive category is done
+        //categoryArrayList =getAllCategories(StoreId);
+
         if (categoryArrayList != null) {
             categoryAdapter = new CategoryAdapter(this, categoryArrayList);
             lvcategories.setAdapter(categoryAdapter);
@@ -107,7 +138,7 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
     private void showAddItemDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.add_item_dialog);
-        dialog.setTitle("Add New Category");
+        dialog.setTitle("Add a Category");
 
         final EditText etcatName = (EditText) dialog.findViewById(R.id.et_additem_dialog_categoryname);
         Button add = (Button) dialog.findViewById(R.id.b_additem_dialog_add);
@@ -115,26 +146,88 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                String categoryName = etcatName.getText().toString();
-                if (dbCategoryAdapter.isCategoryAlreadyExist(categoryName)) {
+                CategoryName = etcatName.getText().toString();
+                /*if (dbCategoryAdapter.isCategoryAlreadyExist(CategoryName)) {                                  //Remove if using api
                     Toast.makeText(getApplicationContext(), "Category Already Present", Toast.LENGTH_LONG).show();
                     return;
                 } else {
-                    long result = dbCategoryAdapter.addNewCategory(categoryName);
+                    long result = dbCategoryAdapter.addNewCategory(CategoryName);
                     if (result > 0) {
                         categoryArrayList = dbCategoryAdapter.getAllCategories();
                         categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
                         lvcategories.setAdapter(categoryAdapter);
-                        Toast.makeText(getApplicationContext(), "Added " + categoryName, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Added " + CategoryName, Toast.LENGTH_SHORT).show();
                         itemMenu.toggle();
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to Add", Toast.LENGTH_SHORT).show();
-                    }
-                }
+                    }*/                                                                                            ///
+
+                //Check for existing category before insert
+                addCategoryForThisStore();
+
             }
+
         });
 
         dialog.show();
+    }
+
+    private void addCategoryForThisStore() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(Categories.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Adding Category...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("CategoryName", CategoryName));
+                nameValuePairs.add(new BasicNameValuePair("Key", Key));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_CATEGORY, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        Status = jsonObject.getString("status");
+                        return Status;
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (Status.equals("1")) {
+                    // categoryArrayList =getAllCategories(StoreId);
+                    // categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
+                    // lvcategories.setAdapter(categoryAdapter);
+
+                    Toast.makeText(getApplicationContext(), "Added Category: " + CategoryName, Toast.LENGTH_LONG).show();
+                } else if (Status.equals("2")) {
+                    Toast.makeText(getApplicationContext(), "Category Already Exists", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+    }
+
+    public ArrayList<Category> getAllCategories(String StoreId) {
+        return null;
     }
 
     @Override

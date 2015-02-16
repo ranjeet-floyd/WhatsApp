@@ -19,11 +19,22 @@ public class GlobalVariables extends Application {
     private Bitmap profPic;
     private static int prodImageCount = 1;
     private String imagePath;
+    private String UserType;
     private int storeId;
     private long adminMobile;
+    private long staffMobile;
+    private String StaffName;
+    private String AdminName;
     private long staffId;
-    private String AdminPass;
+    private long adminId;
     private String StaffPass;
+    private String AdminPass;
+    private String StaffKey;
+    private String AdminKey;
+    private String StaffEmail;
+    private String AdminEmail;
+    private long StaffTotalSales;
+
     private ArrayList<Product> productsList;
 
     public String getFbEmail() {
@@ -147,5 +158,85 @@ public class GlobalVariables extends Application {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public long getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(long adminId) {
+        this.adminId = adminId;
+    }
+
+    public String getStaffName() {
+        return StaffName;
+    }
+
+    public void setStaffName(String staffName) {
+        StaffName = staffName;
+    }
+
+    public String getAdminName() {
+        return AdminName;
+    }
+
+    public void setAdminName(String adminName) {
+        AdminName = adminName;
+    }
+
+    public String getStaffKey() {
+        return StaffKey;
+    }
+
+    public void setStaffKey(String staffKey) {
+        StaffKey = staffKey;
+    }
+
+    public String getAdminKey() {
+        return AdminKey;
+    }
+
+    public void setAdminKey(String adminKey) {
+        AdminKey = adminKey;
+    }
+
+    public long getStaffTotalSales() {
+        return StaffTotalSales;
+    }
+
+    public void setStaffTotalSales(long staffTotalSales) {
+        StaffTotalSales = staffTotalSales;
+    }
+
+    public String getStaffEmail() {
+        return StaffEmail;
+    }
+
+    public void setStaffEmail(String staffEmail) {
+        StaffEmail = staffEmail;
+    }
+
+    public String getAdminEmail() {
+        return AdminEmail;
+    }
+
+    public void setAdminEmail(String adminEmail) {
+        AdminEmail = adminEmail;
+    }
+
+    public String getUserType() {
+        return UserType;
+    }
+
+    public void setUserType(String userType) {
+        UserType = userType;
+    }
+
+    public long getStaffMobile() {
+        return staffMobile;
+    }
+
+    public void setStaffMobile(long staffMobile) {
+        this.staffMobile = staffMobile;
     }
 }

@@ -3,16 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/com_facebook_likeboxcountview_text_color"
-    android:paddingLeft="@dimen/padd10dp"
-    android:paddingRight="@dimen/padd10dp"
+    android:background="@drawable/loginbackground"
     tools:context="in.istore.bitblue.app.loginScreen.LoginPage">
 
     <LinearLayout
         android:id="@+id/ll_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padd100dp"
+        android:layout_marginTop="150dp"
         android:orientation="vertical">
 
         <LinearLayout

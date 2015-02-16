@@ -16,6 +16,9 @@
     <string name="viewsolditems">View Sold Items</string>
     <string name="additems">Add items to stock</string>
     <string name="sellitems">Sell Items</string>
+    <string name="transactions">Transactions</string>
+    <string name="staff">Staff Info</string>
+    <string name="stock">Stock Details</string>
 
     <!-- ListMyStock Page -->
     <string name="noitems">There are no items in the Stock.</string>
@@ -126,5 +129,8 @@
     <string name="com_facebook_loginview_log_in_button">Log In</string>
     <string name="com_facebook_loginview_log_out_button">Log Out</string>
     <string name="title_activity_cust_details_for_sale">CustDetailsForSale</string>
+    <string name="title_activity_home_screen">HomeScreen</string>
+    <string name="title_activity_change_password">ChangePassword</string>
+    <string name="title_activity_stocks">Stocks</string>
 
 </resources>

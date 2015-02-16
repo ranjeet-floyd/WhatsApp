@@ -1,6 +1,5 @@
 package in.istore.bitblue.app.adminMenu.transactions.outofstock;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,8 +24,6 @@ public class OutOfStock extends ActionBarActivity {
     private ArrayList<Outofstock> outofstockArrayList;
     private DbOutOfStockAdapter dbOutOfStockAdapter;
     private OutOfStockAdapter outOfStockAdapter;
-    private final static String TRANSACTION_STAFF = "transactionstaff";
-    private SharedPreferences preftransactionstaff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +34,9 @@ public class OutOfStock extends ActionBarActivity {
     }
 
     private void setToolbar() {
-        preftransactionstaff = getSharedPreferences(TRANSACTION_STAFF, MODE_PRIVATE);
-        outofStock = preftransactionstaff.getInt("OutOfStockItem", 0);
+        dbOutOfStockAdapter = new DbOutOfStockAdapter(this);
+        outofStock = dbOutOfStockAdapter.getOutOfStockItems();
+
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
@@ -51,7 +49,6 @@ public class OutOfStock extends ActionBarActivity {
     private void initViews() {
 
         lvOutOfStock = (ListView) findViewById(R.id.lv_outofstock_list);
-        dbOutOfStockAdapter = new DbOutOfStockAdapter(this);
         outofstockArrayList = dbOutOfStockAdapter.getAllOutOfStockItems();
         if (outofstockArrayList != null) {
             outOfStockAdapter = new OutOfStockAdapter(this, outofstockArrayList);

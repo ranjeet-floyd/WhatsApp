@@ -50,9 +50,8 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
+        toolbar.setNavigationIcon(R.drawable.ic_action_previous_item);
         toolTitle.setText("Sign Up");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -84,16 +83,25 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                 }
 
                 //If everything is ok send email to user with randomly generated password
-                StoreId = Store.generateStoreId();
-                Passwd = Store.generatePassword();
-                globalVariable.setAdminPass(Passwd);
                 globalVariable.setStoreId(StoreId);
                 prefstoreid.putInt("storeid", StoreId);
                 prefstoreid.commit();
+
                 Name = etname.getText().toString();
                 Email = etEmail.getText().toString();
                 Mobile = Long.parseLong(etmobNum.getText().toString());
+                Passwd = Store.generatePassword();
+                globalVariable.setAdminPass(Passwd);
+                StoreId = Store.generateStoreId();
+
                 sendMailToUser(Email, Passwd);
+                /*Intent storeName = new Intent(SignUpAdmin.this, StoreName.class);  //REMOVE All if using api
+                storeName.putExtra("Name", Name);  //
+                storeName.putExtra("Email", Email);///
+                storeName.putExtra("Mobile", Mobile);///
+                storeName.putExtra("Passwd", Passwd);//
+                storeName.putExtra("StoreId", StoreId);//
+                startActivity(storeName);*/
                 break;
         }
     }
@@ -122,12 +130,21 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
             protected void onPostExecute(Boolean result) {
                 dialog.dismiss();
                 if (result != null && result) {
+                    Toast.makeText(getApplicationContext(), "Your Password has been sent to your Email", Toast.LENGTH_LONG).show();
+                    Intent storeName = new Intent(SignUpAdmin.this, StoreName.class);
+                    storeName.putExtra("Name", Name);
+                    storeName.putExtra("Email", Email);
+                    storeName.putExtra("Mobile", Mobile);
+                    storeName.putExtra("Passwd", Passwd);
+                    storeName.putExtra("StoreId", StoreId);
+                    startActivity(storeName);
+               /* }if (result != null && result) {    //remove if using api
                     if (isMobileExists(Mobile)) {
                         Toast.makeText(getApplicationContext(), "Mobile Number Already Exists", Toast.LENGTH_LONG).show();
                     } else if (isEmailExists(Email)) {
                         Toast.makeText(getApplicationContext(), "Email Already Exists", Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Your Password has been sent to your Email", Toast.LENGTH_LONG).show();
                         long dbresult = loginCredAdapter.insertAdminInfo(Name, Email, Passwd, Mobile, StoreId);
                         if (dbresult <= 0) {
                         } else {
@@ -136,7 +153,7 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                             storeName.putExtra("StoreId", StoreId);
                             startActivity(storeName);
                         }
-                    }
+                    }*/
                 } else {
                     Toast.makeText(getApplicationContext(), "Mail sending failed Check Network", Toast.LENGTH_SHORT).show();
                 }

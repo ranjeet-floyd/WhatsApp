@@ -2,14 +2,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".HomePage">
-    <item
+<!--    <item
         android:id="@+id/action_category"
+        android:icon="@drawable/category"
         android:orderInCategory="100"
         android:title="@string/Category"
-        app:showAsAction="always" />
+        app:showAsAction="always" />-->
     <item
         android:id="@+id/action_cart"
+        android:icon="@drawable/cart"
         android:orderInCategory="100"
         android:title="@string/viewcart"
         app:showAsAction="always" />
+  <!--  <item
+        android:id="@+id/action_changePasswd"
+        android:orderInCategory="100"
+        android:title="Change Password"
+        app:showAsAction="never" />-->
+
 </menu>

@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -49,8 +48,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.Stocks.Stocks;
 import in.istore.bitblue.app.adapters.NavDrawAdapter;
-import in.istore.bitblue.app.addItems.AddItemsMenu;
 import in.istore.bitblue.app.adminMenu.custInfo.CusInfoContent;
 import in.istore.bitblue.app.adminMenu.staffMgmt.StaffMgntContent;
 import in.istore.bitblue.app.adminMenu.suppInfo.SuppInfoContent;
@@ -58,27 +57,28 @@ import in.istore.bitblue.app.adminMenu.transactions.Trans;
 import in.istore.bitblue.app.cart.Cart;
 import in.istore.bitblue.app.category.Categories;
 import in.istore.bitblue.app.cloudprint.CloudPrint;
-import in.istore.bitblue.app.data.ExportData;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
+import in.istore.bitblue.app.home.dragGrid.DynamicGridView;
+import in.istore.bitblue.app.home.dragGrid.GridDynamicAdapter;
+import in.istore.bitblue.app.home.foldingdrawer.FoldingDrawerLayout;
 import in.istore.bitblue.app.invoice.Invoice;
-import in.istore.bitblue.app.listStock.ListMyStock;
 import in.istore.bitblue.app.loginScreen.LoginPage;
 import in.istore.bitblue.app.loginScreen.StaffMobile;
 import in.istore.bitblue.app.navDrawer.NavDrawItems;
-import in.istore.bitblue.app.sellItems.SellItemsMenu;
-import in.istore.bitblue.app.soldItems.ListSoldItems;
+import in.istore.bitblue.app.pojo.GridItems;
+import in.istore.bitblue.app.pojo.GridItemsList;
 import in.istore.bitblue.app.staffMenu.custInfo.CusInfoForStaffContent;
 import in.istore.bitblue.app.staffMenu.transactions.TransStaff;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class HomePage extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Toolbar toolbar;
-    private Button blistStock, bviewSoldItems, bAddItems, bSellItems, Glogout, Flogout, blogout;
+    private Button Glogout, Flogout, blogout;
     private TextView tvuserName, tvuserEmail;
     private ImageView ivuserPic;
-    private DrawerLayout drawer;
+    private FoldingDrawerLayout drawer;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private ListView navDrawListAdmin, navDrawListStaff;
 
@@ -94,10 +94,11 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
     private SharedPreferences preflogin;
     private List<NavDrawItems> navDrawItemsListForAdmin, navDrawItemsListForStaff;
+    private ArrayList<GridItems> gridItemsArrayList;
     private NavDrawAdapter navDrawAdapter;
     private Bitmap bitmap;
     private DbProductAdapter dbAdapter;
-    private String filePath;
+    private String filePath, UserType;
     private GlobalVariables globalVariable;
     private ConnectionResult connectionResult;
     private DbLoginCredAdapter dbloginCredAdapter;
@@ -105,6 +106,9 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
     // Google client to interact with Google API
     private GoogleApiClient googleApiClient;
+
+    //dynamicgrid
+    private DynamicGridView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +125,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         responseFacebook = getIntent().getIntExtra("facebook", 0);
         preflogin = getSharedPreferences(LOGIN, MODE_PRIVATE);
         globalVariable = (GlobalVariables) getApplicationContext();
+        UserType = globalVariable.getUserType();
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
@@ -131,21 +136,18 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         StaffId = dbStaffAdapter.getStaffId(Mobile);
         initViews();
         if (responseGmail == 1) {
-            //Hide Facebook Logout button in nav Drawer
             Flogout.setVisibility(View.GONE);
             blogout.setVisibility(View.GONE);
             if (!googleApiClient.isConnected()) {
                 onConnected(savedInstanceState);
             }
         } else if (responseFacebook == 2) {
-            //Hide Google+ Logout button in nav Drawer
             Glogout.setVisibility(View.GONE);
             blogout.setVisibility(View.GONE);
 
             //If facebook then get all values
             FpersonName = globalVariable.getFbName();
             Femail = globalVariable.getFbEmail();
-            //bitmap = globalVariable.getProfPic();
             String path = getIntent().getStringExtra("filePath");
             bitmap = BitmapFactory.decodeFile(path);
             if (FpersonName != null) {
@@ -156,18 +158,18 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
             if (bitmap != null)
                 ivuserPic.setImageBitmap(bitmap);
-        } else if (StaffId <= 0) {
+        } else if (UserType.equals("Admin")) {
             Name = preflogin.getString("Name", "");
-            tvuserName.setText(Name);
+            tvuserName.setText(globalVariable.getAdminName());
             Email = preflogin.getString("Email", "");
             globalVariable.setEmail(Email);
-            tvuserEmail.setText(Email);
+            tvuserEmail.setText(globalVariable.getAdminEmail());
             Flogout.setVisibility(View.GONE);
             Glogout.setVisibility(View.GONE);
 
-        } else if (StaffId > 0) {
+        } else if (UserType.equals("Staff")) {
             Name = preflogin.getString("Name", "");
-            tvuserName.setText(Name);
+            tvuserName.setText(globalVariable.getStaffName());
             tvuserEmail.setText("");
             Flogout.setVisibility(View.GONE);
             Glogout.setVisibility(View.GONE);
@@ -178,8 +180,9 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_drawer);
-        toolbar.setLogo(R.drawable.istore_title_remback);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        toolTitle.setText("BIT STORE");
     }
 
     private void initViews() {
@@ -188,7 +191,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         dbloginCredAdapter = new DbLoginCredAdapter(this);
         dbStaffAdapter = new DbStaffAdapter(this);
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (FoldingDrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer);
         drawer.setDrawerListener(actionBarDrawerToggle);
         drawer.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -210,17 +213,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             navDrawListStaff.setAdapter(navDrawAdapter);
             navDrawListStaff.setOnItemClickListener(new DrawerItemClickListener());
         }
-        blistStock = (Button) findViewById(R.id.b_list_my_stock);
-        blistStock.setOnClickListener(this);
 
-        bviewSoldItems = (Button) findViewById(R.id.b_view_sold_items);
-        bviewSoldItems.setOnClickListener(this);
-
-        bAddItems = (Button) findViewById(R.id.b_add_items);
-        bAddItems.setOnClickListener(this);
-
-        bSellItems = (Button) findViewById(R.id.b_sell_items);
-        bSellItems.setOnClickListener(this);
 
         tvuserName = (TextView) findViewById(R.id.tv_username);
         tvuserEmail = (TextView) findViewById(R.id.tv_useremail);
@@ -234,64 +227,98 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
         blogout = (Button) findViewById(R.id.b_homepage_logout);
         blogout.setOnClickListener(this);
+        gridView = (DynamicGridView) findViewById(R.id.dynamic_grid);
+        gridItemsArrayList = GridItemsList.getAllGridItems();
+        gridView.setAdapter(new GridDynamicAdapter(this, gridItemsArrayList, 2));
+        gridView.setOnDragListener(new DynamicGridView.OnDragListener() {
+            @Override
+            public void onDragStarted(int position) {
+            }
+
+            @Override
+            public void onDragPositionsChanged(int oldPosition, int newPosition) {
+            }
+        });
+
+        //Remove Wobble on Drop of Item
+      /*  gridView.setOnDropListener(new DynamicGridView.OnDropListener() {
+            @Override
+            public void onActionDrop() {
+                gridView.stopEditMode();
+            }
+        });*/
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                gridView.startEditMode(position);
+                return true;
+            }
+        });
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                GridItems gridItem = (GridItems) parent.getAdapter().getItem(position);
+                switch (gridItem.getTvgridItemTitle()) {
+                    case "Transactions":
+                        startActivity(new Intent(getApplicationContext(), Trans.class));
+                        break;
+                    case "Category":
+                        startActivity(new Intent(getApplicationContext(), Categories.class));
+                        break;
+                    case "Manage Staff":
+                        startActivity(new Intent(getApplicationContext(), StaffMgntContent.class));
+                        break;
+                    case "Stocks":
+                        startActivity(new Intent(getApplicationContext(), Stocks.class));
+                        break;
+                }
+            }
+        });
     }
 
     private List<NavDrawItems> getAdminListItems() {
         ArrayList<NavDrawItems> drawerList = new ArrayList<NavDrawItems>();
-        drawerList.add(new NavDrawItems("Staff Management", R.drawable.ic_action_computer));
-        drawerList.add(new NavDrawItems("Supplier Info", R.drawable.ic_action_computer));
-        drawerList.add(new NavDrawItems("Customer Info", R.drawable.ic_action_computer));
-        drawerList.add(new NavDrawItems("Transactions", R.drawable.ic_action_computer));
-        drawerList.add(new NavDrawItems("Invoice", R.drawable.ic_action_computer));
+        //  drawerList.add(new NavDrawItems("Staff Management", R.drawable.ic_action_computer));
+        drawerList.add(new NavDrawItems("Supplier Info", R.drawable.suppliericon));
+        drawerList.add(new NavDrawItems("Customer Info", R.drawable.customericon));
+        // drawerList.add(new NavDrawItems("Transactions", R.drawable.ic_action_computer));
+        drawerList.add(new NavDrawItems("Invoice", R.drawable.invoiceicon));
+        drawerList.add(new NavDrawItems("Print Receipt", R.drawable.inprinticon));
         return drawerList;
     }
 
     private List<NavDrawItems> getStaffListItems() {
         ArrayList<NavDrawItems> drawerList = new ArrayList<NavDrawItems>();
-        drawerList.add(new NavDrawItems("Customer Info", R.drawable.ic_action_computer));
-        drawerList.add(new NavDrawItems("Transactions", R.drawable.ic_action_computer));
+        drawerList.add(new NavDrawItems("Customer Info", R.drawable.customericon));
+        drawerList.add(new NavDrawItems("My Transactions", R.drawable.tran));
         return drawerList;
     }
 
     private void selectItem(int position) {
         if (StaffId <= 0) {
             switch (position) {
-                case 0: //Staff Managewment
-                    startActivity(new Intent(this, StaffMgntContent.class));
-                    break;
-
-                case 1: //Supplier Info
+                case 0:
                     startActivity(new Intent(this, SuppInfoContent.class));
                     break;
-
-                case 2://Customer Info
+                case 1:
                     startActivity(new Intent(this, CusInfoContent.class));
                     break;
-
-                case 3: //Transaction
-                    startActivity(new Intent(this, Trans.class));
-                    break;
-
-                case 4:// Import Data
+                case 2:
                     startActivity(new Intent(this, Invoice.class));
                     break;
-
-                case 5: //Export Data
-                    startActivity(new Intent(this, ExportData.class));
-                    break;
-
-                case 6: //Cloud Print
-                    showCloudPrintDialog();
+                case 3:
+                    startActivity(new Intent(this, CloudPrint.class));
                     break;
             }
             navDrawListAdmin.setItemChecked(position, true);
         } else if (StaffId > 0) {
             switch (position) {
-                case 0: //Customer Info for Staff
+                case 0:
                     startActivity(new Intent(this, CusInfoForStaffContent.class));
                     break;
 
-                case 1: //Supplier Info
+                case 1:
                     startActivity(new Intent(this, TransStaff.class));
                     break;
             }
@@ -354,9 +381,12 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             case R.id.action_cart:
                 startActivity(new Intent(this, Cart.class));
                 break;
-            case R.id.action_category:
+    /*        case R.id.action_category:
                 startActivity(new Intent(this, Categories.class));
-                break;
+                break;*/
+/*            case R.id.action_changePasswd:
+                startActivity(new Intent(this, ChangePassword.class));
+                break;*/
         }
         return super.onOptionsItemSelected(item);
     }
@@ -364,25 +394,11 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
-            case R.id.b_list_my_stock:
-                Intent ListStock = new Intent(this, ListMyStock.class);
-                startActivity(ListStock);
-                break;
-            case R.id.b_view_sold_items:
-                Intent ListSoldItem = new Intent(this, ListSoldItems.class);
-                startActivity(ListSoldItem);
-                break;
-            case R.id.b_add_items:
-                Intent AddItems = new Intent(this, AddItemsMenu.class);
-                startActivity(AddItems);
-                break;
-            case R.id.b_sell_items:
-                Intent SellItems = new Intent(this, SellItemsMenu.class);
-                startActivity(SellItems);
-                break;
+
             case R.id.b_google_logout:
                 showConfirmationDialog("Google+", G_LOGOUT);
                 break;
+
             case R.id.b_facebook_logout:
                 showConfirmationDialog("Facebook", F_LOGOUT);
                 break;
@@ -460,7 +476,8 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
         if (drawer.isDrawerOpen(Gravity.LEFT)) {
             drawer.closeDrawer(Gravity.LEFT);
-        } else {
+        } else if (gridView.isEditMode()) {
+            gridView.stopEditMode();
         }
     }
 

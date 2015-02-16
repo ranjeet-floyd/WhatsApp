@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/com_facebook_likeboxcountview_text_color"
+    android:background="@color/material_blue_100"
     tools:context="in.istore.bitblue.app.loginScreen.StoreName">
 
     <LinearLayout
@@ -13,7 +13,7 @@
 
         <include
             android:id="@+id/toolbar_actionbar"
-            layout="@layout/toolbar"
+            layout="@layout/signuptoolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Store Name:"
-            android:textColor="@color/black"
+            android:textColor="@color/material_blue_A400"
             android:textSize="20sp" />
 
         <EditText
@@ -40,11 +40,12 @@
             android:hint="Name of Your Store"
             android:imeOptions="actionDone"
             android:inputType="text"
-            android:textColor="@color/black" />
+            android:textColor="@color/material_blue_grey_500"
+            android:textColorHint="@color/grey" />
 
         <Button
             android:id="@+id/b_storename_done"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_gravity="right"
             android:layout_marginTop="@dimen/padd10dp"

@@ -7,9 +7,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +22,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.File;
 
 import in.istore.bitblue.app.FileChooser.FileDialog;
+import in.istore.bitblue.app.FileChooser.SelectionMode;
 import in.istore.bitblue.app.R;
 
 public class CloudPrint extends ActionBarActivity implements View.OnClickListener {
@@ -52,13 +56,15 @@ public class CloudPrint extends ActionBarActivity implements View.OnClickListene
                     filePath = path.substring(0, (path.length()) - (name.length() + 4));
                     file = new File(path);
                 }
-                if (file.exists()) {
-                    fileName = file.getName();
-                    tvFilename.setText("File: " + fileName);
-                    bPrint.setVisibility(View.VISIBLE);
-                    Toast.makeText(this, "Path: " + path, Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(this, "File Not Found: " + fileName, Toast.LENGTH_SHORT).show();
+                if (file != null) {
+                    if (file.exists()) {
+                        fileName = file.getName();
+                        tvFilename.setText("File: " + fileName);
+                        bPrint.setVisibility(View.VISIBLE);
+                        Toast.makeText(this, "Path: " + path, Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(this, "File Not Found: " + fileName, Toast.LENGTH_SHORT).show();
+                }
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             Toast.makeText(this, "File Not Selected", Toast.LENGTH_SHORT).show();
@@ -80,7 +86,7 @@ public class CloudPrint extends ActionBarActivity implements View.OnClickListene
                     askToDownloadApp(cloudPrint);
                 }
 
-                /*Intent intent = new Intent(getBaseContext(), FileDialog.class);
+                Intent intent = new Intent(getBaseContext(), FileDialog.class);
                 intent.putExtra(FileDialog.START_PATH, Environment.getExternalStorageDirectory());
 
                 //can user select directories or not
@@ -90,15 +96,17 @@ public class CloudPrint extends ActionBarActivity implements View.OnClickListene
                 //alternatively you can set file filter
                 //intent.putExtra(FileDialog.FORMAT_FILTER, new String[] { "png" });
                 intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_OPEN);
-                startActivityForResult(intent, REQUEST_LOADFORPRINT);*/
+                startActivityForResult(intent, REQUEST_LOADFORPRINT);
                 break;
             case R.id.b_cloudprint_print:
-
-                /*File file = new File(path);
-                Intent printIntent = new Intent(this, PrintDialogActivity.class);
-                printIntent.setDataAndType(Uri.fromFile(file), "text*//**//*");
-                printIntent.putExtra("title", "Android print demo");
-                startActivity(printIntent);*/
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    WebView.setWebContentsDebuggingEnabled(true);
+                }
+                File file = new File(path);
+                Intent printIntent = new Intent(CloudPrint.this, PrintDialogActivity.class);
+                printIntent.setDataAndType(Uri.fromFile(file), "application/pdf");
+                        printIntent.putExtra("title", "InVoice");
+                startActivity(printIntent);
                 break;
         }
     }

@@ -26,10 +26,11 @@ public class DbStaffAdapter {
         return this;
     }
 
-    public long insertStaffInfo(int StoreId, int StaffId, String Name, long Mobile, String Passwd, String Address, String Joindate) {
+    public long insertStaffInfo(int StoreId, int StaffId, int AdminId, String Name, long Mobile, String Passwd, String Address, String Joindate) {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_STAFFMGNT_STOREID, StoreId);
         row.put(DBHelper.COL_STAFFMGNT_STAFFID, StaffId);
+        row.put(DBHelper.COL_STAFFMGNT_ADMINID, AdminId);
         row.put(DBHelper.COL_STAFFMGNT_NAME, Name);
         row.put(DBHelper.COL_STAFFMGNT_MOBNUM, Mobile);
         row.put(DBHelper.COL_STAFFMGNT_PASSWD, Passwd);
@@ -38,8 +39,27 @@ public class DbStaffAdapter {
         row.put(DBHelper.COL_STAFFMGNT_JOIN_DATE, Joindate);
 
         openWritableDatabase();
-        long result = sqLiteDb.insert(DBHelper.TABLE_STAFFMGNT, null, row);
-        return result;
+        return sqLiteDb.insert(DBHelper.TABLE_STAFFMGNT, null, row);
+    }
+
+    public long updateStaffSales(long StaffId, float TotalSalesAmount) {
+        ContentValues updateRow = new ContentValues();
+        updateRow.put(DBHelper.COL_STAFFMGNT_TOTALSALES, TotalSalesAmount + getStaffSales(StaffId));
+        openWritableDatabase();
+        return (long) sqLiteDb.update(DBHelper.TABLE_STAFFMGNT, updateRow, DBHelper.COL_STAFFMGNT_STAFFID + "='" + StaffId + "'", null);
+    }
+
+    private float getStaffSales(long StaffId) {
+        float TotalSalesAmount;
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_STAFFMGNT, DBHelper.STAFFMGNT_COLUMNS,
+                DBHelper.COL_STAFFMGNT_STAFFID + "='" + StaffId + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            TotalSalesAmount = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_TOTALSALES));
+            return TotalSalesAmount;
+        } else {
+            return 0;
+        }
     }
 
     public ArrayList<Staff> getAllStaffInfo(int StoreId) {
@@ -106,8 +126,7 @@ public class DbStaffAdapter {
         row.put(DBHelper.COL_STAFFMGNT_STAFFEMAIL, Email);
 
         openWritableDatabase();
-        long result = sqLiteDb.update(DBHelper.TABLE_STAFFMGNT, row, DBHelper.COL_STAFFMGNT_MOBNUM + "='" + Mobile + "'", null);
-        return result;
+        return (long) sqLiteDb.update(DBHelper.TABLE_STAFFMGNT, row, DBHelper.COL_STAFFMGNT_MOBNUM + "='" + Mobile + "'", null);
     }
 
     public String getStaffName(long Mobile) {

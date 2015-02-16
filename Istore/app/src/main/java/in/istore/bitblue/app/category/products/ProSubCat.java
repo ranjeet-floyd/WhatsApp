@@ -1,6 +1,8 @@
 package in.istore.bitblue.app.category.products;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +18,12 @@ import android.widget.Toast;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
@@ -23,21 +31,33 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.ProSubCatAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProSubCatAdapter;
 import in.istore.bitblue.app.pojo.ProductSubCategory;
+import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.api.API;
 
 public class ProSubCat extends ActionBarActivity implements View.OnClickListener,
         SearchView.OnQueryTextListener,
         FloatingActionsMenu.OnFloatingActionsMenuUpdateListener {
     private Toolbar toolbar;
     private TextView toolTitle;
-    private String CategoryName;
+    private String UserType, Key, CategoryName, SubCategoryName, Status;
     private SearchView searchView;
     private FloatingActionsMenu itemMenu;
     private FloatingActionButton addNewItem;
     private ListView lvprosubcat;
 
+    private ArrayList<ProSubCat> proSubCatArrayList;
+    private GlobalVariables globalVariable;
+
+    private JSONParser jsonParser = new JSONParser();
+    private JSONArray jsonArray;
+    private JSONObject jsonObject;
+    private ArrayList<NameValuePair> nameValuePairs;
+
     private ArrayList<ProductSubCategory> prodSubCatArrayList;
     private DbProSubCatAdapter dbProSubCatAdapter;
     private ProSubCatAdapter proSubCatAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +80,15 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
 
     private void initViews() {
 
+        globalVariable = (GlobalVariables) getApplicationContext();
+
+        UserType = globalVariable.getUserType();
+        if (UserType.equals("Admin")) {
+            Key = globalVariable.getAdminKey();
+        } else if (UserType.equals("Staff")) {
+            Key = globalVariable.getStaffKey();
+        }
+
         itemMenu = (FloatingActionsMenu) findViewById(R.id.fab_prosubcat_menu);
         itemMenu.setOnFloatingActionsMenuUpdateListener(this);
 
@@ -70,12 +99,19 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
 
         lvprosubcat = (ListView) findViewById(R.id.lv_prosubcat);
         lvprosubcat.setTextFilterEnabled(true);
-        dbProSubCatAdapter = new DbProSubCatAdapter(this);
-        prodSubCatArrayList = dbProSubCatAdapter.getAllProSubCategories(CategoryName);
+
+       /* dbProSubCatAdapter = new DbProSubCatAdapter(this);                           //Remove if using api
+        prodSubCatArrayList = dbProSubCatAdapter.getAllProSubCategories(CategoryName);*/    //
+
+
+        //get All Categories list from server                                   UnComment this when code to retrive category is done
+        //prodSubCatArrayList =addSubCategoryForCategory(CategoryName);
         if (prodSubCatArrayList != null) {
             proSubCatAdapter = new ProSubCatAdapter(this, prodSubCatArrayList);
             lvprosubcat.setAdapter(proSubCatAdapter);
         } else Toast.makeText(this, "No Data", Toast.LENGTH_SHORT).show();
+
+
         setupSearchView();
     }
 
@@ -107,7 +143,7 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
     private void showAddItemDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.add_item_dialog);
-        dialog.setTitle("Add New Product");
+        dialog.setTitle("Add Product");
 
         final EditText etcatName = (EditText) dialog.findViewById(R.id.et_additem_dialog_categoryname);
         Button add = (Button) dialog.findViewById(R.id.b_additem_dialog_add);
@@ -115,7 +151,8 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                String subcategoryName = etcatName.getText().toString();
+                SubCategoryName = etcatName.getText().toString();
+                /*String subcategoryName = etcatName.getText().toString();                           //Remove If Using Api
                 if (dbProSubCatAdapter.isCategoryAlreadyExist(subcategoryName)) {
                     Toast.makeText(getApplicationContext(), "Category Already Present", Toast.LENGTH_LONG).show();
                     return;
@@ -130,11 +167,62 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to Add", Toast.LENGTH_SHORT).show();
                     }
-                }
+                }*/                                                 //
+                addSubCategoryForCategory(CategoryName);
             }
         });
-
         dialog.show();
+    }
+
+    private void addSubCategoryForCategory(final String categoryName) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(ProSubCat.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Adding Product...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("Categoryname", categoryName));
+                nameValuePairs.add(new BasicNameValuePair("ProsubcatName", SubCategoryName));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_SUBCATEGORY, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        Status = jsonObject.getString("status");
+                        return Status;
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (Status.equals("1")) {
+                    Toast.makeText(getApplicationContext(), "Added SubCategory" + CategoryName, Toast.LENGTH_LONG).show();
+                } else if (Status.equals("2")) {
+                    Toast.makeText(getApplicationContext(), "SubCategory Already Exists", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
     }
 
     @Override

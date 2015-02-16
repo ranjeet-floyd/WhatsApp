@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.addItems.AddItemsMenu">
+    tools:context="in.istore.bitblue.app.Stocks.addItem.AddItemsMenu">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -51,16 +51,64 @@
                         android:layout_weight="1"
                         android:src="@drawable/no_image" />
 
-                    <Button
-                        android:id="@+id/b_additems_captureImage"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:background="@color/myPrimaryColor"
-                        android:text="@string/captureImage"
-                        android:textColor="@color/material_grey_500"
-                        android:textStyle="bold" />
+                        android:orientation="vertical"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/b_additems_captureImage"
+                                android:layout_width="50dp"
+                                android:layout_height="40dp"
+                                android:layout_marginBottom="@dimen/padd5dp"
+                                android:background="@drawable/camera"
+                                android:paddingLeft="@dimen/padd5dp"
+                                android:paddingRight="@dimen/padd5dp"
+                                android:textColor="@color/material_grey_500"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/padd5dp"
+                                android:text="Capture Image"
+                                android:textColor="@color/black" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/b_additems_scanBarcode"
+                                android:layout_width="50dp"
+                                android:layout_height="40dp"
+                                android:layout_marginBottom="@dimen/padd5dp"
+                                android:background="@drawable/scannericon"
+                                android:paddingLeft="@dimen/padd5dp"
+                                android:paddingRight="@dimen/padd5dp"
+                                android:textColor="@color/material_grey_500"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/padd5dp"
+                                android:text="Scan Barcode"
+                                android:textColor="@color/black" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout

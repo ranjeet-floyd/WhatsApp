@@ -33,7 +33,6 @@ public class ViewCustForStaff extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_cust_for_staff, container, false);
         globalVariables = (GlobalVariables) getActivity().getApplicationContext();
@@ -57,7 +56,7 @@ public class ViewCustForStaff extends Fragment {
 
             @Override
             protected Boolean doInBackground(String... strings) {
-                soldprodArrayList = dbcustpurhistAdapter.getCustomerInfoForStaffId(StaffId);  //Change this
+                soldprodArrayList = dbcustpurhistAdapter.getCustomerInfoForStaffId(StaffId);
                 if (soldprodArrayList != null && soldprodArrayList.size() > 0)
                     return true;
                 else return false;

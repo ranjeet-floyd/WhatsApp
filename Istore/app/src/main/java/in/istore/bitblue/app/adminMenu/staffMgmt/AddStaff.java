@@ -1,11 +1,13 @@
 package in.istore.bitblue.app.adminMenu.staffMgmt;
 
 import android.app.DatePickerDialog;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,26 +16,44 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.utilities.DatePickerFragment;
+import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.Mail;
 import in.istore.bitblue.app.utilities.Store;
+import in.istore.bitblue.app.utilities.api.API;
 
 public class AddStaff extends Fragment {
 
     private EditText etName, etMobile, etAddress;
+    EditText[] allEditTexts;
     private Button bDate, baddStaff;
-    private String joinDate, StaffName, AdminEmail, StaffPass;
+    private String joinDate, StaffName, StaffEmail, StaffAddress, AdminEmail, StaffPass, Status;
     private DbStaffAdapter staffAdapter;
     private DbLoginCredAdapter loginCredAdapter;
-    private long adminMobile;
+    private long AdminMobile, StaffMobile;
+    private int StoreId, StaffId;
     private GlobalVariables globalVariable;
-    private FragmentTabHost mTabHost;
+
+    private JSONParser jsonParser = new JSONParser();
+    private JSONArray jsonArray;
+    private JSONObject jsonObject;
+    private ArrayList<NameValuePair> nameValuePairs;
+    private float StaffTotSales;
 
     public AddStaff() {
         // Required empty public constructor
@@ -51,11 +71,11 @@ public class AddStaff extends Fragment {
         staffAdapter = new DbStaffAdapter(getActivity());
         loginCredAdapter = new DbLoginCredAdapter(getActivity());
         globalVariable = (GlobalVariables) getActivity().getApplicationContext();
-        adminMobile = globalVariable.getAdminMobile();
+        AdminMobile = globalVariable.getAdminMobile();
         etName = (EditText) view.findViewById(R.id.et_addstaff_name);
         etMobile = (EditText) view.findViewById(R.id.et_addstaff_mobile);
         etAddress = (EditText) view.findViewById(R.id.et_addstaff_address);
-        final EditText[] allEditTexts = new EditText[]{etName, etMobile, etAddress};
+        allEditTexts = new EditText[]{etName, etMobile, etAddress};
 
         bDate = (Button) view.findViewById(R.id.b_addstaff_joindate);
         bDate.setOnClickListener(new View.OnClickListener() {
@@ -69,24 +89,102 @@ public class AddStaff extends Fragment {
             @Override
             public void onClick(View view) {
                 checkForValidation(allEditTexts);
-                int staffid = Store.generateStaffId();
-                StaffPass = Store.generatePassword();
-                int storeId = loginCredAdapter.getStoreId(adminMobile);
-                AdminEmail = loginCredAdapter.getAdminEmail(storeId);
+
+              /*  StoreId = loginCredAdapter.getStoreId(AdminMobile);              //Remove if using api
+                AdminEmail = loginCredAdapter.getAdminEmail(StoreId);             //*/
+
+                StoreId = globalVariable.getStoreId();
+                StaffId = Store.generateStaffId();
+
                 StaffName = etName.getText().toString();
-                long mobile = Long.parseLong(etMobile.getText().toString());
-                String address = etAddress.getText().toString();
+                StaffMobile = Long.parseLong(etMobile.getText().toString());
+                StaffAddress = etAddress.getText().toString();
+                StaffPass = Store.generatePassword();
+                AdminEmail = globalVariable.getAdminEmail();
+                Date date = new Date();
+                joinDate = DateUtil.convertToStringDateOnly(date);
                 sendMailToUser(AdminEmail, StaffPass);
-                long result = staffAdapter.insertStaffInfo(storeId, staffid, StaffName, mobile, StaffPass, address, joinDate);
-                if (result <= 0) {
+                addStaffInfoToDatabase();
+                // long result = staffAdapter.insertStaffInfo(StoreId, StaffId, 0, StaffName, StaffMobile, StaffPass, StaffAddress, joinDate);      //Remove if using api
+               /* if (result <= 0) {
                     Toast.makeText(getActivity(), "Record Not Added", Toast.LENGTH_SHORT).show();
-                } else {
-                    clearField(allEditTexts);
-                    mTabHost = (FragmentTabHost) view.findViewById(android.R.id.tabhost);
-                    Toast.makeText(getActivity(), "Record Added", Toast.LENGTH_SHORT).show();
-                }
+                } else {  */                                                                                          //
+                //    }
             }
         });
+    }
+
+    private void addStaffInfoToDatabase() {
+        new AsyncTask<String, String, String>() {
+
+            ProgressDialog dialog = new ProgressDialog(getActivity());
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Adding Staff...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("Storeid", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("Staffid", String.valueOf(StaffId)));
+                nameValuePairs.add(new BasicNameValuePair("Staffemail", String.valueOf(StaffEmail)));
+                nameValuePairs.add(new BasicNameValuePair("Staffname", StaffName));
+                nameValuePairs.add(new BasicNameValuePair("Staffmobile", String.valueOf(StaffMobile)));
+                nameValuePairs.add(new BasicNameValuePair("Staffaddress", StaffAddress));
+                nameValuePairs.add(new BasicNameValuePair("Staffpasswd", StaffPass));
+                nameValuePairs.add(new BasicNameValuePair("StaffjoinOn", joinDate));
+                nameValuePairs.add(new BasicNameValuePair("Stafftotsale", String.valueOf(StaffTotSales)));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_STAFF_SIGN_UP, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        Status = jsonObject.getString("status");
+                        return Status;
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getActivity(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getActivity(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (Status.equals("1")) {
+                    Toast.makeText(getActivity(), "Added Staff " + StaffName, Toast.LENGTH_LONG).show();
+                    String NotificationTitle = "BITSTORE PASSWORD";
+                    String NotificationMessage = "Your Password is: " + StaffPass;
+                    sendPasswordThroughNotification(NotificationTitle, NotificationMessage);
+                    clearField(allEditTexts);
+                } else if (Status.equals("2")) {
+                    Toast.makeText(getActivity(), "Staff Already Exists", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+    }
+
+    private void sendPasswordThroughNotification(String Title, String Message) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity());
+        mBuilder.setSmallIcon(R.drawable.ic_launcher);
+        mBuilder.setContentTitle(Title);
+        mBuilder.setContentText(Message);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(1, mBuilder.build());
     }
 
     private void checkForValidation(EditText[] allEditTexts) {

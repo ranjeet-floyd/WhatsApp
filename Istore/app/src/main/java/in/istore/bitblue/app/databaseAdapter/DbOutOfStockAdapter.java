@@ -33,14 +33,24 @@ public class DbOutOfStockAdapter {
         row.put(DBHelper.COL_OUTOFSTOCK_REMAIN_QUANTITY, RemQuantity);
         row.put(DBHelper.COL_OUTOFSTOCK_SUPPMOBILE, SuppMobile);
         openWritableDatabase();
-        long result = sqLiteDb.insert(DBHelper.TABLE_OUTOFSTOCK_ITEMS, null, row);
-        return result;
+        return sqLiteDb.insert(DBHelper.TABLE_OUTOFSTOCK_ITEMS, null, row);
+    }
+
+    public int updateOutOfStockItem(String Id, int RemQuantity) {
+        ContentValues row = new ContentValues();
+        row.put(DBHelper.COL_OUTOFSTOCK_REMAIN_QUANTITY, RemQuantity);
+        openWritableDatabase();
+        return sqLiteDb.update(DBHelper.TABLE_OUTOFSTOCK_ITEMS, row, DBHelper.COL_OUTOFSTOCK_PRODID + "='" + Id + "'", null);
     }
 
     public ArrayList<Outofstock> getAllOutOfStockItems() {
         ArrayList<Outofstock> outofstockArrayList = new ArrayList<Outofstock>();
+
+        String RAW_QUERY = "SELECT DISTINCT " + DBHelper.COL_OUTOFSTOCK_PRODNAME + "," + DBHelper.COL_OUTOFSTOCK_REMAIN_QUANTITY + "," + DBHelper.COL_OUTOFSTOCK_SUPPMOBILE +
+                " FROM " + DBHelper.TABLE_OUTOFSTOCK_ITEMS;
+
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_OUTOFSTOCK_ITEMS, DBHelper.OUTOFSTOCK_COLUMNS, null, null, null, null, null);
+        Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
         if (c != null && c.moveToFirst()) {
             do {
                 Outofstock outofstock = new Outofstock();
@@ -66,19 +76,25 @@ public class DbOutOfStockAdapter {
         if (c != null && c.moveToFirst()) {
             int remQuantity = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_QUANTITY));
             int minLimit = c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_PROD_MINLIMIT));
-            if (remQuantity < minLimit)
-                return true;
-            else return false;
+            return remQuantity < minLimit;
         } else
             return false;
     }
 
     public int getOutOfStockItems() {
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_OUTOFSTOCK_ITEMS, null, null, null, null, null, null);
+        String RAW_QUERY = "SELECT DISTINCT " + DBHelper.COL_OUTOFSTOCK_PRODNAME +
+                " FROM " + DBHelper.TABLE_OUTOFSTOCK_ITEMS;
+        Cursor c = sqLiteDb.rawQuery(RAW_QUERY, null);
         if (c != null) {
             return c.getCount();
         } else return 0;
+    }
+
+    public boolean isProductAlreadyOutOfStock(String id) {
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.TABLE_OUTOFSTOCK_ITEMS, DBHelper.OUTOFSTOCK_COLUMNS, DBHelper.COL_OUTOFSTOCK_PRODID + "='" + id + "'", null, null, null, null);
+        return c != null && c.moveToFirst();
     }
 
 }

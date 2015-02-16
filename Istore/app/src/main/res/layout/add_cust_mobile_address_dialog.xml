@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_centerInParent="true"
     android:background="@color/white"
     android:orientation="vertical">
@@ -15,7 +15,38 @@
         android:hint="Enter Mobile Number"
         android:inputType="phone"
         android:singleLine="true"
-        android:textColor="@color/white" />
+        android:textColor="@color/black"
+        android:textColorHint="@color/black" />
+
+    <RadioGroup
+        android:id="@+id/rg_custdetails_radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/rb_custdetails_sell"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sell"
+            android:textColor="@color/black" />
+
+        <RadioButton
+            android:id="@+id/rb_custdetails_delivery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delivery"
+            android:textColor="@color/black" />
+
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/et_custdetails_deliveryaddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Delivery Address"
+        android:inputType="text"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"/>
 
     <Button
         android:id="@+id/b_addcust_dialog_addMobile"

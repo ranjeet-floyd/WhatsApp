@@ -23,4 +23,5 @@
     <dimen name="drawerTextSize">20sp</dimen>
     <!-- match_parent = -1dp / wrap_content = -2dp -->
     <dimen name="drawerWidth">-1dp</dimen>
+    <dimen name="dgv_overlap_if_switch_straight_line">16dp</dimen>
 </resources>

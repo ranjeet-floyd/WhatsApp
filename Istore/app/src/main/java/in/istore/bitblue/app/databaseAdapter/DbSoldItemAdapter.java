@@ -65,7 +65,7 @@ public class DbSoldItemAdapter {
         }
 
         Cursor cprodetalis = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
-                DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, null);
+                DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null,null);
 
         if (cprodetalis != null && cprodetalis.moveToFirst()) {
             product.setImage(cprodetalis.getBlob(1));

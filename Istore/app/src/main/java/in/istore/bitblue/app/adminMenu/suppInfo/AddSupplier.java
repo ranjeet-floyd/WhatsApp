@@ -1,9 +1,10 @@
 package in.istore.bitblue.app.adminMenu.suppInfo;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,24 +13,43 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbSuppAdapter;
 import in.istore.bitblue.app.utilities.DatePickerFragment;
+import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.api.API;
 
 public class AddSupplier extends Fragment {
 
     private EditText etName, etMobile, etAddress;
+    private EditText[] allEditTexts;
+
     private Button bDate, baddSupp;
     private String startDate;
     private DbSuppAdapter suppAdapter;
     private DbLoginCredAdapter loginCredAdapter;
-    private long adminMobile;
+    private String SuppName, SuppStartDate, SuppAddress, Status;
+    private long adminMobile, SuppMobile;
+    private int StoreId;
     private GlobalVariables globalVariable;
-    private FragmentTabHost mTabHost;
+
+    private JSONParser jsonParser = new JSONParser();
+    private JSONArray jsonArray;
+    private JSONObject jsonObject;
+    private ArrayList<NameValuePair> nameValuePairs;
 
     public AddSupplier() {
         // Required empty public constructor
@@ -44,12 +64,12 @@ public class AddSupplier extends Fragment {
     }
 
     private void initViews(View view) {
-
+        globalVariable = (GlobalVariables) getActivity().getApplicationContext();
         suppAdapter = new DbSuppAdapter(getActivity());
         etName = (EditText) view.findViewById(R.id.et_addsupp_name);
         etMobile = (EditText) view.findViewById(R.id.et_addsupp_mobile);
         etAddress = (EditText) view.findViewById(R.id.et_addsupp_address);
-        final EditText[] allEditTexts = new EditText[]{etName, etMobile, etAddress};
+        allEditTexts = new EditText[]{etName, etMobile, etAddress};
 
         bDate = (Button) view.findViewById(R.id.b_addsupp_joindate);
         bDate.setOnClickListener(new View.OnClickListener() {
@@ -63,20 +83,80 @@ public class AddSupplier extends Fragment {
             @Override
             public void onClick(View view) {
                 checkForValidation(allEditTexts);
-                String name = etName.getText().toString();
-                long mobile = Long.parseLong(etMobile.getText().toString());
-                String address = etAddress.getText().toString();
-                long result = suppAdapter.insertSuppInfo(name, mobile, address, startDate);
+                SuppName = etName.getText().toString();
+                SuppMobile = Long.parseLong(etMobile.getText().toString());
+                SuppAddress = etAddress.getText().toString();
+                Date date = new Date();
+                SuppStartDate = DateUtil.convertToStringDateOnly(date);
+                StoreId = globalVariable.getStoreId();
+                /*long result = suppAdapter.insertSuppInfo(name, mobile, address, startDate);           //Remove if using api
                 if (result <= 0) {
                     Toast.makeText(getActivity(), "Record Not Added", Toast.LENGTH_SHORT).show();
 
                 } else {
                     clearField(allEditTexts);
-                    mTabHost = (FragmentTabHost) view.findViewById(android.R.id.tabhost);
-                    Toast.makeText(getActivity(), "Record Added", Toast.LENGTH_SHORT).show();
+                }*/                                                                                     //
+
+                addSupplierInfoToDatabase();
+            }
+
+        });
+    }
+
+    private void addSupplierInfoToDatabase() {
+        new AsyncTask<String, String, String>() {
+
+            ProgressDialog dialog = new ProgressDialog(getActivity());
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Adding Supplier...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("Suppname", SuppName));
+                nameValuePairs.add(new BasicNameValuePair("Suppmobile", String.valueOf(SuppMobile)));
+                nameValuePairs.add(new BasicNameValuePair("Suppaddress", SuppAddress));
+                nameValuePairs.add(new BasicNameValuePair("Suppstartdate", SuppStartDate));
+                nameValuePairs.add(new BasicNameValuePair("Storeid", String.valueOf(StoreId)));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_SUPPLIER, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        Status = jsonObject.getString("status");
+                        return Status;
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getActivity(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getActivity(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (Status.equals("1")) {
+                    Toast.makeText(getActivity(), "Added Supplier " + SuppName, Toast.LENGTH_LONG).show();
+                    clearField(allEditTexts);
+                } else if (Status.equals("2")) {
+                    Toast.makeText(getActivity(), "Supplier Already Exists", Toast.LENGTH_LONG).show();
                 }
             }
-        });
+        }.execute();
     }
 
     private void checkForValidation(EditText[] allEditTexts) {

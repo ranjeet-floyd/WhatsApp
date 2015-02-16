@@ -13,7 +13,7 @@
 
         <include
             android:id="@+id/toolbar_actionbar"
-            layout="@layout/toolbar"
+            layout="@layout/listtoolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -45,7 +45,8 @@
         <ListView
             android:id="@+id/lv_category"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:listSelector="@color/material_blue_700" />
     </LinearLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu

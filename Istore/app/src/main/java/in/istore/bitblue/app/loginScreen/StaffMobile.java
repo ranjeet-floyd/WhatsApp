@@ -20,7 +20,7 @@ public class StaffMobile extends ActionBarActivity implements View.OnClickListen
     private EditText etMobile;
     private Button bSubmit, bSkip;
 
-    private String GName, GEmail, FbName, FbEmail;
+    private String  GEmail, FbEmail;
     private int responseGmail, responseFacebook;
     private DbStaffAdapter dbStaffAdapter;
     private GlobalVariables globalVariable;
@@ -40,7 +40,6 @@ public class StaffMobile extends ActionBarActivity implements View.OnClickListen
         toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("Staff Mobile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initViews() {
@@ -51,10 +50,8 @@ public class StaffMobile extends ActionBarActivity implements View.OnClickListen
         responseFacebook = getIntent().getIntExtra("facebook", 0);
 
         if (responseGmail == 1) {
-            GName = globalVariable.getgName();
             GEmail = globalVariable.getgEmail();
         } else if (responseFacebook == 2) {
-            FbName = globalVariable.getFbName();
             FbEmail = globalVariable.getFbEmail();
         }
 
@@ -75,14 +72,18 @@ public class StaffMobile extends ActionBarActivity implements View.OnClickListen
                 if (responseGmail == 1) {
                     long result = dbStaffAdapter.addEmailforMobile(Mobile, GEmail);
                     if (result > 0) {
-                        Toast.makeText(getApplicationContext(), "Email Added for" + Mobile, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Email Added ", Toast.LENGTH_SHORT).show();
+
                     } else {
                         Toast.makeText(getApplicationContext(), "Email Already Added", Toast.LENGTH_SHORT).show();
                     }
                 } else if (responseFacebook == 2) {
                     long result = dbStaffAdapter.addEmailforMobile(Mobile, FbEmail);
                     if (result <= 0) {
-                        Toast.makeText(getApplicationContext(), "Mobile Number does not exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Email Already Added", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Email Added ", Toast.LENGTH_SHORT).show();
+
                     }
                 }
                 break;

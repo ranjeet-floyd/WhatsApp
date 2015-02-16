@@ -76,7 +76,7 @@ public class DbCartAdapter {
         row.put(DBHelper.COL_CARTITEM_QUANTITY, Quantity);
         row.put(DBHelper.COL_CARTITEM_TOTALPRICE, totalAmount);
         openWritableDatabase();
-        int result = sqLiteDb.update(DBHelper.TABLE_CART, row, DBHelper.COL_CARTITEM_ID + "='" + Id + "'OR " + DBHelper.COL_CARTITEM_NAME + "='" + Name + "'", null);
+        int result = sqLiteDb.update(DBHelper.TABLE_CART, row, DBHelper.COL_CARTITEM_ID + "='" + Id, null);
         return result;
     }
 
