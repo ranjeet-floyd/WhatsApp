@@ -11,7 +11,7 @@ import android.widget.TextView;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.Stocks.addItem.AddItemForm;
 import in.istore.bitblue.app.Stocks.listSoldStock.ListSoldItems;
-import in.istore.bitblue.app.Stocks.listStock.ListMyStock;
+import in.istore.bitblue.app.Stocks.listStock.CategoryList;
 import in.istore.bitblue.app.Stocks.sellItem.SellItemsMenu;
 
 public class Stocks extends ActionBarActivity implements View.OnClickListener {
@@ -53,7 +53,7 @@ public class Stocks extends ActionBarActivity implements View.OnClickListener {
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.b_stocks_list_my_stock:
-                Intent ListStock = new Intent(this, ListMyStock.class);
+                Intent ListStock = new Intent(this, CategoryList.class);
                 startActivity(ListStock);
                 break;
             case R.id.b_stocks_view_sold_items:

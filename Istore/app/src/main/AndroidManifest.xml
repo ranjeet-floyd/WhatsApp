@@ -62,7 +62,7 @@
         <activity android:name=".home.HomePage" />
         <activity
             android:name=".Stocks.listStock.ListMyStock"
-            android:parentActivityName=".Stocks.Stocks"
+            android:parentActivityName=".Stocks.listStock.CategoryList"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Stocks.addItem.AddItemsMenu"
@@ -105,7 +105,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Stocks.sellItem.EditItemForm"
-            android:parentActivityName=".Stocks.listStock.ListMyStock"
+            android:parentActivityName=".Stocks.listStock.CategoryList"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Stocks.listSoldStock.SoldItemForm"
@@ -189,6 +189,9 @@
         <activity
             android:name=".Stocks.Stocks"
             android:parentActivityName=".home.HomePage" />
+        <activity
+            android:name=".Stocks.listStock.CategoryList"
+            android:parentActivityName=".Stocks.Stocks"/>
     </application>
 
 </manifest>

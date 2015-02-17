@@ -89,7 +89,7 @@ public class Cart extends ActionBarActivity {
         dbTotSaleAmtByDateAdapter = new DbTotSaleAmtByDateAdapter(this);
         dbStaffAdapter = new DbStaffAdapter(this);
 
-        cartItemArrayList = dbCartAdapter.getAllCartItems();
+        //cartItemArrayList = dbCartAdapter.getAllCartItems();
         totalPayAmount = dbCartAdapter.getTotalPayAmount();
         if (totalPayAmount != 0) {
             tvTotalPayAmnt.setText(String.valueOf(totalPayAmount));

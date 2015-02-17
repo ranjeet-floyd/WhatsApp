@@ -16,31 +16,44 @@
             android:orientation="horizontal"
             android:paddingLeft="@dimen/padd5dp"
             android:paddingRight="@dimen/padd5dp"
-            android:weightSum="2">
+            android:weightSum="3">
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
                 android:text="Supplier Name"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Mobile No"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.2" />
         </LinearLayout>
+
+        <View
+            android:id="@+id/v_view_supp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/ll_header"
+            android:background="@color/material_blue_grey_900" />
 
         <ListView
             android:id="@+id/lv_viewSupp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_header"
+            android:layout_below="@+id/v_view_supp"
             android:layout_marginTop="@dimen/padd10dp"
-            android:dividerHeight="@dimen/padd5dp" />
+            android:dividerHeight="@dimen/padd5dp"
+            android:listSelector="@color/material_blue_100" />
     </RelativeLayout>
 </FrameLayout>

@@ -1,6 +1,7 @@
 package in.istore.bitblue.app.Stocks.listStock;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +24,11 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,11 +36,14 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.adapters.ListStockAdapter;
 import in.istore.bitblue.app.Stocks.addItem.AddItemsMenu;
+import in.istore.bitblue.app.adapters.ListStockAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
+import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.api.API;
 
 public class ListMyStock extends ActionBarActivity
         implements View.OnClickListener,
@@ -52,11 +61,17 @@ public class ListMyStock extends ActionBarActivity
     private DbProductAdapter dbAdapter;
     private ListStockAdapter listAdapter;
     private ListView lvproductList;
-    private ArrayList<Product> productArrayList;
-
+    private ArrayList<Product> productArrayList = new ArrayList<Product>();
+    private GlobalVariables globalVariable;
     private boolean loadingMoreItems;
-    private int offset = 0;
-    private int limit = 10;
+    private int offset = 0, limit = 10, StoreId;
+    private String UserType, Key, CategoryName;
+
+    private JSONParser jsonParser = new JSONParser();
+    private JSONArray jsonArray;
+    private JSONObject jsonObject;
+    private ArrayList<NameValuePair> nameValuePairs;
+    private Product product;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +90,15 @@ public class ListMyStock extends ActionBarActivity
     }
 
     private void initViews() {
+        globalVariable = (GlobalVariables) getApplicationContext();
+        StoreId = globalVariable.getStoreId();
+        UserType = globalVariable.getUserType();
+        if (UserType.equals("Admin")) {
+            Key = globalVariable.getAdminKey();
+        } else if (UserType.equals("Staff")) {
+            Key = globalVariable.getStaffKey();
+        }
+        CategoryName = getIntent().getStringExtra("categoryName");
 
         itemMenu = (FloatingActionsMenu) findViewById(R.id.fab_listmystock_menu);
         itemMenu.setOnFloatingActionsMenuUpdateListener(this);
@@ -332,5 +356,92 @@ public class ListMyStock extends ActionBarActivity
             } else footerView.setVisibility(View.GONE);
             loadingMoreItems = false;
         }
+    }
+
+    private void getAllProductsForCategory(final int StoreId, final String Key, final String CategoryName) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(ListMyStock.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Getting Products...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
+                nameValuePairs.add(new BasicNameValuePair("CategoryName", CategoryName));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALLPRODUCTS_FORCATEGORY, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (jsonArray == null) {
+                    Toast.makeText(getApplicationContext(), "No Products For this Category", Toast.LENGTH_LONG).show();
+                }
+                // categoryArrayList =getAllCategories(StoreId);
+                // categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
+                // lvcategories.setAdapter(categoryAdapter);
+                else {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
+                            jsonObject = jsonArray.getJSONObject(i);
+                            String productId = jsonObject.getString("");
+                            String productImage = jsonObject.getString("");
+                            String productName = jsonObject.getString("");
+                            String productAddedDate = jsonObject.getString("");
+                            if (productId == null || productId.equals("null")) {
+                                break;
+                            }
+                            product = new Product();
+                            product.setId(productId);
+                            product.setImage(convertStringtoByteArray(productImage));
+                            product.setName(productName);
+                            product.setAddedDate(productAddedDate);
+                            productArrayList.add(product);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (productArrayList != null && productArrayList.size() > 0) {
+                        listAdapter = new ListStockAdapter(getApplicationContext(), productArrayList);
+                        lvproductList = (ListView) findViewById(R.id.lv_listmystock_itemlist);
+                        lvproductList.setAdapter(listAdapter);
+                    } else
+                        Toast.makeText(getApplicationContext(), "No Product Available", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+    }
+
+    private byte[] convertStringtoByteArray(String image) {
+        String[] byteValues = image.substring(1, image.length() - 1).split(",");
+        byte[] bytes = new byte[byteValues.length];
+        int len = bytes.length;
+        for (int i = 0; i < len; i++) {
+            bytes[i] = Byte.parseByte(byteValues[i].trim());
+        }
+        return bytes;
     }
 }

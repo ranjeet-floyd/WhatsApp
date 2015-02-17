@@ -80,6 +80,7 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
 
         holder.name.setText(product.getName());
         holder.date.setText(product.getAddedDate());
+
         //This is used to select clicked listItem and get its details
         listRow.setOnClickListener(new View.OnClickListener() {
 

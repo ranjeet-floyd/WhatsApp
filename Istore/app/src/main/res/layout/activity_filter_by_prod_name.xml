@@ -25,6 +25,19 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/ll_filterproductprogressbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_productlist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -84,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1.1"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout

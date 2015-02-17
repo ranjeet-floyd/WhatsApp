@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="in.istore.bitblue.app.Stocks.listStock.CategoryList">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/abc_action_bar_default_height_material">
+
+        <include
+            android:id="@+id/toolbar_actionbar"
+            layout="@layout/listtoolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_categorylist_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginTop="@dimen/padd20dp"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/lv_categorylist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:listSelector="@color/material_blue_700" />
+    </LinearLayout>
+</RelativeLayout>

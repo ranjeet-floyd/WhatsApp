@@ -6,44 +6,32 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.adapters.QuantityAdapter;
-import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
-import in.istore.bitblue.app.databaseAdapter.DbQuantityAdapter;
-import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.Stocks.listSoldStock.SoldItemForm;
+import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
+import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class SellItem extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
 
     private Button bEdit, baddtocart;
-    private TextView tvbarcode, tvname, tvquantity, tvcostprice, tvsellprice;
-    private TextView etvdesc;
+    private TextView tvbarcode, tvname, tvsellprice;
+    private TextView tvdesc;
     private ImageView ivProdImage;
-    private ListView lvquanthist;
 
-    private SparseBooleanArray mCollapsedStatus;
     private GlobalVariables globalVariable;
-    private String id, scanContent, name, desc, supplier;
-    private int quantity;
-    private float costprice, sellprice;
+    private String id, scanContent, name, desc;
+    private float sellprice;
     private byte[] byteImage;
     private Bitmap bitmap;
 
-    private ArrayList<Product> quantityList;
     private DbProductAdapter dbProAdapter;
-    private DbQuantityAdapter dbQuanAdapter;
-    private QuantityAdapter quantityAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,23 +48,19 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        toolTitle.setText("SELL ITEM FORM");
+        toolTitle.setText("Product Details");
     }
 
     private void initViews() {
 
-        mCollapsedStatus = new SparseBooleanArray();
         id = getIntent().getStringExtra("id");  //Obtained when list item is selected
         scanContent = getIntent().getStringExtra("scanContentsellitem");  //Obtained when barcode is scanned
         dbProAdapter = new DbProductAdapter(this);
-        dbQuanAdapter = new DbQuantityAdapter(this);
         if (id != null) {
             getProductfor(id);
-            quantityList = getQuantityDetails(id);
         } else if (scanContent != null) {
             id = scanContent;
             getProductfor(id);
-            quantityList = getQuantityDetails(id);
         } else {
             startActivity(new Intent(this, SellItemsMenu.class));
         }
@@ -103,22 +87,11 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
         tvname = (TextView) findViewById(R.id.tv_sellitems_prod_name);
         tvname.setText(name);
 
-        etvdesc = (TextView) findViewById(R.id.expandable_text);
-        tvquantity = (TextView) findViewById(R.id.tv_sellitems_quantity);
-        tvquantity.setText(String.valueOf(quantity));
+        tvdesc = (TextView) findViewById(R.id.tv_sellitem_prod_desc);
+        tvdesc.setText(desc);
 
         tvsellprice = (TextView) findViewById(R.id.tv_sellitems_prod_sellprice);
         tvsellprice.setText(String.valueOf(sellprice));
-
-        lvquanthist = (ListView) findViewById(R.id.lv_sellitems_quanthist);
-        if (quantityList != null) {
-            quantityAdapter = new QuantityAdapter(this, quantityList);
-            lvquanthist.setAdapter(quantityAdapter);
-        }
-    }
-
-    private ArrayList<Product> getQuantityDetails(String id) {
-        return dbQuanAdapter.getQuatityDetailsfor(id);
     }
 
     private void getProductfor(String id) {
@@ -126,10 +99,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
         if (product != null) {
             name = product.getName();
             desc = product.getDesc();
-            quantity = product.getQuantity();
-            costprice = product.getCostPrice();
             sellprice = product.getSellingPrice();
-            supplier = product.getSupplier();
             byteImage = product.getImage();
             BitmapFactory.Options options = new BitmapFactory.Options();
             if (byteImage != null)

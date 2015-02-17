@@ -3,7 +3,7 @@
     style="@style/ToolBarStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/material_blue_500"
+    android:background="@drawable/toolbarshadow"
     android:minHeight="@dimen/abc_action_bar_default_height_material">
 
     <TextView
@@ -11,6 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/material_blue_grey_900"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 </android.support.v7.widget.Toolbar>

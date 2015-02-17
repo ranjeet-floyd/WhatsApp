@@ -25,6 +25,19 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/ll_filterstaffprogressbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_staffids"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

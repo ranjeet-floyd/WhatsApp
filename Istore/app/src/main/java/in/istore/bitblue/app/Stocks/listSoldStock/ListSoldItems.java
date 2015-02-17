@@ -1,6 +1,7 @@
 package in.istore.bitblue.app.Stocks.listSoldStock;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -22,6 +23,11 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +39,9 @@ import in.istore.bitblue.app.adapters.SoldItemAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
+import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.api.API;
 
 public class ListSoldItems extends ActionBarActivity implements View.OnClickListener,
         SearchView.OnQueryTextListener,
@@ -44,15 +53,23 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
     private View footerView;
     private SearchView searchView;
 
+    private GlobalVariables globalVariable;
     private DbProductAdapter dbAdapter;
     private SoldItemAdapter listAdapter;
-    private ArrayList<Product> soldproductArrayList;
+    private ArrayList<Product> soldproductArrayList=new ArrayList<Product>();
+    private JSONParser jsonParser = new JSONParser();
+    private JSONArray jsonArray;
+    private JSONObject jsonObject;
+    private ArrayList<NameValuePair> nameValuePairs;
+    private Product product;
+
     private boolean loadingMoreItems;
-    private int offset = 0;
-    private int limit = 10;
+    private int offset = 0, limit = 10, StoreId;
+    private String UserType, Key;
 
     private FloatingActionsMenu itemMenu;
     private FloatingActionButton delAllItem, sortItems;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +87,20 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
         toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("SOLD ITEMS");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initViews() {
+
+        globalVariable = (GlobalVariables) getApplicationContext();
+        UserType = globalVariable.getUserType();
+        StoreId = globalVariable.getStoreId();
+        UserType = globalVariable.getUserType();
+        if (UserType.equals("Admin")) {
+            Key = globalVariable.getAdminKey();
+        } else if (UserType.equals("Staff")) {
+            Key = globalVariable.getStaffKey();
+        }
+
         itemMenu = (FloatingActionsMenu) findViewById(R.id.fab_solditems_menu);
         itemMenu.setOnFloatingActionsMenuUpdateListener(this);
 
@@ -92,7 +119,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
         lvsoldproductList.addFooterView(footerView);
         offset = 0;
         limit = 10;
-         soldproductArrayList = dbAdapter.getAllSoldProducts(limit, offset);
+        soldproductArrayList = dbAdapter.getAllSoldProducts(limit, offset);
         if (soldproductArrayList == null || soldproductArrayList.size() == 0) {
             tvnodata.setVisibility(View.VISIBLE);
         } else {
@@ -302,31 +329,90 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
         }
     }
 
-/*    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_sold_items, menu);
-        sortBy = menu.findItem(R.id.mi_sortBy);
-        return true;
+    private void getAllSoldProducts(final int StoreId, final String Key) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(ListSoldItems.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Getting Products...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALLSOLDPRODUCTS, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (jsonArray == null) {
+                    Toast.makeText(getApplicationContext(), "No Products", Toast.LENGTH_LONG).show();
+                }
+                // categoryArrayList =getAllCategories(StoreId);
+                // categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
+                // lvcategories.setAdapter(categoryAdapter);
+                else {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
+                            jsonObject = jsonArray.getJSONObject(i);
+                            String productId = jsonObject.getString("");
+                            String productImage = jsonObject.getString("");
+                            String productName = jsonObject.getString("");
+                            String productAddedDate = jsonObject.getString("");
+                            if (productId == null || productId.equals("null")) {
+                                break;
+                            }
+                            product = new Product();
+                            product.setId(productId);
+                            product.setImage(convertStringtoByteArray(productImage));
+                            product.setName(productName);
+                            product.setAddedDate(productAddedDate);
+                            soldproductArrayList.add(product);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (soldproductArrayList != null && soldproductArrayList.size() > 0) {
+                        listAdapter = new SoldItemAdapter(getApplicationContext(), soldproductArrayList);
+                        lvsoldproductList = (ListView) findViewById(R.id.lv_soldItem_itemlist);
+                        lvsoldproductList.setAdapter(listAdapter);
+                    } else
+                        Toast.makeText(getApplicationContext(), "No Product Available", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.mi_sortBy) {
-            if (soldproductArrayList == null || soldproductArrayList.size() == 0) {
-                Toast.makeText(this, "No Items to Sort", Toast.LENGTH_SHORT).show();
-            } else {
-                showDialogForSort();
-            }
-            return true;
+    private byte[] convertStringtoByteArray(String image) {
+        String[] byteValues = image.substring(1, image.length() - 1).split(",");
+        byte[] bytes = new byte[byteValues.length];
+        int len = bytes.length;
+        for (int i = 0; i < len; i++) {
+            bytes[i] = Byte.parseByte(byteValues[i].trim());
         }
+        return bytes;
+    }
 
-        return super.onOptionsItemSelected(item);
-    }*/
 }

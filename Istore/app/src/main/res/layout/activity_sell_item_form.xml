@@ -1,9 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_dark_material_dark"
+    android:background="@color/white"
     tools:context="in.istore.bitblue.app.Stocks.sellItem.SellItem">
 
     <LinearLayout
@@ -25,8 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/linearLayout"
-        android:layout_marginBottom="50dp"
-        android:background="@color/dark_grey">
+        android:layout_marginBottom="50dp">
 
         <ScrollView
             android:id="@+id/ll_one"
@@ -41,30 +39,6 @@
                 android:layout_marginTop="@dimen/padd5dp"
                 android:background="@drawable/layout_roundedcorner"
                 android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="bottom"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/padd5dp"
-                        android:layout_marginLeft="@dimen/padd5dp"
-                        android:gravity="center"
-                        android:text="Product Details"
-                        android:textColor="@color/material_teal_700"
-                        android:textSize="20sp"
-                        android:textStyle="bold|italic" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_gravity="bottom"
-                        android:background="@color/black" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -84,106 +58,81 @@
                         <ImageView
                             android:id="@+id/iv_sellitems_image"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/padd10dp"
                             android:layout_marginRight="@dimen/padd10dp"
                             android:src="@drawable/no_image" />
-                    </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="@dimen/padd10dp"
+                            android:layout_marginTop="@dimen/padd10dp"
+                            android:background="@color/material_blue_100" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padd10dp"
+                            android:layout_marginTop="@dimen/padd10dp"
                             android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tv_sellitems_prod_name"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/padd5dp"
-                                android:text="Product Name"
-                                android:textAllCaps="true"
-                                android:textColor="@color/black"
-                                android:textSize="20sp" />
-
-                            <TextView
-                                android:id="@+id/tv_sellitems_barcode_prod_id"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/padd5dp"
-                                android:text="987654321012"
-                                android:textColor="@color/black"
-                                android:textSize="15sp" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:weightSum="3">
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/tv_sellitems_prod_name"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginRight="@dimen/padd5dp"
-                                    android:layout_marginTop="@dimen/padd10dp"
-                                    android:layout_weight="1"
-                                    android:text="SP"
-                                    android:textColor="@color/black"
-                                    android:textSize="18sp" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/padd10dp"
-                                    android:layout_weight="1.4"
-                                    android:text="@string/rs"
+                                    android:layout_marginBottom="@dimen/padd5dp"
+                                    android:text="Product Name"
+                                    android:textAllCaps="true"
                                     android:textColor="@color/black"
                                     android:textSize="20sp" />
 
                                 <TextView
-                                    android:id="@+id/tv_sellitems_prod_sellprice"
+                                    android:id="@+id/tv_sellitems_barcode_prod_id"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginRight="@dimen/padd10dp"
-                                    android:layout_marginTop="@dimen/padd10dp"
-                                    android:layout_weight="1"
+                                    android:layout_marginBottom="@dimen/padd5dp"
+                                    android:text="987654321012"
                                     android:textColor="@color/black"
-                                    android:textSize="20sp" />
+                                    android:textSize="15sp" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="@dimen/padd10dp"
+                                        android:text="@string/rs"
+                                        android:textColor="@color/black"
+                                        android:textSize="20sp" />
+
+                                    <TextView
+                                        android:id="@+id/tv_sellitems_prod_sellprice"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginRight="@dimen/padd10dp"
+                                        android:layout_marginTop="@dimen/padd10dp"
+                                        android:text="100"
+                                        android:textColor="@color/black"
+                                        android:textSize="20sp" />
+                                </LinearLayout>
                             </LinearLayout>
-
                         </LinearLayout>
 
-                        <LinearLayout
+                        <View
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/padd40dp"
-                            android:orientation="horizontal"
-                            android:weightSum="2">
-
-                            <Button
-                                android:id="@+id/b_sellitems_edit"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:background="@null"
-                                android:text="@string/edit"
-                                android:textColor="@color/black" />
-
-                            <Button
-                                android:id="@+id/b_sellitems_addtocart"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:background="@null"
-                                android:text="@string/addtocart"
-                                android:textColor="@color/material_red_300" />
-                        </LinearLayout>
-
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="@dimen/padd10dp"
+                            android:layout_marginTop="@dimen/padd10dp"
+                            android:background="@color/material_blue_100" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -193,105 +142,56 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Description:"
+                        android:layout_marginBottom="@dimen/padd15dp"
+                        android:layout_marginLeft="@dimen/padd10dp"
+                        android:text="Description "
                         android:textColor="@color/black"
-                        android:textSize="15sp" />
+                        android:textSize="18sp" />
 
-                        <TextView
-                            android:id="@+id/expandable_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:textColor="#666666"
-                            android:textSize="15sp" />
-
-                        <ImageButton
-                            android:id="@+id/expand_collapse"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right|bottom"
-                            android:layout_margin="16dp"
-                            android:background="@android:color/transparent" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:weightSum="2">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="5dp"
-                        android:layout_gravity="bottom"
-                        android:background="@color/dark_grey" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:background="@drawable/layout_roundedcorner"
-                        android:gravity="bottom"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:weightSum="2">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/padd5dp"
-                                android:layout_marginLeft="@dimen/padd5dp"
-                                android:layout_weight="1"
-                                android:text="Quantity "
-                                android:textColor="@color/material_teal_700"
-                                android:textSize="20sp"
-                                android:textStyle="bold|italic" />
-
-                            <TextView
-                                android:id="@+id/tv_sellitems_quantity"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="end"
-                                android:layout_marginBottom="@dimen/padd5dp"
-                                android:layout_marginLeft="@dimen/padd5dp"
-                                android:layout_marginRight="@dimen/padd10dp"
-                                android:layout_weight="1"
-                                android:gravity="end"
-                                android:text=""
-                                android:textColor="@color/material_teal_700"
-                                android:textSize="20sp"
-                                android:textStyle="bold|italic" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_gravity="bottom"
-                            android:background="@color/black" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:layout_marginBottom="@dimen/padd50dp"
-                        android:layout_weight="1"
-                        android:background="@color/white"
-                        android:orientation="vertical">
-
-                        <ListView
-                            android:id="@+id/lv_sellitems_quanthist"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:dividerHeight="1dp" />
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_sellitem_prod_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/padd5dp"
+                        android:layout_marginLeft="@dimen/padd10dp"
+                        android:text="Description For the Product "
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/padd10dp"
+        android:layout_marginLeft="@dimen/padd10dp"
+        android:layout_marginRight="@dimen/padd10dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/b_sellitems_edit"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginRight="@dimen/padd5dp"
+            android:layout_weight="1"
+            android:background="@color/material_blue_100"
+            android:text="@string/edit"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/b_sellitems_addtocart"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="@dimen/padd5dp"
+            android:layout_weight="1"
+            android:background="@color/material_blue_grey_900"
+            android:text="@string/addtocart"
+            android:textColor="@color/white" />
     </LinearLayout>
 </RelativeLayout>

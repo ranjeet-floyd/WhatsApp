@@ -46,7 +46,7 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
     private FloatingActionButton addNewItem;
     private ListView lvcategories;
 
-    private ArrayList<Category> categoryArrayList;
+    private ArrayList<Category> categoryArrayList = new ArrayList<Category>();
     private DbCategoryAdapter dbCategoryAdapter;
     private CategoryAdapter categoryAdapter;
     private GlobalVariables globalVariable;
@@ -55,7 +55,9 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
     private JSONArray jsonArray;
     private JSONObject jsonObject;
     private ArrayList<NameValuePair> nameValuePairs;
+    private Category category;
 
+    private int StoreId;
     private String CategoryName;
     private String Key, UserType, Status;
 
@@ -90,6 +92,7 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
 
         lvcategories.setTextFilterEnabled(true);
 
+        StoreId = globalVariable.getStoreId();
         UserType = globalVariable.getUserType();
         if (UserType.equals("Admin")) {
             Key = globalVariable.getAdminKey();
@@ -100,13 +103,13 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
         /*dbCategoryAdapter = new DbCategoryAdapter(this);                          //Remove this if using api
         categoryArrayList = dbCategoryAdapter.getAllCategories();*/                 //
 
-        //get All Categories list from server                                   //UnComment this when code to retrive category is done
-        //categoryArrayList =getAllCategories(StoreId);
+        //get All Categories list from server
+        getAllCategories(StoreId, Key);
 
-        if (categoryArrayList != null) {
+       /* if (categoryArrayList != null) {
             categoryAdapter = new CategoryAdapter(this, categoryArrayList);
             lvcategories.setAdapter(categoryAdapter);
-        } else Toast.makeText(this, "No Data", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, "No Data", Toast.LENGTH_SHORT).show();*/
         setupSearchView();
     }
 
@@ -164,7 +167,7 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
 
                 //Check for existing category before insert
                 addCategoryForThisStore();
-
+                getAllCategories(StoreId, Key);
             }
 
         });
@@ -226,8 +229,76 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
         }.execute();
     }
 
-    public ArrayList<Category> getAllCategories(String StoreId) {
-        return null;
+    public void getAllCategories(final int StoreId, final String Key) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(Categories.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Getting Categories For Your Store");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALL_CATEGORIES, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (jsonArray == null) {
+                    Toast.makeText(getApplicationContext(), "No Categories Found", Toast.LENGTH_LONG).show();
+                }
+                // categoryArrayList =getAllCategories(StoreId);
+                // categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
+                // lvcategories.setAdapter(categoryAdapter);
+                else {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
+                            jsonObject = jsonArray.getJSONObject(i);
+                            String categoryName = jsonObject.getString("CategoryName ");
+                            if (categoryName == null || categoryName.equals("null")) {
+                                break;
+                            }
+                            category = new Category();
+                            category.setCategoryName(categoryName);
+                            categoryArrayList.add(category);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    if (categoryArrayList != null && categoryArrayList.size() > 0) {
+                        categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
+                        lvcategories = (ListView) findViewById(R.id.lv_category);
+                        lvcategories.setAdapter(categoryAdapter);
+                    } else
+                        Toast.makeText(getApplicationContext(), "No Categories Available", Toast.LENGTH_LONG).show();
+
+                }
+            }
+        }.execute();
     }
 
     @Override

@@ -42,13 +42,11 @@ public class ViewSupplier extends Fragment {
     private String AdminKey;
 
     public ViewSupplier() {
-        // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_supplier, container, false);
         globalVariable = (GlobalVariables) getActivity().getApplicationContext();
         StoreId = globalVariable.getStoreId();
@@ -138,7 +136,7 @@ public class ViewSupplier extends Fragment {
                         lvViewSupp = (ListView) view.findViewById(R.id.lv_viewSupp);
                         lvViewSupp.setAdapter(suppAdapter);
                     } else
-                        Toast.makeText(getActivity(), "No Supplier found", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "No Supplier Available", Toast.LENGTH_LONG).show();
 
                 }
 
