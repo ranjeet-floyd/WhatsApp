@@ -20,8 +20,9 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.Stocks.sellItem.SellItem;
+import in.istore.bitblue.app.pojo.Product;
+import in.istore.bitblue.app.utilities.DateUtil;
 
 public class ListStockAdapter extends BaseAdapter implements Filterable {
 
@@ -79,7 +80,7 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
         }
 
         holder.name.setText(product.getName());
-        holder.date.setText(product.getAddedDate());
+        holder.date.setText(DateUtil.getDateInDD_MM_YYYY(product.getAddedDate()));
 
         //This is used to select clicked listItem and get its details
         listRow.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +92,7 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
                 Intent viewItem = new Intent(context, SellItem.class);
                 if (id != null) {
                     viewItem.putExtra("id", id);
+                    viewItem.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(viewItem);
                 } else {
                     Toast.makeText(context, "Item does not exists", Toast.LENGTH_SHORT).show();
@@ -100,7 +102,6 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
 
         //Animation when listview is scrolled
         Animation animation = AnimationUtils.loadAnimation(context, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-
         listRow.startAnimation(animation);
         lastPosition = position;
         return listRow;
@@ -126,7 +127,6 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
                                 results.add(product);
                         }
                     }
-
                     //'values' contains all the values computed by the filtering operation
                     filterResults.values = results;
                 }

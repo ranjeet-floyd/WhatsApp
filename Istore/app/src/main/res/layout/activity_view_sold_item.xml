@@ -1,6 +1,3 @@
-
-
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -206,50 +203,6 @@
                         android:layout_gravity="bottom"
                         android:background="@color/dark_grey" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:background="@drawable/layout_roundedcorner"
-                        android:gravity="bottom"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/padd5dp"
-                                android:layout_marginLeft="@dimen/padd5dp"
-                                android:gravity="center"
-                                android:text="Selling History "
-                                android:textColor="@color/material_teal_700"
-                                android:textSize="20sp"
-                                android:textStyle="bold|italic" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_gravity="bottom"
-                            android:background="@color/black" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:layout_weight="1"
-                        android:background="@color/white"
-                        android:orientation="vertical">
-
-                        <ListView
-                            android:id="@+id/lv_viewsolditem_soldhist"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:dividerHeight="1dp" />
-                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

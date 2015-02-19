@@ -34,6 +34,7 @@ import in.istore.bitblue.app.databaseAdapter.DbCategoryAdapter;
 import in.istore.bitblue.app.pojo.Category;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.TinyDB;
 import in.istore.bitblue.app.utilities.api.API;
 
 public class Categories extends ActionBarActivity implements View.OnClickListener,
@@ -47,10 +48,11 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
     private ListView lvcategories;
 
     private ArrayList<Category> categoryArrayList = new ArrayList<Category>();
+    private ArrayList<String> categoryNamesList = new ArrayList<String>();
     private DbCategoryAdapter dbCategoryAdapter;
     private CategoryAdapter categoryAdapter;
     private GlobalVariables globalVariable;
-
+    private TinyDB tinyDB;
     private JSONParser jsonParser = new JSONParser();
     private JSONArray jsonArray;
     private JSONObject jsonObject;
@@ -89,7 +91,6 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
         searchView = (SearchView) findViewById(R.id.sv_category_search);
 
         lvcategories = (ListView) findViewById(R.id.lv_category);
-
         lvcategories.setTextFilterEnabled(true);
 
         StoreId = globalVariable.getStoreId();
@@ -99,7 +100,7 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
         } else if (UserType.equals("Staff")) {
             Key = globalVariable.getStaffKey();
         }
-
+        StoreId = globalVariable.getStoreId();
         /*dbCategoryAdapter = new DbCategoryAdapter(this);                          //Remove this if using api
         categoryArrayList = dbCategoryAdapter.getAllCategories();*/                 //
 
@@ -166,13 +167,26 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
                     }*/                                                                                            ///
 
                 //Check for existing category before insert
-                addCategoryForThisStore();
-                getAllCategories(StoreId, Key);
+                boolean isCategoryExists = checkForExistingCategory(CategoryName);
+                if (isCategoryExists)
+                    Toast.makeText(getApplicationContext(), "Category Already Exists", Toast.LENGTH_SHORT).show();
+                else {
+                    addCategoryForThisStore();
+                    getAllCategories(StoreId, Key);
+                }
             }
 
         });
 
         dialog.show();
+    }
+
+    private boolean checkForExistingCategory(String categoryName) {
+        for (Category category : categoryArrayList) {
+            if (category.getCategoryName().equalsIgnoreCase(categoryName))
+                return true;
+        }
+        return false;
     }
 
     private void addCategoryForThisStore() {
@@ -192,6 +206,7 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("CategoryName", CategoryName));
                 nameValuePairs.add(new BasicNameValuePair("Key", Key));
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
 
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_CATEGORY, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
@@ -221,7 +236,7 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
                     // categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
                     // lvcategories.setAdapter(categoryAdapter);
 
-                    Toast.makeText(getApplicationContext(), "Added Category: " + CategoryName, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Added Category: " + CategoryName, Toast.LENGTH_SHORT).show();
                 } else if (Status.equals("2")) {
                     Toast.makeText(getApplicationContext(), "Category Already Exists", Toast.LENGTH_LONG).show();
                 }
@@ -277,7 +292,7 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
-                            String categoryName = jsonObject.getString("CategoryName ");
+                            String categoryName = jsonObject.getString("CategoryName");
                             if (categoryName == null || categoryName.equals("null")) {
                                 break;
                             }
@@ -291,8 +306,12 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
                     }
                     if (categoryArrayList != null && categoryArrayList.size() > 0) {
                         categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
-                        lvcategories = (ListView) findViewById(R.id.lv_category);
                         lvcategories.setAdapter(categoryAdapter);
+                        for (Category category : categoryArrayList) {
+                            categoryNamesList.add(category.getCategoryName());
+                        }
+                        tinyDB=new TinyDB(getApplicationContext());
+                        tinyDB.putList("CategoryNames", categoryNamesList);
                     } else
                         Toast.makeText(getApplicationContext(), "No Categories Available", Toast.LENGTH_LONG).show();
 

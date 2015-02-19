@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -41,11 +42,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.Stocks.listStock.ListMyStock;
 import in.istore.bitblue.app.Stocks.listStock.ViewStockItems;
 import in.istore.bitblue.app.databaseAdapter.DbCategoryAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProSubCatAdapter;
@@ -54,8 +53,10 @@ import in.istore.bitblue.app.databaseAdapter.DbSuppAdapter;
 import in.istore.bitblue.app.utilities.Check;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.ImageUtil;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.Store;
+import in.istore.bitblue.app.utilities.TinyDB;
 import in.istore.bitblue.app.utilities.api.API;
 
 public class AddItemForm extends ActionBarActivity implements View.OnClickListener {
@@ -65,66 +66,73 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     private ImageView ivProdImage;
     private AutoCompleteTextView actvcategory, actvProdName, actvsupplier;
 
-    private ArrayList<String> categoryNameList, proSubCatNameList, suppNameList;
+    private ArrayList<String> categoryNameList = new ArrayList<>();
+    private ArrayList<String> proSubCatNameList = new ArrayList<>();
+    private ArrayList<String> suppNameList = new ArrayList<>();
+
     private DbCategoryAdapter dbCategoryAdapter;
     private DbProSubCatAdapter dbProSubCatAdapter;
     private DbSuppAdapter dbSuppAdapter;
+    private DbProductAdapter dbAdapter;
     private GlobalVariables globalVariable;
     private Bitmap ProductThumbImage;
+    private TinyDB tinyDB;
+    private File imageFile;
     private JSONParser jsonParser = new JSONParser();
     private JSONArray jsonArray;
     private JSONObject jsonObject;
     private ArrayList<NameValuePair> nameValuePairs;
-    private byte[] byteThumbnailArray;
+
+    private byte[] byteThumbnailArray, byteImage;
     private int proImgCount = 1, iquantity, iminlimit, StoreId;
     private float fcostprice, fsellprice;
-    private String scanContent, imagePath, id, category, name, desc, quantity, minlimit, costprice, sellprice, supplier, Key, UserType, AddedOn, Status;
-    private byte[] byteImage;
-    private static final int CAPTURE_PIC_REQ = 1111;
-    private static final int SCAN_BARCODE = 2222;
-    private DbProductAdapter dbAdapter;
+    private String scanContent, imagePath, id, categoryName, name, desc, quantity, minlimit, costprice, sellprice, supplier, Key, UserType, AddedOn, Status, ProdName;
+    private boolean isExistingProduct;
+    private static final int CAPTURE_PIC_REQ = 1111, SCAN_BARCODE = 2222;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item_form);
-        globalVariable = (GlobalVariables) getApplicationContext();
-        proImgCount = globalVariable.getProdImageCount();
-        StoreId = globalVariable.getStoreId();
-        UserType = globalVariable.getUserType();
-
-        if (UserType.equals("Admin")) {               //Remove this if using local
-            Key = globalVariable.getAdminKey();
-        } else if (UserType.equals("Staff")) {
-            Key = globalVariable.getStaffKey();
-        }                                          //
         setToolbar();
         initViews();
     }
-
 
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         toolTitle.setText("ADD ITEMS");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initViews() {
+        globalVariable = (GlobalVariables) getApplicationContext();
+        //proImgCount = globalVariable.getProdImageCount();
+        StoreId = globalVariable.getStoreId();
+        UserType = globalVariable.getUserType();
+        if (UserType.equals("Admin")) {
+            Key = globalVariable.getAdminKey();
+        } else if (UserType.equals("Staff")) {
+            Key = globalVariable.getStaffKey();
+        }
 
+        tinyDB = new TinyDB(this);
+        proImgCount = tinyDB.getInt("imageCount");
+        if (proImgCount == 0)
+            tinyDB.putInt("imageCount", proImgCount);
 
+        categoryNameList = tinyDB.getList("CategoryNames");
         dbAdapter = new DbProductAdapter(this);
 
         dbCategoryAdapter = new DbCategoryAdapter(this);
-        categoryNameList = dbCategoryAdapter.getAllCategoryNames();
-
+        // categoryNameList = dbCategoryAdapter.getAllCategoryNames();
         dbProSubCatAdapter = new DbProSubCatAdapter(this);
 
         dbSuppAdapter = new DbSuppAdapter(this);
-        suppNameList = dbSuppAdapter.getAllSupplierNames();
+        // suppNameList = dbSuppAdapter.getAllSupplierNames();
 
         actvcategory = (AutoCompleteTextView) findViewById(R.id.actv_additems_category);
         actvProdName = (AutoCompleteTextView) findViewById(R.id.actv_additems_prod_name);
@@ -156,9 +164,11 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
 
         ivProdImage = (ImageView) findViewById(R.id.iv_additems_image);
 
+        // getAllCategories(StoreId, Key);
         actvcategory.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+                actvProdName.setText("");
                 if (categoryNameList == null || categoryNameList.size() == 0) {
                     actvcategory.setHint("No Category Specified");
                     actvcategory.setHintTextColor(getResources().getColor(R.color.material_red_A400));
@@ -169,45 +179,61 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
             }
         });
 
+        actvcategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int pos, long l) {
+                categoryName = parent.getItemAtPosition(pos).toString();
+                proSubCatNameList.clear();
+                getAllSubCategories(StoreId, Key, categoryName);
+            }
+        });
+
         actvProdName.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                category = actvcategory.getText().toString();
-                if (Check.ifNull(category)) {
+                categoryName = actvcategory.getText().toString();
+                if (Check.ifNull(categoryName)) {
                     actvcategory.setHint("Field Required");
                     actvcategory.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     return true;
                 }
-                proSubCatNameList = dbProSubCatAdapter.getAllProductNamesIn(category);
+
+                // proSubCatNameList = dbProSubCatAdapter.getAllProductNamesIn(category);
                 ArrayAdapter subcatadapter = null;
-                if (proSubCatNameList != null) {
-                    subcatadapter = new ArrayAdapter
-                            (getApplicationContext(), R.layout.dropdownlist, proSubCatNameList);
-                } else {
-                    actvProdName.setHint("No Product Specified");
-                    actvProdName.setHintTextColor(getResources().getColor(R.color.material_red_A400));
-                }
-                if (subcatadapter != null) {
-                    actvProdName.setAdapter(subcatadapter);
-                }
+                subcatadapter = new ArrayAdapter
+                        (getApplicationContext(), R.layout.dropdownlist, proSubCatNameList);
+                actvProdName.setAdapter(subcatadapter);
                 actvProdName.setThreshold(0);
-                actvProdName.showDropDown();
-                id = etbarcode.getText().toString();
+                actvProdName.showDropDown();/*
                 if (Check.ifNull(id)) {
                     name = actvProdName.getText().toString();
-                    etbarcode.setText(Store.generateProdId(category, name));
                     disableFocus(etbarcode);
-                }
+                }*/
                 return false;
             }
         });
-
+        actvProdName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int pos, long l) {
+                name = parent.getItemAtPosition(pos).toString();
+            }
+        });
+        etbarcode.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (etbarcode.getText().toString().equals(""))
+                    etbarcode.setText(Store.generateProdId(categoryName, name));
+                disableFocus(etbarcode);
+                return false;
+            }
+        });
         etdesc = (EditText) findViewById(R.id.et_additems_prod_desc);
         etquantity = (EditText) findViewById(R.id.et_additems_prod_quantity);
         etminlimit = (EditText) findViewById(R.id.et_additems_prod_minlimit);
         etcostprice = (EditText) findViewById(R.id.et_additems_prod_costprice);
         etsellprice = (EditText) findViewById(R.id.et_additems_prod_sellprice);
 
+        getSupplierNames(StoreId, Key);
         actvsupplier.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -223,17 +249,146 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
 
     }
 
+    public void getAllSubCategories(final int StoreId, final String Key, final String CategoryName) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(AddItemForm.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Fetching Product Names...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
+                nameValuePairs.add(new BasicNameValuePair("CategoryName", CategoryName));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALL_SUBCATEGORIES, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (jsonArray == null) {
+                    Toast.makeText(getApplicationContext(), "No Categories Found", Toast.LENGTH_LONG).show();
+                }
+                // categoryArrayList =getAllCategories(StoreId);
+                // categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
+                // lvcategories.setAdapter(categoryAdapter);
+                else {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
+                            jsonObject = jsonArray.getJSONObject(i);
+                            String subCategoryName = jsonObject.getString("SubCategoryName");
+                            if (subCategoryName == null || subCategoryName.equals("null")) {
+                                break;
+                            }
+                            proSubCatNameList.add(subCategoryName);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (proSubCatNameList != null && proSubCatNameList.size() > 0) {
+                        return;
+                    } else
+                        Toast.makeText(getApplicationContext(), "No Products Available", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+    }
+
+    private void getSupplierNames(final int StoreId, final String Key) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog;
+
+            @Override
+            protected void onPreExecute() {
+                dialog = new ProgressDialog(AddItemForm.this);
+                dialog.setCancelable(false);
+                dialog.setMessage("Getting Suppliers...");
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                /*suppArrayList = dbsuppAdapter.getAllSuppInfo();                             ///remove if using api
+                 if (suppArrayList != null && suppArrayList.size() > 0)
+                    return true;
+                else return false;*/
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("Storeid", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("AdminKey", Key));
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_SUPPLIER_INFO, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;//
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+               /* if (result) {
+                    suppAdapter = new ViewSuppAdapter(getActivity(), suppArrayList);             //remove if using api
+                    lvViewSupp = (ListView) view.findViewById(R.id.lv_viewSupp);
+                    lvViewSupp.setAdapter(suppAdapter);                            //
+                }*/
+                if (Response == null) {                                          //
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (jsonArray == null) {
+                    Toast.makeText(getApplicationContext(), "No Supplier found", Toast.LENGTH_LONG).show();
+                } else {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
+                            jsonObject = jsonArray.getJSONObject(i);
+                            String suppName = jsonObject.getString("Suppname");
+                            if (suppName == null || suppName.equals("null")) {
+                                break;
+                            }
+                            suppNameList.add(suppName);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (suppNameList != null && suppNameList.size() > 0) {
+                        return;
+                    } else
+                        Toast.makeText(getApplicationContext(), "No Supplier Available", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+    }
+
     private void disableFocus(EditText etbarcode) {
         etbarcode.setFocusable(false);
         etbarcode.setFocusableInTouchMode(false);
-    }
-
-    private boolean checkForExistingProduct(String id) {
-        boolean isProductAvailable, isidPresent;
-        String status = "not sold";
-        isProductAvailable = dbAdapter.isProductAvail(id);
-        isidPresent = dbAdapter.idAlreadyPresent(id);
-        return (isidPresent && isProductAvailable);
     }
 
     @Override
@@ -251,7 +406,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 break;
             case R.id.b_additems_submit:
                 id = etbarcode.getText().toString();
-                category = actvcategory.getText().toString();
+                categoryName = actvcategory.getText().toString();
                 name = actvProdName.getText().toString();
                 desc = etdesc.getText().toString();
                 quantity = etquantity.getText().toString();
@@ -288,7 +443,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 } else if (dbAdapter.idAlreadyPresent(id)) {
                     Toast.makeText(this, "\tId " + id + " ALREADY EXISTS\n please enter unique id ", Toast.LENGTH_LONG).show();
                     break;
-                } else if (Check.ifNull(category)) {
+                } else if (Check.ifNull(categoryName)) {
                     actvcategory.setHint("Field Required");
                     actvcategory.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     break;
@@ -328,13 +483,13 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 } else {
                     Date date = new Date();
                     AddedOn = DateUtil.convertToStringDateOnly(date);
-                    //  addProductToDatabase();
-                    long ret = dbAdapter.insertProductDetails(id, byteImage, category, name, desc, iquantity, iminlimit, fcostprice, fsellprice, supplier);
+                    addProductToDatabase();
+                   /* long ret = dbAdapter.insertProductDetails(id, byteImage, category, name, desc, iquantity, iminlimit, fcostprice, fsellprice, supplier);
                     if (ret < 0) {
                     } else {
                         Toast.makeText(this, "Record Added", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(this, ListMyStock.class));
-                    }
+                    }*/
                 }
                 break;
         }
@@ -357,9 +512,9 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
             protected String doInBackground(String... strings) {
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("Id", id));
-                nameValuePairs.add(new BasicNameValuePair("Category", category));
+                nameValuePairs.add(new BasicNameValuePair("Category", categoryName));
                 nameValuePairs.add(new BasicNameValuePair("Name", name));
-                nameValuePairs.add(new BasicNameValuePair("Image", Arrays.toString(byteThumbnailArray)));
+                nameValuePairs.add(new BasicNameValuePair("Image", ImageUtil.convertByteArrayImagetoBase64Image(byteThumbnailArray)));
                 nameValuePairs.add(new BasicNameValuePair("ProductDesc", desc));
                 nameValuePairs.add(new BasicNameValuePair("Quantity", quantity));
                 nameValuePairs.add(new BasicNameValuePair("Minlimit", minlimit));
@@ -391,11 +546,11 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 if (Response == null) {
                     Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
                 } else if (Response.equals("error")) {
-                    Toast.makeText(getApplicationContext(), "Error Occured", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
                 } else if (Status.equals("1")) {
                     Toast.makeText(getApplicationContext(), "Added Product", Toast.LENGTH_LONG).show();
                 } else if (Status.equals("2")) {
-                    Toast.makeText(getApplicationContext(), "Product Already Exists", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Failed to add Product", Toast.LENGTH_LONG).show();
                 }
             }
         }.execute();
@@ -410,22 +565,16 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        File file = null;
-        boolean isProductExisting = false;
+
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanningResult != null) {
             //String scanFormat = scanningResult.getFormatName();
             scanContent = scanningResult.getContents();
             if (scanContent != null && !(scanContent.equals("")))
-                isProductExisting = checkForExistingProduct(scanContent);
-            if (isProductExisting) {
-                Intent viewStockItem = new Intent(this, ViewStockItems.class);
-                viewStockItem.putExtra("barcode", scanContent);
-                startActivity(viewStockItem);
-            } else {
+                //isProductExisting = checkForExistingProduct(scanContent);
+                checkIfProductExists(scanContent);
                 etbarcode.setText(scanContent);
                 disableFocus(etbarcode);
-            }
 
         } else {
             Toast toast = Toast.makeText(getApplicationContext(),
@@ -441,7 +590,6 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 
-
                     //getExternalFilesDir("") will locate the storage for this app
                     // Path is: storage/emulated/0/Android/data/in.istore.bitblue.app/files/Istore
                     File dir = new File(getExternalFilesDir(""), "/Istore");
@@ -451,22 +599,21 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                         Log.e("App", "Already created directory, Istore");
                     }
                     try {
-                        file = new File(dir, "product " + proImgCount + ".png");
-                        file.createNewFile();
-                        FileOutputStream fo = new FileOutputStream(file);
+                        imageFile = new File(dir, "product " + tinyDB.getInt("imageCount") + ".png");
+                        imageFile.createNewFile();
+                        FileOutputStream fo = new FileOutputStream(imageFile);
                         fo.write(bytes.toByteArray());
                         fo.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
-                    globalVariable.increaseProImgCount();
-                    proImgCount = globalVariable.getProdImageCount();
-                    ProductThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(file.getPath()), 150, 150);
+                    proImgCount++;
+                    tinyDB.putInt("imageCount", proImgCount);
+                    ProductThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imageFile.getPath()), 150, 150);//convert image to thumb
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     ProductThumbImage.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream);
                     byteThumbnailArray = byteArrayOutputStream.toByteArray();
-                    Uri uri = Uri.fromFile(file);
+                    Uri uri = Uri.fromFile(imageFile);
                     imagePath = getRealPathFromURI(uri);
                     Log.e("URI:", uri.toString());
                     Log.e("Path:", getRealPathFromURI(uri));
@@ -474,6 +621,57 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
             }
         }
     }
+
+    private void checkIfProductExists(final String id) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(AddItemForm.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Getting Product Details...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
+                nameValuePairs.add(new BasicNameValuePair("PId", id));
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_CHECK_EXISTINGPRODUCTID, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        Status = jsonObject.getString("status");
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (Status.equals("2")) {
+                } else if (Status.equals("1")) {
+                        Intent viewStockItem = new Intent(getApplicationContext(), ViewStockItems.class);
+                        viewStockItem.putExtra("barcode", scanContent);
+                        startActivity(viewStockItem);
+                }
+            }
+        }.execute();
+    }
+
 
     //Get the URI of Image
     public static Uri getImageContentUri(Context context, File imageFile) {

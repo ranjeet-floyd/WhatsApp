@@ -110,7 +110,7 @@ public class ViewSupplier extends Fragment {
                     Toast.makeText(getActivity(), "Response null", Toast.LENGTH_LONG).show();
 
                 } else if (Response.equals("error")) {
-                    Toast.makeText(getActivity(), "Internal Server Error", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Error 500", Toast.LENGTH_LONG).show();
                 } else if (jsonArray == null) {
                     Toast.makeText(getActivity(), "No Supplier found", Toast.LENGTH_LONG).show();
                 } else {
@@ -124,12 +124,10 @@ public class ViewSupplier extends Fragment {
                             }
                             supplier.setName(jsonObject.getString("Suppname"));
                             supplier.setMobile(Long.parseLong(jsonObject.getString("Suppmobile")));
-
                             suppArrayList.add(supplier);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                     if (suppArrayList != null && suppArrayList.size() > 0) {
                         suppAdapter = new ViewSuppAdapter(getActivity(), suppArrayList);
@@ -137,9 +135,7 @@ public class ViewSupplier extends Fragment {
                         lvViewSupp.setAdapter(suppAdapter);
                     } else
                         Toast.makeText(getActivity(), "No Supplier Available", Toast.LENGTH_LONG).show();
-
                 }
-
             }
         }.execute();
     }

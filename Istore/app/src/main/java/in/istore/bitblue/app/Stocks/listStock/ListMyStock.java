@@ -2,7 +2,6 @@ package in.istore.bitblue.app.Stocks.listStock;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -11,7 +10,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -36,12 +34,13 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.Stocks.addItem.AddItemsMenu;
+import in.istore.bitblue.app.Stocks.addItem.AddItemForm;
 import in.istore.bitblue.app.adapters.ListStockAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.DBHelper;
 import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.ImageUtil;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.api.API;
 
@@ -85,7 +84,7 @@ public class ListMyStock extends ActionBarActivity
     public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         int lastInScreen = firstVisibleItem + visibleItemCount;
         if ((lastInScreen == totalItemCount) && !(loadingMoreItems)) {
-            new LoadMoreItems().execute();
+            //  new LoadMoreItems().execute();
         }
     }
 
@@ -98,7 +97,7 @@ public class ListMyStock extends ActionBarActivity
         } else if (UserType.equals("Staff")) {
             Key = globalVariable.getStaffKey();
         }
-        CategoryName = getIntent().getStringExtra("categoryName");
+        CategoryName = globalVariable.getCategoryName();
 
         itemMenu = (FloatingActionsMenu) findViewById(R.id.fab_listmystock_menu);
         itemMenu.setOnFloatingActionsMenuUpdateListener(this);
@@ -115,31 +114,22 @@ public class ListMyStock extends ActionBarActivity
         tvnodata = (TextView) findViewById(R.id.tv_listmystock_nodata);
 
         lvproductList = (ListView) findViewById(R.id.lv_listmystock_itemlist);
-        lvproductList.setOnScrollListener(this);
+        lvproductList.setTextFilterEnabled(true);
 
-        footerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+        //  lvproductList.setOnScrollListener(this);
+
+      /*  footerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.listfooter, null, false);
-        lvproductList.addFooterView(footerView);
-
+        lvproductList.addFooterView(footerView);*/
+/*
         dbAdapter = new DbProductAdapter(this);
         offset = 0;
-        limit = 10;
-        productArrayList = dbAdapter.getAllProducts(limit, offset);
-        listAdapter = new ListStockAdapter(this, productArrayList);
-        lvproductList.setAdapter(listAdapter);
-
-
-        //This condition becomes true on run and false on debug
-        if (productArrayList == null || productArrayList.size() == 0) {
-            tvnodata.setVisibility(View.VISIBLE);
-        } else {
-            tvnodata.setVisibility(View.GONE);
-        }
-
+        limit = 10;*/
 
         //SearchView for List Stock
         searchView = (SearchView) findViewById(R.id.sv_listmystock_search);
-        lvproductList.setTextFilterEnabled(true);
+
+        getAllProductsForCategory(StoreId, Key, CategoryName);
         setupSearchView();
     }
 
@@ -183,8 +173,7 @@ public class ListMyStock extends ActionBarActivity
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
-        toolTitle.setText("CURRENT STOCK ITEMS");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolTitle.setText(CategoryName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -192,7 +181,7 @@ public class ListMyStock extends ActionBarActivity
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.fab_listmystock_additem:
-                Intent addItem = new Intent(this, AddItemsMenu.class);
+                Intent addItem = new Intent(this, AddItemForm.class);
                 addItem.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(addItem);
                 break;
@@ -236,7 +225,7 @@ public class ListMyStock extends ActionBarActivity
                                     try {
                                         FileUtils.deleteDirectory(dir);
                                     } catch (IOException e) {
-                                        Log.e("Unable to delete Directory: ", "Istore");
+                                        Log.e("Unable to Delete: ", "Istore");
                                     }
                                     int ret = dbAdapter.deleteAllProduct();
                                     if (ret < 0) {
@@ -407,16 +396,16 @@ public class ListMyStock extends ActionBarActivity
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
-                            String productId = jsonObject.getString("");
-                            String productImage = jsonObject.getString("");
-                            String productName = jsonObject.getString("");
-                            String productAddedDate = jsonObject.getString("");
+                            String productId = jsonObject.getString("Id");
+                            String productImage = jsonObject.getString("Image");
+                            String productName = jsonObject.getString("Name");
+                            String productAddedDate = jsonObject.getString("AddedOn");
                             if (productId == null || productId.equals("null")) {
                                 break;
                             }
                             product = new Product();
                             product.setId(productId);
-                            product.setImage(convertStringtoByteArray(productImage));
+                            product.setImage(ImageUtil.convertBase64ImagetoByteArrayImage(productImage));
                             product.setName(productName);
                             product.setAddedDate(productAddedDate);
                             productArrayList.add(product);
@@ -426,7 +415,6 @@ public class ListMyStock extends ActionBarActivity
                     }
                     if (productArrayList != null && productArrayList.size() > 0) {
                         listAdapter = new ListStockAdapter(getApplicationContext(), productArrayList);
-                        lvproductList = (ListView) findViewById(R.id.lv_listmystock_itemlist);
                         lvproductList.setAdapter(listAdapter);
                     } else
                         Toast.makeText(getApplicationContext(), "No Product Available", Toast.LENGTH_LONG).show();
@@ -435,13 +423,4 @@ public class ListMyStock extends ActionBarActivity
         }.execute();
     }
 
-    private byte[] convertStringtoByteArray(String image) {
-        String[] byteValues = image.substring(1, image.length() - 1).split(",");
-        byte[] bytes = new byte[byteValues.length];
-        int len = bytes.length;
-        for (int i = 0; i < len; i++) {
-            bytes[i] = Byte.parseByte(byteValues[i].trim());
-        }
-        return bytes;
-    }
 }

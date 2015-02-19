@@ -2,9 +2,9 @@ package in.istore.bitblue.app.Stocks.listSoldStock;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.cart.Cart;
 import in.istore.bitblue.app.databaseAdapter.DbCartAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbOutOfStockAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
@@ -149,7 +148,10 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                         Toast.makeText(this, "You Cannot Sell more than " + quantity + " items", Toast.LENGTH_SHORT).show();
                         break;
                     }
-                    int remQuantity = maxlimit - soldQuantity;
+
+                    addSoldItemToDatabase();
+
+                   /* int remQuantity = maxlimit - soldQuantity;
                     float totalAmount = soldQuantity * sellprice;
                     long soldret = dbSolItmAdapter.insertSoldItemQuantityDetail(id, byteImage, name, soldQuantity, remQuantity, sellprice);
                     long cartres = 0;
@@ -185,7 +187,7 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                     } else {
                         Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(this, Cart.class));
-                    }
+                    }*/
                 }
                 break;
             case R.id.b_solditem_inc:
@@ -217,6 +219,26 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                 }
                 break;
         }
+    }
+
+    private void addSoldItemToDatabase() {
+        new AsyncTask<String, String, String>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+            }
+        }.execute();
     }
 
     private boolean isbelowStock(String id) {

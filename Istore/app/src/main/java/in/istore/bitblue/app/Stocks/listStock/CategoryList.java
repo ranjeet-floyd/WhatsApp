@@ -29,7 +29,7 @@ public class CategoryList extends ActionBarActivity {
     private TextView toolTitle;
     private ListView lvcategorylist;
 
-    private ArrayList<Category> categoryArrayList;
+    private ArrayList<Category> categoryArrayList = new ArrayList<Category>();
     private GlobalVariables globalVariable;
     private CategoryListAdapter categorylistAdapter;
 
@@ -96,6 +96,7 @@ public class CategoryList extends ActionBarActivity {
                 } else {
                     try {
                         jsonArray = new JSONArray(Response);
+                        return Response;
                     } catch (JSONException jException) {
                         jException.printStackTrace();
                     }
@@ -120,7 +121,7 @@ public class CategoryList extends ActionBarActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
-                            String categoryName = jsonObject.getString("CategoryName ");
+                            String categoryName = jsonObject.getString("CategoryName");
                             if (categoryName == null || categoryName.equals("null")) {
                                 break;
                             }
@@ -130,7 +131,6 @@ public class CategoryList extends ActionBarActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                     if (categoryArrayList != null && categoryArrayList.size() > 0) {
                         categorylistAdapter = new CategoryListAdapter(getApplicationContext(), categoryArrayList);

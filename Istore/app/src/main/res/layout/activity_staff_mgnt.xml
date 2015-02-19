@@ -30,14 +30,14 @@
 
             <TabWidget
                 android:id="@android:id/tabs"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/material_blue_grey_400"/>
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/material_blue_grey_400" />
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1" />
         </LinearLayout>
     </android.support.v4.app.FragmentTabHost>

@@ -22,6 +22,15 @@ public class Product {
     public Product() {
     }
 
+    public Product(String id, byte[] image, String name, String desc, int quantity, float sellingPrice) {
+        Id = id;
+        Image = image;
+        Name = name;
+        Desc = desc;
+        Quantity = quantity;
+        SellingPrice = sellingPrice;
+    }
+
     public Product(String id, byte[] image, String category, String name, String desc, int quantity, int minlimit, float costprice, float sellingprice, String supplier, String addedDate) {
         Id = id;
         Image = image;

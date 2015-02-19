@@ -9,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -62,10 +61,9 @@ public class CategoryAdapter extends BaseAdapter implements Filterable {
 
             @Override
             public void onClick(View view) {
+                view.setBackgroundColor(context.getResources().getColor(R.color.material_blue_300));
                 holder.catname = (TextView) view.findViewById(R.id.tv_category_catname);
                 String categoryName = holder.catname.getText().toString();
-                Toast.makeText(context, categoryName, Toast.LENGTH_SHORT).show();
-
                 //call product subcategory intent
                 Intent prosubcat = new Intent(context, ProSubCat.class);
                 prosubcat.putExtra("category", categoryName);

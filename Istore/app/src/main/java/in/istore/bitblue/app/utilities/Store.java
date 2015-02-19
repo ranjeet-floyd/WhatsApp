@@ -40,12 +40,12 @@ public class Store {
 
     public static String generateProdId(String CategoryName, String ProSubcatName) {
 
-        int min = 1111;
-        int max = 9999;
+        int min = 11111;
+        int max = 99999;
         Random random = new Random();
 
         int id = random.nextInt((max - min) + 1) + min;
 
-        return ProSubcatName + id;
+        return ProSubcatName + "-" + id;
     }
 }

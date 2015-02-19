@@ -7,25 +7,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.Stocks.listStock.ListMyStock;
 import in.istore.bitblue.app.pojo.Category;
+import in.istore.bitblue.app.utilities.GlobalVariables;
 
 public class CategoryListAdapter extends BaseAdapter {
     private ArrayList<Category> categoryArrayList;
     private Context context;
     private LayoutInflater mInflater;
     private ViewHolder holder;
+    private GlobalVariables globalVariable;
 
     public CategoryListAdapter(Context context, ArrayList<Category> categoryArrayList) {
         if (context != null && categoryArrayList != null) {
             this.categoryArrayList = categoryArrayList;
             this.context = context;
             mInflater = LayoutInflater.from(context);
+            globalVariable = (GlobalVariables) context.getApplicationContext();
         }
     }
 
@@ -60,12 +62,12 @@ public class CategoryListAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View view) {
+                view.setBackgroundColor(context.getResources().getColor(R.color.material_blue_300));
                 holder.catname = (TextView) view.findViewById(R.id.tv_category_catname);
                 String categoryName = holder.catname.getText().toString();
-                Toast.makeText(context, categoryName, Toast.LENGTH_SHORT).show();
-
                 Intent listmystock = new Intent(context, ListMyStock.class);
-                listmystock.putExtra("categoryName", categoryName);
+                globalVariable.setCategoryName(categoryName);
+                listmystock.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(listmystock);
             }
         });

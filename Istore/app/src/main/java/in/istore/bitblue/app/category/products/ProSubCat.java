@@ -40,13 +40,13 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
         FloatingActionsMenu.OnFloatingActionsMenuUpdateListener {
     private Toolbar toolbar;
     private TextView toolTitle;
-    private String UserType, Key, CategoryName, SubCategoryName, Status;
+
     private SearchView searchView;
     private FloatingActionsMenu itemMenu;
     private FloatingActionButton addNewItem;
     private ListView lvprosubcat;
 
-    private ArrayList<ProSubCat> proSubCatArrayList;
+    private ArrayList<ProSubCat> proSubCatArrayList = new ArrayList<ProSubCat>();
     private GlobalVariables globalVariable;
 
     private JSONParser jsonParser = new JSONParser();
@@ -54,10 +54,12 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
     private JSONObject jsonObject;
     private ArrayList<NameValuePair> nameValuePairs;
 
-    private ArrayList<ProductSubCategory> prodSubCatArrayList;
+    private ArrayList<ProductSubCategory> prodSubCatArrayList = new ArrayList<ProductSubCategory>();
     private DbProSubCatAdapter dbProSubCatAdapter;
     private ProSubCatAdapter proSubCatAdapter;
-
+    private ProductSubCategory productSubCategory;
+    private int StoreId;
+    private String UserType, Key, CategoryName, SubCategoryName, Status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,6 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
         toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("Products: " + CategoryName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initViews() {
@@ -88,6 +89,8 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
         } else if (UserType.equals("Staff")) {
             Key = globalVariable.getStaffKey();
         }
+
+        StoreId = globalVariable.getStoreId();
 
         itemMenu = (FloatingActionsMenu) findViewById(R.id.fab_prosubcat_menu);
         itemMenu.setOnFloatingActionsMenuUpdateListener(this);
@@ -103,13 +106,14 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
        /* dbProSubCatAdapter = new DbProSubCatAdapter(this);                           //Remove if using api
         prodSubCatArrayList = dbProSubCatAdapter.getAllProSubCategories(CategoryName);*/    //
 
+        getAllSubCategories(StoreId, Key, CategoryName);
 
         //get All Categories list from server                                   UnComment this when code to retrive category is done
         //prodSubCatArrayList =addSubCategoryForCategory(CategoryName);
-        if (prodSubCatArrayList != null) {
+        /*if (prodSubCatArrayList != null) {
             proSubCatAdapter = new ProSubCatAdapter(this, prodSubCatArrayList);
             lvprosubcat.setAdapter(proSubCatAdapter);
-        } else Toast.makeText(this, "No Data", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, "No Data", Toast.LENGTH_SHORT).show();*/
 
 
         setupSearchView();
@@ -167,11 +171,28 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to Add", Toast.LENGTH_SHORT).show();
                     }
-                }*/                                                 //
-                addSubCategoryForCategory(CategoryName);
+                }*/
+                boolean isProductExists = checkForExistingProduct(SubCategoryName);
+                if (isProductExists)
+                    Toast.makeText(getApplicationContext(), "Product Already Exists", Toast.LENGTH_SHORT).show();
+                else {
+                    addSubCategoryForCategory(CategoryName);
+                    getAllSubCategories(StoreId, Key, CategoryName);
+                }
+
+
             }
         });
         dialog.show();
+    }
+
+    private boolean checkForExistingProduct(String productName) {
+
+        for (ProductSubCategory prodSubCat : prodSubCatArrayList) {
+            if (prodSubCat.getProductSubCategoryName().equalsIgnoreCase(productName))
+                return true;
+        }
+        return false;
     }
 
     private void addSubCategoryForCategory(final String categoryName) {
@@ -192,6 +213,7 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
                 nameValuePairs.add(new BasicNameValuePair("Categoryname", categoryName));
                 nameValuePairs.add(new BasicNameValuePair("ProsubcatName", SubCategoryName));
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
 
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_SUBCATEGORY, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
@@ -217,9 +239,80 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
                 } else if (Response.equals("error")) {
                     Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
                 } else if (Status.equals("1")) {
-                    Toast.makeText(getApplicationContext(), "Added SubCategory" + CategoryName, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Added SubCategory" + SubCategoryName, Toast.LENGTH_LONG).show();
                 } else if (Status.equals("2")) {
                     Toast.makeText(getApplicationContext(), "SubCategory Already Exists", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+    }
+
+    public void getAllSubCategories(final int StoreId, final String Key, final String CategoryName) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(ProSubCat.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Getting Products For Your Store");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
+                nameValuePairs.add(new BasicNameValuePair("CategoryName", CategoryName));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALL_SUBCATEGORIES, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (jsonArray == null) {
+                    Toast.makeText(getApplicationContext(), "No Categories Found", Toast.LENGTH_LONG).show();
+                }
+                // categoryArrayList =getAllCategories(StoreId);
+                // categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
+                // lvcategories.setAdapter(categoryAdapter);
+                else {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
+                            jsonObject = jsonArray.getJSONObject(i);
+                            String subCategoryName = jsonObject.getString("SubCategoryName");
+                            if (subCategoryName == null || subCategoryName.equals("null")) {
+                                break;
+                            }
+                            productSubCategory = new ProductSubCategory();
+                            productSubCategory.setProductSubCategoryName(subCategoryName);
+                            prodSubCatArrayList.add(productSubCategory);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (prodSubCatArrayList != null && prodSubCatArrayList.size() > 0) {
+                        proSubCatAdapter = new ProSubCatAdapter(getApplicationContext(), prodSubCatArrayList);
+                        lvprosubcat = (ListView) findViewById(R.id.lv_prosubcat);
+                        lvprosubcat.setAdapter(proSubCatAdapter);
+                    } else
+                        Toast.makeText(getApplicationContext(), "No Categories Available", Toast.LENGTH_LONG).show();
                 }
             }
         }.execute();

@@ -34,6 +34,9 @@ public class GlobalVariables extends Application {
     private String StaffEmail;
     private String AdminEmail;
     private long StaffTotalSales;
+    private String categoryName;
+
+    private ArrayList<String> categoryNames;
 
     private ArrayList<Product> productsList;
 
@@ -238,5 +241,13 @@ public class GlobalVariables extends Application {
 
     public void setStaffMobile(long staffMobile) {
         this.staffMobile = staffMobile;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

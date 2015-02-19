@@ -18,8 +18,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,8 +66,6 @@ public class LoginPage extends Activity implements View.OnClickListener {
     private Button bsignup, blogin, bForgotPass;
     private EditText etmobNum, etPass;
     private EditText[] allEditTexts;
-    private RadioGroup rgUserType;
-    private RadioButton rbAdmin, rbStaff;
 
     private static final int GMAIL = 1;
     private static final int FACEBOOK = 2;

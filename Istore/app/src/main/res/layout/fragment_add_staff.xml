@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/padd15dp"
-    android:paddingRight="@dimen/padd15dp"
+    android:paddingLeft="@dimen/padd20dp"
+    android:paddingRight="@dimen/padd20dp"
     tools:context="in.istore.bitblue.app.adminMenu.staffMgmt.AddStaff">
 
     <LinearLayout
@@ -15,100 +15,94 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padd10dp"
-            android:layout_marginTop="@dimen/padd10dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:layout_marginTop="@dimen/padd20dp"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="Name:"
-                android:textColor="@color/black"
+                android:textColor="@color/material_blue_500"
                 android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/et_addstaff_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:imeOptions="actionNext"
                 android:inputType="text"
-                android:textColor="@color/black" />
+                android:textColor="@color/material_blue_grey_500"
+                android:textColorHint="@color/grey" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padd10dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="Mobile Number:"
-                android:textColor="@color/black"
+                android:textColor="@color/material_blue_500"
                 android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/et_addstaff_mobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:imeOptions="actionNext"
                 android:inputType="number"
-                android:textColor="@color/black" />
+                android:textColor="@color/material_blue_grey_500"
+                android:textColorHint="@color/grey" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padd10dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="Address:"
-                android:textColor="@color/black"
+                android:textColor="@color/material_blue_500"
                 android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/et_addstaff_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:imeOptions="actionNext"
                 android:inputType="text"
-                android:textColor="@color/black" />
+                android:textColor="@color/material_blue_grey_500"
+                android:textColorHint="@color/grey" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padd10dp"
+            android:layout_marginBottom="@dimen/padd20dp"
             android:orientation="horizontal"
             android:weightSum="2">
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_height="match_parent"
+                android:gravity="left|center"
                 android:layout_weight="1"
                 android:text="Started from:"
-                android:textColor="@color/black"
+                android:textColor="@color/material_blue_500"
                 android:textSize="20sp" />
 
             <Button
                 android:id="@+id/b_addstaff_joindate"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_weight="1"
-                android:background="@color/action_select"
+                android:background="@drawable/tabshadow"
                 android:text="select date" />
         </LinearLayout>
 
@@ -118,10 +112,10 @@
 
             <Button
                 android:id="@+id/b_addstaff_addstaff"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:background="@color/action_select"
+                android:background="@drawable/tabshadow"
                 android:paddingLeft="@dimen/padd5dp"
                 android:paddingRight="@dimen/padd5dp"
                 android:text="Add Staff" />

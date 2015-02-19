@@ -3,6 +3,7 @@ package in.istore.bitblue.app.cart;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -90,7 +91,8 @@ public class Cart extends ActionBarActivity {
         dbStaffAdapter = new DbStaffAdapter(this);
 
         //cartItemArrayList = dbCartAdapter.getAllCartItems();
-        totalPayAmount = dbCartAdapter.getTotalPayAmount();
+        getAllCartItems();
+       // totalPayAmount = dbCartAdapter.getTotalPayAmount();
         if (totalPayAmount != 0) {
             tvTotalPayAmnt.setText(String.valueOf(totalPayAmount));
         }
@@ -98,6 +100,24 @@ public class Cart extends ActionBarActivity {
             cartAdapter = new CartAdapter(this, cartItemArrayList);
             lvcartitems.setAdapter(cartAdapter);
         } else Toast.makeText(this, "Cart is Empty", Toast.LENGTH_SHORT).show();
+    }
+
+    private void getAllCartItems() {
+        new AsyncTask<String, String, String>() {
+            @Override
+            protected String doInBackground(String... strings) {
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+            }
+        }.execute();
     }
 
     @Override

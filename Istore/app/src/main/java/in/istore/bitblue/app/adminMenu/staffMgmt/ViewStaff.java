@@ -52,6 +52,9 @@ public class ViewStaff extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_staff, container, false);
+        if (staffArrayList.size() > 0) {
+            staffArrayList.clear();
+        }
         initViews(view);
         return view;
     }
