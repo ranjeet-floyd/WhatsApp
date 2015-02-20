@@ -11,33 +11,14 @@ import java.util.ArrayList;
 import in.istore.bitblue.app.pojo.Product;
 
 public class GlobalVariables extends Application {
-    private String fbName;
-    private String fbEmail;
-    private String gName;
-    private String gEmail;
-    private String Email;
+
     private Bitmap profPic;
     private static int prodImageCount = 1;
-    private String imagePath;
-    private String UserType;
     private int storeId;
-    private long adminMobile;
-    private long staffMobile;
-    private String StaffName;
-    private String AdminName;
-    private long staffId;
-    private long adminId;
-    private String StaffPass;
-    private String AdminPass;
-    private String StaffKey;
-    private String AdminKey;
-    private String StaffEmail;
-    private String AdminEmail;
-    private long StaffTotalSales;
-    private String categoryName;
+    private long adminMobile, staffMobile, staffId, adminId, StaffTotalSales;
+    private String StaffPass, AdminPass, StaffKey, AdminKey, StaffEmail, AdminEmail, categoryName, fbName, fbEmail, gName, gEmail, Email, imagePath, UserType, StaffName, AdminName;
 
     private ArrayList<String> categoryNames;
-
     private ArrayList<Product> productsList;
 
     public String getFbEmail() {

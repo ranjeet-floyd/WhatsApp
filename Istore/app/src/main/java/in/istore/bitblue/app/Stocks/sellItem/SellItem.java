@@ -40,7 +40,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
     private ImageView ivProdImage;
 
     private GlobalVariables globalVariable;
-    private String id, scanContent, name, desc, Key, UserType;
+    private String id, scanContent, category, name, desc, Key, UserType;
     private float sellprice;
     private byte[] byteImage;
     private Bitmap bitmap;
@@ -67,7 +67,6 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         toolTitle.setText("Product Details");
     }
@@ -121,7 +120,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
     private void getProductDetails(final String id) {
         new AsyncTask<String, String, String>() {
             ProgressDialog dialog = new ProgressDialog(SellItem.this);
-            String prodId,prodName,prodDesc;
+            String prodId,prodDesc;
             byte[] prodImage;
             int prodQuantity;
             float prodSellPrice;
@@ -149,7 +148,8 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
                         jsonArray = new JSONArray(Response);
                         jsonObject = jsonArray.getJSONObject(0);
                         prodId = jsonObject.getString("Id");
-                        prodName = jsonObject.getString("Name");
+                        category = jsonObject.getString("Category");
+                        name = jsonObject.getString("Name");
                         prodImage = ImageUtil.convertBase64ImagetoByteArrayImage(jsonObject.getString("Image"));
                         prodDesc = jsonObject.getString("ProductDesc");
                         prodQuantity = Integer.parseInt(jsonObject.getString("Quantity"));
@@ -176,7 +176,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     if (prodImage != null)
                         bitmap = BitmapFactory.decodeByteArray(prodImage, 0, prodImage.length, options);
-                    tvname.setText(prodName);
+                    tvname.setText(name);
                     tvbarcode.setText(prodId);
                     tvdesc.setText(prodDesc);
                     tvsellprice.setText(String.valueOf(prodSellPrice));
@@ -208,6 +208,8 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
     private void startEditItemActivity() {
         Intent editItem = new Intent(this, EditItemForm.class);
         editItem.putExtra("prodid", id);
+        editItem.putExtra("prodCategory", category);
+        editItem.putExtra("prodName", name);
         startActivity(editItem);
     }
 

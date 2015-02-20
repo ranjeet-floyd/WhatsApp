@@ -1,7 +1,9 @@
 package in.istore.bitblue.app.Stocks.listSoldStock;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -15,14 +17,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.Stocks.listStock.ListMyStock;
+import in.istore.bitblue.app.cart.Cart;
 import in.istore.bitblue.app.databaseAdapter.DbCartAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbOutOfStockAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbSoldItemAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbSuppAdapter;
-import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.Check;
+import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.ImageUtil;
+import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.api.API;
 
 public class SoldItemForm extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -35,13 +50,20 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
     private DbCartAdapter dbCartAdapter;
     private DbOutOfStockAdapter dbOutOfStockAdapter;
     private DbSuppAdapter dbSuppAdapter;
+    private GlobalVariables globalVariable;
 
     private Bitmap bitmap;
-    private String id, name, desc, supplier;
-    private int quantity, maxlimit, minlimit = 0;
-    private float sellprice;
+    private String id, name, desc, sellQuantity, Key, UserType, Status;
+    private int quantity, maxlimit, minlimit = 0, StoreId;
+    private int prodQuantity;
+    private float prodSellPrice;
     private long suppMobile;
     private byte[] byteImage;
+
+    private JSONParser jsonParser = new JSONParser();
+    private JSONArray jsonArray;
+    private JSONObject jsonObject;
+    private ArrayList<NameValuePair> nameValuePairs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +84,16 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
     }
 
     private void initViews() {
+
+        globalVariable = (GlobalVariables) getApplicationContext();
+        UserType = globalVariable.getUserType();
+        if (UserType.equals("Admin")) {
+            Key = globalVariable.getAdminKey();
+        } else if (UserType.equals("Staff")) {
+            Key = globalVariable.getStaffKey();
+        }
+        StoreId = globalVariable.getStoreId();
+
         dbProAdapter = new DbProductAdapter(this);
         dbSolItmAdapter = new DbSoldItemAdapter(this);
         dbCartAdapter = new DbCartAdapter(this);
@@ -84,42 +116,15 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
         bDec.setOnClickListener(this);
 
         if (id != null)
-            getProductfor(id);
-    }
-
-    private void getProductfor(String id) {
-        Product product = dbProAdapter.getProductDetails(id);
-        if (product != null) {
-            etbarcode.setText(id);
-
-            name = product.getName();
-            etname.setText(name);
-
-            desc = product.getDesc();
-            etdesc.setText(desc);
-
-            quantity = product.getQuantity();
-            etquantity.setText(String.valueOf(quantity));
-            maxlimit = quantity;
-
-            sellprice = product.getSellingPrice();
-            etprice.setText(String.valueOf(sellprice));
-
-            supplier = product.getSupplier();
-            suppMobile = dbSuppAdapter.getSuppMobile(supplier);
-            byteImage = product.getImage();
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            if (byteImage != null) {
-                bitmap = BitmapFactory.decodeByteArray(byteImage, 0, byteImage.length, options);
-                ivProdImage.setImageBitmap(bitmap);
-            }
-        }
+            getItemInfo(id);
     }
 
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.b_solditem_sell:
+                name = etname.getText().toString();
+
                 int quant;
                 id = etbarcode.getText().toString();
                 quant = quantity;
@@ -143,13 +148,13 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                         soldQuantity = 0;
                     }
 
-                    if (soldQuantity > quantity) {
-                        etquantity.setText(String.valueOf(quantity));
+                    if (soldQuantity > prodQuantity) {
+                        etquantity.setText(String.valueOf(prodQuantity));
                         Toast.makeText(this, "You Cannot Sell more than " + quantity + " items", Toast.LENGTH_SHORT).show();
                         break;
                     }
-
-                    addSoldItemToDatabase();
+                    sellQuantity = etquantity.getText().toString();
+                    addSoldItemToCart();
 
                    /* int remQuantity = maxlimit - soldQuantity;
                     float totalAmount = soldQuantity * sellprice;
@@ -221,22 +226,125 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-    private void addSoldItemToDatabase() {
+    private void addSoldItemToCart() {
         new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(SoldItemForm.this);
 
             @Override
             protected void onPreExecute() {
-                super.onPreExecute();
+                dialog.setMessage("Getting Product Details...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
             }
 
             @Override
             protected String doInBackground(String... strings) {
-                return null;
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("Cid", id));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
+                nameValuePairs.add(new BasicNameValuePair("Name", name));
+                nameValuePairs.add(new BasicNameValuePair("Quantity", sellQuantity));
+                nameValuePairs.add(new BasicNameValuePair("Sellingprice", String.valueOf(prodSellPrice)));
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_TO_CART, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        Status = jsonObject.getString("Status");
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
             }
 
             @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (Status.equals("2")) {
+                    Toast.makeText(getApplicationContext(), "Failed to add", Toast.LENGTH_LONG).show();
+                } else if (Status.equals("1")) {
+                    Toast.makeText(getApplicationContext(), "Added to cart", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getApplicationContext(), Cart.class));
+                }
+            }
+        }.execute();
+    }
+
+    private void getItemInfo(final String id) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(SoldItemForm.this);
+            String prodId
+                    ,
+                    prodName
+                    ,
+                    prodDesc;
+            byte[] prodImage;
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Getting Product Details...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
+                nameValuePairs.add(new BasicNameValuePair("PId", id));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_PRODUCTDETAILS, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        prodId = jsonObject.getString("Id");
+                        prodName = jsonObject.getString("Name");
+                        prodImage = ImageUtil.convertBase64ImagetoByteArrayImage(jsonObject.getString("Image"));
+                        prodDesc = jsonObject.getString("ProductDesc");
+                        prodQuantity = Integer.parseInt(jsonObject.getString("Quantity"));
+                        prodSellPrice = Float.parseFloat(jsonObject.getString("Sellingprice"));
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (prodId == null) {
+                    Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
+                } else {
+                    //set all textviews
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    if (prodImage != null)
+                        bitmap = BitmapFactory.decodeByteArray(prodImage, 0, prodImage.length, options);
+                    etbarcode.setText(prodId);
+                    etname.setText(prodName);
+                    etdesc.setText(prodDesc);
+                    etquantity.setText(String.valueOf(prodQuantity));
+                    etprice.setText(String.valueOf(prodSellPrice));
+                    ivProdImage.setImageBitmap(bitmap);
+                }
             }
         }.execute();
     }
@@ -264,5 +372,10 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
             }
         });
         builder.create().show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, ListMyStock.class));
     }
 }

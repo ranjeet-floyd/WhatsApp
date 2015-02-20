@@ -32,6 +32,7 @@ import in.istore.bitblue.app.utilities.DatePickerFragment;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.TinyDB;
 import in.istore.bitblue.app.utilities.api.API;
 
 public class TotalRevSelectRange extends ActionBarActivity implements View.OnClickListener {
@@ -51,6 +52,7 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
     private SharedPreferences.Editor prefTotalRevenueForRange;
     private GlobalVariables globalVariable;
 
+    private TinyDB tinyDB;
     private JSONParser jsonParser = new JSONParser();
     private JSONArray jsonArray;
     private JSONObject jsonObject;
@@ -97,16 +99,12 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
     }
 
     private void setToolbar() {
-        prefTransaction = getSharedPreferences(TRANSACTION, MODE_PRIVATE);
-        TotalRevenue = prefTransaction.getFloat("TotalRevenue", 0);
-
+        tinyDB = new TinyDB(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
-        toolTitle.setText("Total Revenue: Rs." + TotalRevenue);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolTitle.setText("Total Revenue: Rs." + tinyDB.getString("TotalRevenue"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -127,10 +125,10 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
                     showAlertDialog(Error);
                     break;
                 } else {
-                   /* totalRevForRange = dbtotSalebyDateAdapter.getTotalRevenueforRange(formattedFrom, formattedTo);
+                   /* totalRevForRange = dbtotSalebyDateAdapter.getTotalRevenueforRange(formattedFrom, formattedTo);*/
                     prefTotalRevenueForRange.putFloat("totalrevforrange", totalRevForRange);
-                    prefTotalRevenueForRange.commit();*/
-                    //getTotalRevenueBetween(formattedFrom, formattedTo);
+                    prefTotalRevenueForRange.commit();
+                    getTotalRevenueBetween(formattedFrom, formattedTo);
                 }
                 break;
             case R.id.b_totrevenue_viewrevdetails:
@@ -173,7 +171,7 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
                     try {
                         jsonArray = new JSONArray(Response);
                         jsonObject = jsonArray.getJSONObject(0);
-                        TotRevForRange = jsonObject.getString("");
+                        TotRevForRange = jsonObject.getString("TotalSalesAmount");
                         return TotRevForRange;
                     } catch (JSONException jException) {
                         jException.printStackTrace();
@@ -193,12 +191,11 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
                 } else if (TotRevForRange == null) {
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
-                    tvFrom.setText(from);
-                    tvTo.setText(to);
-                    tvselectedRangeRev.setText(String.valueOf(totalRevForRange));
+                    tvFrom.setText(DateUtil.convertFromYYYY_MM_DDtoDD_MM_YYYY(from));
+                    tvTo.setText(DateUtil.convertFromYYYY_MM_DDtoDD_MM_YYYY(to));
+                    tvselectedRangeRev.setText(TotRevForRange);
                     llRevDetails.setVisibility(View.VISIBLE);
-                    prefTotalRevenueForRange.putFloat("totalrevforrange", totalRevForRange);
-                    prefTotalRevenueForRange.commit();
+                    tinyDB.putString("totrevforrange", TotRevForRange);
                 }
             }
         }.execute();
@@ -244,7 +241,6 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
                 from = bFrom.getText().toString();
                 formattedFrom = DateUtil.convertFromDD_MM_YYYYtoYYYY_MM_DD(from);
             }
-
             if (cur == TO_DATE) {
                 bTo.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
                 to = bTo.getText().toString();

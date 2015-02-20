@@ -78,6 +78,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     private Bitmap ProductThumbImage;
     private TinyDB tinyDB;
     private File imageFile;
+
     private JSONParser jsonParser = new JSONParser();
     private JSONArray jsonArray;
     private JSONObject jsonObject;
@@ -86,8 +87,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     private byte[] byteThumbnailArray, byteImage;
     private int proImgCount = 1, iquantity, iminlimit, StoreId;
     private float fcostprice, fsellprice;
-    private String scanContent, imagePath, id, categoryName, name, desc, quantity, minlimit, costprice, sellprice, supplier, Key, UserType, AddedOn, Status, ProdName;
-    private boolean isExistingProduct;
+    private String scanContent, imagePath, id, categoryName, name, desc, quantity, minlimit, costprice, sellprice, supplier, Key, UserType, AddedOn, Status;
     private static final int CAPTURE_PIC_REQ = 1111, SCAN_BARCODE = 2222;
 
 
@@ -112,6 +112,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         globalVariable = (GlobalVariables) getApplicationContext();
         //proImgCount = globalVariable.getProdImageCount();
         StoreId = globalVariable.getStoreId();
+
         UserType = globalVariable.getUserType();
         if (UserType.equals("Admin")) {
             Key = globalVariable.getAdminKey();
@@ -573,8 +574,8 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
             if (scanContent != null && !(scanContent.equals("")))
                 //isProductExisting = checkForExistingProduct(scanContent);
                 checkIfProductExists(scanContent);
-                etbarcode.setText(scanContent);
-                disableFocus(etbarcode);
+            etbarcode.setText(scanContent);
+            disableFocus(etbarcode);
 
         } else {
             Toast toast = Toast.makeText(getApplicationContext(),
@@ -664,9 +665,9 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
                 } else if (Status.equals("2")) {
                 } else if (Status.equals("1")) {
-                        Intent viewStockItem = new Intent(getApplicationContext(), ViewStockItems.class);
-                        viewStockItem.putExtra("barcode", scanContent);
-                        startActivity(viewStockItem);
+                    Intent viewStockItem = new Intent(getApplicationContext(), ViewStockItems.class);
+                    viewStockItem.putExtra("barcode", scanContent);
+                    startActivity(viewStockItem);
                 }
             }
         }.execute();

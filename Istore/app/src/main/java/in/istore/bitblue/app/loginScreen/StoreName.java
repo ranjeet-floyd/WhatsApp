@@ -29,6 +29,7 @@ import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.TinyDB;
 import in.istore.bitblue.app.utilities.api.API;
 
 public class StoreName extends ActionBarActivity implements View.OnClickListener {
@@ -43,6 +44,7 @@ public class StoreName extends ActionBarActivity implements View.OnClickListener
     private DbLoginCredAdapter loginCredAdapter;
     private GlobalVariables globalVariable;
 
+    private TinyDB tinyDB;
     private JSONParser jsonParser = new JSONParser();
     private JSONArray jsonArray;
     private JSONObject jsonObject;
@@ -91,6 +93,7 @@ public class StoreName extends ActionBarActivity implements View.OnClickListener
                     etName.setHint("Field Required");
                     etName.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                 } else {
+                    tinyDB.putString("StoreName", StoreName);
                     addAdminSignUpInfoToDatabase();
                     /*int result = loginCredAdapter.updateAdminInfo(Mobile, StoreId, StoreName);  //REmove if using api
                     if (result <= 0) {

@@ -18,7 +18,6 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/ll_solditem_form"
         android:layout_width="match_parent"

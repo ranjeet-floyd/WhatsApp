@@ -32,6 +32,7 @@ import in.istore.bitblue.app.pojo.TotRevDetails;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.TinyDB;
 import in.istore.bitblue.app.utilities.api.API;
 
 public class TotalRevViewDetails extends ActionBarActivity implements View.OnClickListener {
@@ -58,6 +59,7 @@ public class TotalRevViewDetails extends ActionBarActivity implements View.OnCli
     private TotRevDetailsAdapter totRevDetailsAdapter;
     private GlobalVariables globalVariable;
 
+    private TinyDB tinyDB;
     private JSONParser jsonParser = new JSONParser();
     private JSONArray jsonArray;
     private JSONObject jsonObject;
@@ -73,6 +75,7 @@ public class TotalRevViewDetails extends ActionBarActivity implements View.OnCli
     }
 
     private void setToolbar() {
+        tinyDB = new TinyDB(this);
         prefTransaction = getSharedPreferences(TRANSACTION, MODE_PRIVATE);
         prefTotalRevenueForRange = getSharedPreferences(TOTAL_REVENUE_FOR_RANGE, MODE_PRIVATE);
         prefFromTo = getSharedPreferences(FROM_TO, MODE_PRIVATE).edit();
@@ -94,7 +97,7 @@ public class TotalRevViewDetails extends ActionBarActivity implements View.OnCli
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
 
-        toolTitle.setText("Total Revenue: Rs " + TotalRevenue);
+        toolTitle.setText("Total Revenue: Rs " + tinyDB.getString("TotalRevenue"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -117,16 +120,16 @@ public class TotalRevViewDetails extends ActionBarActivity implements View.OnCli
         tvTo = (TextView) findViewById(R.id.tv_totrevdetails_to);
         tvTo.setText(todate);
         tvRangeRevenue = (TextView) findViewById(R.id.tv_totrevdetails_rangeRevnue);
-        tvRangeRevenue.setText(String.valueOf(totrevforrange));
+        tvRangeRevenue.setText(tinyDB.getString("totrevforrange"));
         lvtotrevdetails = (ListView) findViewById(R.id.lv_totrevdetails_list);
 
-        // getTransactionDetailsBetween(formattedfrom, formattedto);
-        dbCustPurHistAdapter = new DbCustPurHistAdapter(this);
+        getTransactionDetailsBetween(formattedfrom, formattedto);
+       /* dbCustPurHistAdapter = new DbCustPurHistAdapter(this);
         totRevDetailsArrayList = dbCustPurHistAdapter.getAllSoldProductsHistoryBetween(formattedfrom, formattedto);
         if (totRevDetailsArrayList != null) {
             totRevDetailsAdapter = new TotRevDetailsAdapter(this, totRevDetailsArrayList);
             lvtotrevdetails.setAdapter(totRevDetailsAdapter);
-        } else Toast.makeText(this, "No Data", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, "No Data", Toast.LENGTH_SHORT).show();*/
     }
 
     private void getTransactionDetailsBetween(final String from, final String to) {
@@ -149,7 +152,7 @@ public class TotalRevViewDetails extends ActionBarActivity implements View.OnCli
                 nameValuePairs.add(new BasicNameValuePair("FromDate", from));
                 nameValuePairs.add(new BasicNameValuePair("todate", to));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_RANGE, nameValuePairs);      //check the API Path
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_SUM_OF_TOTAL_REVENUE_FOR_PRODUCT_BETWEEN_RANGE, nameValuePairs);      //check the API Path
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -176,12 +179,12 @@ public class TotalRevViewDetails extends ActionBarActivity implements View.OnCli
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
 
-                            long staffId = Long.parseLong(jsonObject.getString(""));
-                            String prodName = jsonObject.getString("");
-                            int soldquantity = Integer.parseInt(jsonObject.getString(""));
-                            float custPurAmnt = Float.parseFloat(jsonObject.getString(""));
-                            long custMobile = Long.parseLong(jsonObject.getString(""));
-                            String soldDate = jsonObject.getString("");
+                            long staffId = Long.parseLong(jsonObject.getString("StaffId"));
+                            String prodName = jsonObject.getString("ProductName");
+                            int soldquantity = Integer.parseInt(jsonObject.getString("Quantity"));
+                            float custPurAmnt = Float.parseFloat(jsonObject.getString("TotalAmount"));
+                            long custMobile = Long.parseLong(jsonObject.getString("CusMobile"));
+                            String soldDate = jsonObject.getString("SoldDate");
                             if (custMobile == 0) {
                                 break;
                             }

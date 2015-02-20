@@ -30,6 +30,7 @@ import in.istore.bitblue.app.databaseAdapter.DbTotSaleAmtByDateAdapter;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.TinyDB;
 import in.istore.bitblue.app.utilities.api.API;
 
 public class Trans extends ActionBarActivity implements View.OnClickListener {
@@ -52,6 +53,8 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
     private JSONArray jsonArray;
     private JSONObject jsonObject;
     private ArrayList<NameValuePair> nameValuePairs;
+    private TinyDB tinyDB;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
     }
 
     private void initViews() {
-
+        tinyDB = new TinyDB(this);
         globalVariable = (GlobalVariables) getApplicationContext();
         AdminKey = globalVariable.getAdminKey();
         StoreId = globalVariable.getStoreId();
@@ -83,23 +86,13 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
         dbOutOfStockAdapter = new DbOutOfStockAdapter(this);
         Date date = new Date();
         TodayDate = DateUtil.convertToStringDateOnly(date);
-       // getTotalRevenue();
-        //getTodaySales();
-       // getOutOfStockItems();
-
-        preftransaction.putFloat("TotalRevenue", TotalRevenue);
-        preftransaction.putFloat("TodaySales", TodaySales);
-        preftransaction.putInt("OutOfStockItem", OutofStock);
-        preftransaction.commit();
+        getTotalRevenue();
+        getTodaySales();
+        getOutOfStockItems();
 
         tvTotalSales = (TextView) findViewById(R.id.tv_transaction_totalrevenue);
-        tvTotalSales.setText(String.valueOf(TotalRevenue));
-
         tvTodaySales = (TextView) findViewById(R.id.tv_transaction_todaysales);
-        tvTodaySales.setText(String.valueOf(TodaySales));
-
         tvOutOfStock = (TextView) findViewById(R.id.tv_transaction_outofstockitems);
-        tvOutOfStock.setText(String.valueOf(OutofStock));
 
         bTotalSales = (Button) findViewById(R.id.b_transaction_totalrevenue);
         bTotalSales.setOnClickListener(this);
@@ -134,7 +127,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                     try {
                         jsonArray = new JSONArray(Response);
                         jsonObject = jsonArray.getJSONObject(0);
-                        TotRev = jsonObject.getString("");
+                        TotRev = jsonObject.getString("TotalAmount");
                         return TotRev;
                     } catch (JSONException jException) {
                         jException.printStackTrace();
@@ -153,7 +146,8 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                 } else if (TotRev == null) {
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
-                    TotalRevenue = Float.parseFloat(TotRev);
+                    tvTotalSales.setText(String.valueOf(TotRev));
+                    tinyDB.putString("TotalRevenue", TotRev);
                 }
             }
         }.execute();
@@ -174,9 +168,8 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
             @Override
             protected String doInBackground(String... strings) {
                 nameValuePairs = new ArrayList<>();
-                nameValuePairs.add(new BasicNameValuePair("AdminKey", AdminKey));
+                nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
-                nameValuePairs.add(new BasicNameValuePair("CurrDate", TodayDate));
 
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TODAY_SALES, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
@@ -185,7 +178,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                     try {
                         jsonArray = new JSONArray(Response);
                         jsonObject = jsonArray.getJSONObject(0);
-                        TodSale = jsonObject.getString("");
+                        TodSale = jsonObject.getString("PerdaysalesAmount");
                         return TodSale;
                     } catch (JSONException jException) {
                         jException.printStackTrace();
@@ -204,7 +197,9 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                 } else if (TodSale == null) {
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
-                    TodaySales = Float.parseFloat(TodSale);
+                    tvTodaySales.setText(TodSale);
+                    tinyDB.putString("TodaySales", TodSale);
+
                 }
             }
 
@@ -226,7 +221,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
             @Override
             protected String doInBackground(String... strings) {
                 nameValuePairs = new ArrayList<>();
-                nameValuePairs.add(new BasicNameValuePair("AdminKey", AdminKey));
+                nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_OUTOFSTOCK_ITEMS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
@@ -235,7 +230,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                     try {
                         jsonArray = new JSONArray(Response);
                         jsonObject = jsonArray.getJSONObject(0);
-                        OutOfStock = jsonObject.getString("");
+                        OutOfStock = jsonObject.getString("Count");
                         return OutOfStock;
                     } catch (JSONException jException) {
                         jException.printStackTrace();
@@ -254,7 +249,8 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                 } else if (OutOfStock == null) {
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
-                    OutofStock = Integer.parseInt(OutOfStock);
+                    tvOutOfStock.setText(String.valueOf(OutOfStock));
+                    tinyDB.putString("OOSItems", OutOfStock);
                 }
             }
         }.execute();
