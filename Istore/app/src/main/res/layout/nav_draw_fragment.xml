@@ -96,7 +96,7 @@
             android:layout_alignParentBottom="true"
             android:layout_below="@+id/separator"
             android:layout_marginLeft="@dimen/padd5dp"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/padd15dp"
             android:paddingRight="@dimen/padd15dp"

@@ -32,6 +32,7 @@ import in.istore.bitblue.app.pojo.SoldProduct;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.TinyDB;
 import in.istore.bitblue.app.utilities.api.API;
 
 public class FilterByStaffId extends ActionBarActivity {
@@ -54,6 +55,7 @@ public class FilterByStaffId extends ActionBarActivity {
     private DbCustPurHistAdapter dbCustPurHistAdapter;
     private FilterByStaffIdAdapter filtstaffidAdapter;
     private DbStaffAdapter dbStaffAdapter;
+    private TinyDB tinyDB;
 
     private GlobalVariables globalVariable;
     private JSONParser jsonParser = new JSONParser();
@@ -71,6 +73,7 @@ public class FilterByStaffId extends ActionBarActivity {
     }
 
     private void setToolbar() {
+        tinyDB = new TinyDB(this);
         prefFromTo = getSharedPreferences(FROM_TO, MODE_PRIVATE);
         fromdate = prefFromTo.getString("fromdate", "");
         todate = prefFromTo.getString("todate", "");
@@ -80,8 +83,7 @@ public class FilterByStaffId extends ActionBarActivity {
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
 
-        toolTitle.setText(fromdate + " to " + todate + " Rs: " + totrevforrange);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolTitle.setText(fromdate + " to " + todate + " Rs: " + tinyDB.getString("totrevforrange"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -91,7 +93,6 @@ public class FilterByStaffId extends ActionBarActivity {
         AdminKey = globalVariable.getAdminKey();
         StoreId = globalVariable.getStoreId();
 
-
         dbCustPurHistAdapter = new DbCustPurHistAdapter(this);
         dbStaffAdapter = new DbStaffAdapter(this);
         formattedFrom = DateUtil.convertFromDD_MM_YYYYtoYYYY_MM_DD(fromdate);
@@ -100,7 +101,7 @@ public class FilterByStaffId extends ActionBarActivity {
         //staffIdList = dbStaffAdapter.getAllStaffIds();
         llprogressBar = (LinearLayout) findViewById(R.id.ll_filterstaffprogressbar);
         llstaffIds = (LinearLayout) findViewById(R.id.ll_staffids);
-        //getAllStaffIds();
+        getAllStaffIds();
 
         tvstaffidTotRev = (TextView) findViewById(R.id.tv_filterbystaffid_stafftotrev);
         lvfilterproname = (ListView) findViewById(R.id.lv_filterbystaffid);
@@ -110,8 +111,8 @@ public class FilterByStaffId extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 StaffId = Integer.parseInt(actvStaffId.getText().toString());
-                // getRevenueGeneratedByStaff(StaffId);
-                // getRevenueDetailsFor(StaffId);
+                getRevenueGeneratedByStaff(StaffId);
+                getRevenueDetailsFor(StaffId);
                 /*tvstaffidTotRev.setText(String.valueOf(getTotalRevenueByStaff()));
                 soldProductArrayList = dbCustPurHistAdapter.getSoldHistoryForStaffId(StaffId);
                 if (soldProductArrayList != null) {
@@ -145,6 +146,7 @@ public class FilterByStaffId extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("FromDate", formattedFrom));
                 nameValuePairs.add(new BasicNameValuePair("todate", formattedTo));
                 nameValuePairs.add(new BasicNameValuePair("StaffId", String.valueOf(staffId)));
+                nameValuePairs.add(new BasicNameValuePair("productName", ""));
 
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_SUM_OF_TOTAL_REVENUE_FOR_STAFF_BETWEEN_RANGE, nameValuePairs);      //check the API Path
                 if (Response == null || Response.equals("error")) {
@@ -153,7 +155,7 @@ public class FilterByStaffId extends ActionBarActivity {
                     try {
                         jsonArray = new JSONArray(Response);
                         jsonObject = jsonArray.getJSONObject(0);
-                        staffRevenue = jsonObject.getString("");
+                        staffRevenue = jsonObject.getString("TotalAmount");
                         return staffRevenue;
                     } catch (JSONException jException) {
                         jException.printStackTrace();
@@ -179,7 +181,7 @@ public class FilterByStaffId extends ActionBarActivity {
 
     }
 
-    private void getRevenueDetailsFor(int staffId) {
+    private void getRevenueDetailsFor(final int staffId) {
         new AsyncTask<String, String, String>() {
             ProgressDialog dialog = new ProgressDialog(FilterByStaffId.this);
 
@@ -198,7 +200,9 @@ public class FilterByStaffId extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("FromDate", formattedFrom));
                 nameValuePairs.add(new BasicNameValuePair("todate", formattedTo));
-                nameValuePairs.add(new BasicNameValuePair("StaffId", String.valueOf(StaffId)));
+                nameValuePairs.add(new BasicNameValuePair("StaffId", String.valueOf(staffId)));
+                nameValuePairs.add(new BasicNameValuePair("ProductName", ""));
+
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_STAFF, nameValuePairs);      //check the API Path
                 if (Response == null || Response.equals("error")) {
                     return Response;
@@ -225,18 +229,15 @@ public class FilterByStaffId extends ActionBarActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
-
-                            long staffId = Long.parseLong(jsonObject.getString(""));
-                            String prodName = jsonObject.getString("");
-                            int soldquantity = Integer.parseInt(jsonObject.getString(""));
-                            float custPurAmnt = Float.parseFloat(jsonObject.getString(""));
-                            long custMobile = Long.parseLong(jsonObject.getString(""));
-                            String soldDate = jsonObject.getString("");
+                            String prodName = jsonObject.getString("ProductName");
+                            int soldquantity = Integer.parseInt(jsonObject.getString("Quantity"));
+                            float custPurAmnt = Float.parseFloat(jsonObject.getString("TotalAmount"));
+                            long custMobile = Long.parseLong(jsonObject.getString("CusMobile"));
+                            String soldDate = jsonObject.getString("SoldDate");
                             if (custMobile == 0) {
                                 break;
                             }
                             stafftotrevdetails = new SoldProduct();
-                            stafftotrevdetails.setStaffId(staffId);
                             stafftotrevdetails.setItemName(prodName);
                             stafftotrevdetails.setItemSoldQuantity(soldquantity);
                             stafftotrevdetails.setItemTotalAmnt(custPurAmnt);
@@ -298,7 +299,7 @@ public class FilterByStaffId extends ActionBarActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
-                            int staffId = Integer.parseInt(jsonObject.getString(""));
+                            int staffId = Integer.parseInt(jsonObject.getString("StaffID"));
                             if (staffId == 0) {
                                 break;
                             }
@@ -325,7 +326,6 @@ public class FilterByStaffId extends ActionBarActivity {
                 }
             }
         }.execute();
-
     }
 
     public float getTotalRevenueByStaff() {

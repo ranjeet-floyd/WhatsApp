@@ -41,8 +41,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
     private DbTotSaleAmtByDateAdapter dbTotSaleAmtByDateAdapter;
     private DbOutOfStockAdapter dbOutOfStockAdapter;
 
-    private float TotalRevenue, TodaySales;
-    private int StoreId, OutofStock;
+    private int StoreId;
     private String AdminKey, TotRev, TodayDate, TodSale, OutOfStock;
 
     private final static String TRANSACTION = "transaction";

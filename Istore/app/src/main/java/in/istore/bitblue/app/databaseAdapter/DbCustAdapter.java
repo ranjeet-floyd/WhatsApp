@@ -42,7 +42,7 @@ public class DbCustAdapter {
         } else {
             result = sqLiteDb.insert(DBHelper.TABLE_CUSTINFO, null, insertrow);
         }
-        Log.e("Customer Information Db Result: ", String.valueOf(result));
+        Log.e("Customer Db Result: ", String.valueOf(result));
         return result;
     }
 
@@ -66,7 +66,7 @@ public class DbCustAdapter {
             do {
                 Customer customer = new Customer();
                 customer.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTPURCHASE_MOBILE)));
-                customer.setPurchaseAmount(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_CUSTPURCHASE_AMOUNT)));
+                customer.setPurchaseAmount(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CUSTPURCHASE_AMOUNT)));
                 customerArrayList.add(customer);
             } while (c.moveToNext());
             return customerArrayList;

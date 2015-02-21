@@ -53,19 +53,19 @@ public class ViewCustForStaff extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_cust_for_staff, container, false);
-        globalVariable = (GlobalVariables) getActivity().getApplicationContext();
         initViews(view);
         return view;
     }
 
     private void initViews(final View view) {
-        dbcustpurhistAdapter = new DbCustPurHistAdapter(getActivity());
+        globalVariable = (GlobalVariables) getActivity().getApplicationContext();
+
+        //dbcustpurhistAdapter = new DbCustPurHistAdapter(getActivity());
         StoreId = globalVariable.getStoreId();
         StaffId = globalVariable.getStaffId();
-        UserType = globalVariable.getUserType();
         StaffKey = globalVariable.getStaffKey();
 
-       // getCustomerPurchaseAmountForStaff(view, StoreId, StaffId, StaffKey);
+        getCustomerPurchaseAmountForStaff(view, StoreId, StaffId, StaffKey);
 /*
         new AsyncTask<String, String, Boolean>() {
             ProgressDialog dialog;
@@ -149,14 +149,14 @@ public class ViewCustForStaff extends Fragment {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
-                            long custMobile = Long.parseLong(jsonObject.getString(""));
-                            long custPurAmnt = Long.parseLong(jsonObject.getString(""));
+                            long custMobile = Long.parseLong(jsonObject.getString("Cusmobile"));
+                            String custPurAmnt = jsonObject.getString("Custtotalprice");
                             if (custMobile == 0) {
                                 break;
                             }
                             soldProduct = new SoldProduct();
                             soldProduct.setMobile(custMobile);
-                            soldProduct.setItemTotalAmnt(custPurAmnt);
+                            soldProduct.setItemTotalAmnt(Float.parseFloat(custPurAmnt));
                             soldprodArrayList.add(soldProduct);
                         } catch (JSONException e) {
                             e.printStackTrace();

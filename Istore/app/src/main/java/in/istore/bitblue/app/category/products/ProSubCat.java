@@ -107,7 +107,6 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
         prodSubCatArrayList = dbProSubCatAdapter.getAllProSubCategories(CategoryName);*/    //
 
         getAllSubCategories(StoreId, Key, CategoryName);
-
         //get All Categories list from server                                   UnComment this when code to retrive category is done
         //prodSubCatArrayList =addSubCategoryForCategory(CategoryName);
         /*if (prodSubCatArrayList != null) {
@@ -177,6 +176,7 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
                     Toast.makeText(getApplicationContext(), "Product Already Exists", Toast.LENGTH_SHORT).show();
                 else {
                     addSubCategoryForCategory(CategoryName);
+                    prodSubCatArrayList.clear();
                     getAllSubCategories(StoreId, Key, CategoryName);
                 }
 
@@ -239,7 +239,7 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
                 } else if (Response.equals("error")) {
                     Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
                 } else if (Status.equals("1")) {
-                    Toast.makeText(getApplicationContext(), "Added SubCategory" + SubCategoryName, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Added SubCategory: " + SubCategoryName, Toast.LENGTH_LONG).show();
                 } else if (Status.equals("2")) {
                     Toast.makeText(getApplicationContext(), "SubCategory Already Exists", Toast.LENGTH_LONG).show();
                 }
@@ -265,7 +265,6 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("CategoryName", CategoryName));
-
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALL_SUBCATEGORIES, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.pojo.SoldProduct;
+import in.istore.bitblue.app.utilities.DateUtil;
 
 public class FilterByProdNameAdapter extends BaseAdapter {
     private ArrayList<SoldProduct> soldProductArrayList;
@@ -60,7 +61,7 @@ public class FilterByProdNameAdapter extends BaseAdapter {
         holder.quantity.setText(String.valueOf(soldProduct.getItemSoldQuantity()));
         holder.totalsales.setText(String.valueOf(soldProduct.getItemTotalAmnt()));
         holder.custmobile.setText(String.valueOf(soldProduct.getMobile()));
-        holder.date.setText(String.valueOf(soldProduct.getDate()));
+        holder.date.setText(DateUtil.getDateInDD_MM_YYYY(soldProduct.getDate()));
         listRow.setTag(holder);
 
         return listRow;

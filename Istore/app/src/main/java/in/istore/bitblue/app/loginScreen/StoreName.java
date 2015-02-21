@@ -69,6 +69,7 @@ public class StoreName extends ActionBarActivity implements View.OnClickListener
 
     private void initViews() {
         globalVariable = (GlobalVariables) getApplicationContext();
+        tinyDB = new TinyDB(this);
         Name = getIntent().getStringExtra("Name");
         Email = getIntent().getStringExtra("Email");
         Passwd = getIntent().getStringExtra("Passwd");

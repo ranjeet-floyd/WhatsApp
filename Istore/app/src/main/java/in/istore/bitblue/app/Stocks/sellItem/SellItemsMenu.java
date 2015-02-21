@@ -13,7 +13,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.Stocks.listStock.ListMyStock;
+import in.istore.bitblue.app.Stocks.listStock.CategoryList;
 
 public class SellItemsMenu extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -40,7 +40,6 @@ public class SellItemsMenu extends ActionBarActivity implements View.OnClickList
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         toolTitle.setText("SELL ITEM");
     }
@@ -75,11 +74,12 @@ public class SellItemsMenu extends ActionBarActivity implements View.OnClickList
                 scanIntegrator.initiateScan();
                 break;
             case R.id.b_sell_items_fromlist:
-                Intent sellitem = new Intent(this, ListMyStock.class);
+                Intent sellitem = new Intent(this, CategoryList.class);
                 startActivity(sellitem);
                 break;
         }
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         //retrieve scan result
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);

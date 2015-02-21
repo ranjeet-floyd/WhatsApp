@@ -417,10 +417,9 @@ public class ListMyStock extends ActionBarActivity
                         listAdapter = new ListStockAdapter(getApplicationContext(), productArrayList);
                         lvproductList.setAdapter(listAdapter);
                     } else
-                        Toast.makeText(getApplicationContext(), "No Product Available", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "No Product Available", Toast.LENGTH_SHORT).show();
                 }
             }
         }.execute();
     }
-
 }

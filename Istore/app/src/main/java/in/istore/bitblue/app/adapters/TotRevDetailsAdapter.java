@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.pojo.TotRevDetails;
+import in.istore.bitblue.app.utilities.DateUtil;
 
 public class TotRevDetailsAdapter extends BaseAdapter {
     private ArrayList<TotRevDetails> totRevDetailsArrayList;
@@ -63,7 +64,7 @@ public class TotRevDetailsAdapter extends BaseAdapter {
         holder.quantity.setText(String.valueOf(totRevDetails.getQuantity()));
         holder.purchaseamount.setText(String.valueOf(totRevDetails.getPurchaseAmnt()));
         holder.mobile.setText(String.valueOf(totRevDetails.getMobile()));
-        holder.purchaseDate.setText(totRevDetails.getDate());
+        holder.purchaseDate.setText(DateUtil.getDateInDD_MM_YYYY(totRevDetails.getDate()));
         return listRow;
     }
 

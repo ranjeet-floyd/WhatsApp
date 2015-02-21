@@ -2,12 +2,12 @@ package in.istore.bitblue.app.pojo;
 
 public class Customer {
     private long Mobile;
-    private long PurchaseAmount;
+    private String PurchaseAmount;
 
     public Customer() {
     }
 
-    public Customer(long mobile, long purchaseAmount) {
+    public Customer(long mobile, String purchaseAmount) {
         Mobile = mobile;
         PurchaseAmount = purchaseAmount;
     }
@@ -20,11 +20,11 @@ public class Customer {
         Mobile = mobile;
     }
 
-    public long getPurchaseAmount() {
+    public String getPurchaseAmount() {
         return PurchaseAmount;
     }
 
-    public void setPurchaseAmount(long purchaseAmount) {
+    public void setPurchaseAmount(String purchaseAmount) {
         PurchaseAmount = purchaseAmount;
     }
 }

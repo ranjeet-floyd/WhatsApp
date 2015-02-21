@@ -54,11 +54,11 @@ public class Invoice extends ActionBarActivity {
     private Toolbar toolbar;
     private TextView toolTitle, tvinvoicenumber, tvtodayDate, tvstoreid, tvstaffid, tvcustmobile, tvTotalBillPay;
     private ListView lvProductList;
-    private long invoiceNumber, PersonId, Mobile;
+    private long invoiceNumber, Mobile;
     private int StoreId, prodQuantity;
     private float prodSellPrice, prodTotalPrice, totalPayAmount;
     private Date date;
-    private String todayDate, StoreName, UserType, Key, prodId, prodName;
+    private String todayDate, StoreName, UserType, Key, prodId, prodName, PersonId;
     private SharedPreferences prefCustMobile;
     public static String CUST_MOBILE = "custmobile";
     private ArrayList<CartItem> invoiceArrayList = new ArrayList<>();
@@ -97,10 +97,11 @@ public class Invoice extends ActionBarActivity {
         UserType = globalVariable.getUserType();
         if (UserType.equals("Admin")) {
             Key = globalVariable.getAdminKey();
-            PersonId = globalVariable.getAdminId();
+            PersonId = "Owner";
+
         } else if (UserType.equals("Staff")) {
             Key = globalVariable.getStaffKey();
-            PersonId = globalVariable.getStaffId();
+            PersonId = String.valueOf(globalVariable.getStaffId());
         }
         StoreId = globalVariable.getStoreId();
 

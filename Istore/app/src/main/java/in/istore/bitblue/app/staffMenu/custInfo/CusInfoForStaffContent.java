@@ -28,7 +28,6 @@ public class CusInfoForStaffContent extends ActionBarActivity {
         toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("Customer Info");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initViews() {
@@ -37,5 +36,6 @@ public class CusInfoForStaffContent extends ActionBarActivity {
 
         mTabHost.addTab(mTabHost.newTabSpec("View Customers").setIndicator("All Customers"),
                 ViewCustForStaff.class, null);
+        mTabHost.getTabWidget().getChildAt(0).setBackgroundResource((R.drawable.tabshadow));
     }
 }

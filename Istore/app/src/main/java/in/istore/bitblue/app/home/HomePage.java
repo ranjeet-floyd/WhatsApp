@@ -64,6 +64,7 @@ import in.istore.bitblue.app.home.dragGrid.DynamicGridView;
 import in.istore.bitblue.app.home.dragGrid.GridDynamicAdapter;
 import in.istore.bitblue.app.home.foldingdrawer.FoldingDrawerLayout;
 import in.istore.bitblue.app.invoice.Invoice;
+import in.istore.bitblue.app.loginScreen.ChangePassword;
 import in.istore.bitblue.app.loginScreen.LoginPage;
 import in.istore.bitblue.app.loginScreen.StaffMobile;
 import in.istore.bitblue.app.navDrawer.NavDrawItems;
@@ -72,6 +73,7 @@ import in.istore.bitblue.app.pojo.GridItemsList;
 import in.istore.bitblue.app.staffMenu.custInfo.CusInfoForStaffContent;
 import in.istore.bitblue.app.staffMenu.transactions.TransStaff;
 import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.TinyDB;
 
 public class HomePage extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Toolbar toolbar;
@@ -80,7 +82,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private ImageView ivuserPic;
     private FoldingDrawerLayout drawer;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private ListView navDrawListAdmin, navDrawListStaff;
+    private ListView navDrawList, navDrawListAdmin, navDrawListStaff;
 
     private String FpersonName, Femail, GpersonName, Gemail, Name, Email;
     private int responseGmail, responseFacebook, StaffId, Gresponse;
@@ -93,7 +95,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private boolean intentInProgress, signInClicked;
 
     private SharedPreferences preflogin;
-    private List<NavDrawItems> navDrawItemsListForAdmin, navDrawItemsListForStaff;
+    private List<NavDrawItems> navDrawItemsList, navDrawItemsListForAdmin, navDrawItemsListForStaff;
     private ArrayList<GridItems> gridItemsArrayList;
     private NavDrawAdapter navDrawAdapter;
     private Bitmap bitmap;
@@ -103,6 +105,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private ConnectionResult connectionResult;
     private DbLoginCredAdapter dbloginCredAdapter;
     private DbStaffAdapter dbStaffAdapter;
+    private TinyDB tinyDB;
 
     // Google client to interact with Google API
     private GoogleApiClient googleApiClient;
@@ -177,12 +180,12 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     }
 
     private void setToolbar() {
+        tinyDB = new TinyDB(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        toolTitle.setText("BIT STORE");
+        toolTitle.setText(tinyDB.getString("StoreName"));
     }
 
     private void initViews() {
@@ -195,25 +198,20 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer);
         drawer.setDrawerListener(actionBarDrawerToggle);
         drawer.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        if (StaffId <= 0) {
-            navDrawItemsListForAdmin = new ArrayList<NavDrawItems>();
 
-            navDrawItemsListForAdmin = getAdminListItems();
-            navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsListForAdmin);
+        navDrawList = (ListView) findViewById(R.id.lv_nav_drawer);
+        navDrawList.setOnItemClickListener(new DrawerItemClickListener());
 
-            navDrawListAdmin = (ListView) findViewById(R.id.lv_nav_drawer);
-            navDrawListAdmin.setAdapter(navDrawAdapter);
-            navDrawListAdmin.setOnItemClickListener(new DrawerItemClickListener());
-        } else if (StaffId > 0) {
-            navDrawItemsListForStaff = new ArrayList<NavDrawItems>();
-            navDrawItemsListForStaff = getStaffListItems();
-            navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsListForStaff);
+        if (UserType.equals("Admin")) {
+            navDrawItemsList = getAdminListItems();
+            navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsList);
+            navDrawList.setAdapter(navDrawAdapter);
 
-            navDrawListStaff = (ListView) findViewById(R.id.lv_nav_drawer);
-            navDrawListStaff.setAdapter(navDrawAdapter);
-            navDrawListStaff.setOnItemClickListener(new DrawerItemClickListener());
+        } else if (UserType.equals("Staff")) {
+            navDrawItemsList = getStaffListItems();
+            navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsList);
+            navDrawList.setAdapter(navDrawAdapter);
         }
-
 
         tvuserName = (TextView) findViewById(R.id.tv_username);
         tvuserEmail = (TextView) findViewById(R.id.tv_useremail);
@@ -227,8 +225,13 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
         blogout = (Button) findViewById(R.id.b_homepage_logout);
         blogout.setOnClickListener(this);
+
         gridView = (DynamicGridView) findViewById(R.id.dynamic_grid);
-        gridItemsArrayList = GridItemsList.getAllGridItems();
+        if (UserType.equals("Admin"))
+            gridItemsArrayList = GridItemsList.getAllGridItemsForAdmin();
+        else if (UserType.equals("Staff"))
+            gridItemsArrayList = GridItemsList.getAllGridItemsForStaff();
+
         gridView.setAdapter(new GridDynamicAdapter(this, gridItemsArrayList, 2));
         gridView.setOnDragListener(new DynamicGridView.OnDragListener() {
             @Override
@@ -261,7 +264,10 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 GridItems gridItem = (GridItems) parent.getAdapter().getItem(position);
                 switch (gridItem.getTvgridItemTitle()) {
                     case "Transactions":
-                        startActivity(new Intent(getApplicationContext(), Trans.class));
+                        if (UserType.equals("Admin"))
+                            startActivity(new Intent(getApplicationContext(), Trans.class));
+                        else if (UserType.equals("Staff"))
+                            startActivity(new Intent(getApplicationContext(), TransStaff.class));
                         break;
                     case "Category":
                         startActivity(new Intent(getApplicationContext(), Categories.class));
@@ -285,18 +291,22 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         // drawerList.add(new NavDrawItems("Transactions", R.drawable.ic_action_computer));
         drawerList.add(new NavDrawItems("Invoice", R.drawable.invoiceicon));
         drawerList.add(new NavDrawItems("Print Receipt", R.drawable.inprinticon));
+        drawerList.add(new NavDrawItems("Change Password", R.drawable.ic_action_labels));
+
         return drawerList;
     }
 
     private List<NavDrawItems> getStaffListItems() {
         ArrayList<NavDrawItems> drawerList = new ArrayList<NavDrawItems>();
         drawerList.add(new NavDrawItems("Customer Info", R.drawable.customericon));
-        drawerList.add(new NavDrawItems("My Transactions", R.drawable.tran));
+        drawerList.add(new NavDrawItems("Invoice", R.drawable.invoiceicon));
+        drawerList.add(new NavDrawItems("Print Receipt", R.drawable.inprinticon));
+        drawerList.add(new NavDrawItems("Change Password", R.drawable.ic_action_labels));
         return drawerList;
     }
 
     private void selectItem(int position) {
-        if (StaffId <= 0) {
+        if (UserType.equals("Admin")) {
             switch (position) {
                 case 0:
                     startActivity(new Intent(this, SuppInfoContent.class));
@@ -310,19 +320,27 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 case 3:
                     startActivity(new Intent(this, CloudPrint.class));
                     break;
+                case 4:
+                    startActivity(new Intent(this, ChangePassword.class));
+                    break;
             }
-            navDrawListAdmin.setItemChecked(position, true);
-        } else if (StaffId > 0) {
+            navDrawList.setItemChecked(position, true);
+        } else if (UserType.equals("Staff")) {
             switch (position) {
                 case 0:
                     startActivity(new Intent(this, CusInfoForStaffContent.class));
                     break;
-
                 case 1:
-                    startActivity(new Intent(this, TransStaff.class));
+                    startActivity(new Intent(this, Invoice.class));
+                    break;
+                case 2:
+                    startActivity(new Intent(this, CloudPrint.class));
+                    break;
+                case 3:
+                    startActivity(new Intent(this, ChangePassword.class));
                     break;
             }
-            navDrawListStaff.setItemChecked(position, true);
+            navDrawList.setItemChecked(position, true);
         }
         drawer.closeDrawer(Gravity.LEFT);
     }

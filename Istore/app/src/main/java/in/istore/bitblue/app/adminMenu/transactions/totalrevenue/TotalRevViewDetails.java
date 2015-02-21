@@ -121,6 +121,7 @@ public class TotalRevViewDetails extends ActionBarActivity implements View.OnCli
         tvTo.setText(todate);
         tvRangeRevenue = (TextView) findViewById(R.id.tv_totrevdetails_rangeRevnue);
         tvRangeRevenue.setText(tinyDB.getString("totrevforrange"));
+
         lvtotrevdetails = (ListView) findViewById(R.id.lv_totrevdetails_list);
 
         getTransactionDetailsBetween(formattedfrom, formattedto);
@@ -151,8 +152,10 @@ public class TotalRevViewDetails extends ActionBarActivity implements View.OnCli
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("FromDate", from));
                 nameValuePairs.add(new BasicNameValuePair("todate", to));
+                nameValuePairs.add(new BasicNameValuePair("StaffId", ""));
+                nameValuePairs.add(new BasicNameValuePair("ProductName", ""));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_SUM_OF_TOTAL_REVENUE_FOR_PRODUCT_BETWEEN_RANGE, nameValuePairs);      //check the API Path
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_ALL_STAFFANDPRODUCTS, nameValuePairs);      //check the API Path
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

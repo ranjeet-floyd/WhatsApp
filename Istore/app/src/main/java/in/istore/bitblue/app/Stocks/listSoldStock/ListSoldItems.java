@@ -56,7 +56,8 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
     private GlobalVariables globalVariable;
     private DbProductAdapter dbAdapter;
     private SoldItemAdapter listAdapter;
-    private ArrayList<Product> soldproductArrayList=new ArrayList<Product>();
+    private ArrayList<Product> soldproductArrayList = new ArrayList<Product>();
+
     private JSONParser jsonParser = new JSONParser();
     private JSONArray jsonArray;
     private JSONObject jsonObject;
@@ -119,7 +120,8 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
         lvsoldproductList.addFooterView(footerView);
         offset = 0;
         limit = 10;
-        soldproductArrayList = dbAdapter.getAllSoldProducts(limit, offset);
+        // soldproductArrayList = dbAdapter.getAllSoldProducts(limit, offset);
+        getAllSoldProducts(StoreId, Key);
         if (soldproductArrayList == null || soldproductArrayList.size() == 0) {
             tvnodata.setVisibility(View.VISIBLE);
         } else {
@@ -223,7 +225,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
                                     try {
                                         FileUtils.deleteDirectory(dir);
                                     } catch (IOException e) {
-                                        Log.e("Unable to delete Directory: ", "Istore");
+                                        Log.e("Unable to delete: ", "Istore");
                                     }
                                     int ret = dbAdapter.deleteAllProduct();
                                     if (ret < 0) {

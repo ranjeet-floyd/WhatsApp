@@ -34,7 +34,7 @@ public class ViewCust extends Fragment {
     private GlobalVariables globalVariable;
 
     private int StoreId;
-    private String UserType, AdminKey;
+    private String AdminKey;
 
     private JSONParser jsonParser = new JSONParser();
     private JSONArray jsonArray;
@@ -50,16 +50,18 @@ public class ViewCust extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_cust, container, false);
         globalVariable = (GlobalVariables) getActivity().getApplicationContext();
+        if (custArrayList.size() > 0) {
+            custArrayList.clear();
+        }
         initViews(view);
         return view;
     }
 
     private void initViews(final View view) {
-        dbcustAdapter = new DbCustAdapter(getActivity());
+        // dbcustAdapter = new DbCustAdapter(getActivity());
         StoreId = globalVariable.getStoreId();
-        UserType = globalVariable.getUserType();
         AdminKey = globalVariable.getAdminKey();
-        // getAllCustomersPurchaseAmount(view, StoreId, Key);
+        getAllCustomersPurchaseAmount(view, StoreId, AdminKey);
        /* new AsyncTask<String, String, Boolean>() {
             ProgressDialog dialog;
 
@@ -123,7 +125,6 @@ public class ViewCust extends Fragment {
                 return Response;
             }
 
-
             @Override
             protected void onPostExecute(String Response) {
                 dialog.dismiss();
@@ -141,8 +142,8 @@ public class ViewCust extends Fragment {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
-                            long custMobile = Long.parseLong(jsonObject.getString(""));
-                            long custPurAmnt = Long.parseLong(jsonObject.getString(""));
+                            long custMobile = Long.parseLong(jsonObject.getString("Custmobile"));
+                            String custPurAmnt = jsonObject.getString("CustpurchaseAmt");
                             if (custMobile == 0) {
                                 break;
                             }

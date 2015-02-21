@@ -172,6 +172,7 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
                     Toast.makeText(getApplicationContext(), "Category Already Exists", Toast.LENGTH_SHORT).show();
                 else {
                     addCategoryForThisStore();
+                    categoryArrayList.clear();
                     getAllCategories(StoreId, Key);
                 }
             }
@@ -302,7 +303,6 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                     if (categoryArrayList != null && categoryArrayList.size() > 0) {
                         categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
@@ -310,11 +310,10 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
                         for (Category category : categoryArrayList) {
                             categoryNamesList.add(category.getCategoryName());
                         }
-                        tinyDB=new TinyDB(getApplicationContext());
+                        tinyDB = new TinyDB(getApplicationContext());
                         tinyDB.putList("CategoryNames", categoryNamesList);
                     } else
                         Toast.makeText(getApplicationContext(), "No Categories Available", Toast.LENGTH_LONG).show();
-
                 }
             }
         }.execute();

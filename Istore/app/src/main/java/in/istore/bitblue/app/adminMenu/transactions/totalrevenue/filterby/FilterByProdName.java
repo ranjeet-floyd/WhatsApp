@@ -95,7 +95,7 @@ public class FilterByProdName extends ActionBarActivity {
 
         llprogressBar = (LinearLayout) findViewById(R.id.ll_filterproductprogressbar);
         llproductnames = (LinearLayout) findViewById(R.id.ll_productlist);
-        // getAllProductNames();
+        getAllProductNames();
         dbProSubCatAdapter = new DbProSubCatAdapter(this);
         dbCustPurHistAdapter = new DbCustPurHistAdapter(this);
 
@@ -121,8 +121,8 @@ public class FilterByProdName extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 prodName = actvProdName.getText().toString();
-                //getRevenueGeneratedByProduct(prodName);
-                //getRevenueDetailsForProduct(prodName);
+                getRevenueGeneratedByProduct(prodName);
+                getRevenueDetailsForProduct(prodName);
                 /*tvprodTotRev.setText(String.valueOf(getTotalRevenueByProduct()));
                 soldProductArrayList = dbCustPurHistAdapter.getPurchaseHistoryFor(prodName);
                 if (soldProductArrayList != null) {
@@ -155,7 +155,8 @@ public class FilterByProdName extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("FromDate", formattedFrom));
                 nameValuePairs.add(new BasicNameValuePair("todate", formattedTo));
-                nameValuePairs.add(new BasicNameValuePair("ProdName", prodName));
+                nameValuePairs.add(new BasicNameValuePair("productName", prodName));
+                nameValuePairs.add(new BasicNameValuePair("StaffId", ""));
 
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_SUM_OF_TOTAL_REVENUE_FOR_PRODUCT_BETWEEN_RANGE, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
@@ -164,7 +165,7 @@ public class FilterByProdName extends ActionBarActivity {
                     try {
                         jsonArray = new JSONArray(Response);
                         jsonObject = jsonArray.getJSONObject(0);
-                        prodRevenue = jsonObject.getString("");
+                        prodRevenue = jsonObject.getString("TotalAmount");
                         return prodRevenue;
                     } catch (JSONException jException) {
                         jException.printStackTrace();
@@ -208,8 +209,10 @@ public class FilterByProdName extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("FromDate", formattedFrom));
                 nameValuePairs.add(new BasicNameValuePair("todate", formattedTo));
-                nameValuePairs.add(new BasicNameValuePair("ProdName", prodName));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_STAFF, nameValuePairs);      //check the API Path
+                nameValuePairs.add(new BasicNameValuePair("StaffId", ""));
+                nameValuePairs.add(new BasicNameValuePair("ProductName", prodName));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_PRODNAME, nameValuePairs);      //check the API Path
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -236,18 +239,16 @@ public class FilterByProdName extends ActionBarActivity {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
 
-                            long staffId = Long.parseLong(jsonObject.getString(""));
-                            String prodName = jsonObject.getString("");
-                            int soldquantity = Integer.parseInt(jsonObject.getString(""));
-                            float custPurAmnt = Float.parseFloat(jsonObject.getString(""));
-                            long custMobile = Long.parseLong(jsonObject.getString(""));
-                            String soldDate = jsonObject.getString("");
+                            long staffId = Long.parseLong(jsonObject.getString("StaffId"));
+                            int soldquantity = Integer.parseInt(jsonObject.getString("Quantity"));
+                            float custPurAmnt = Float.parseFloat(jsonObject.getString("TotalAmount"));
+                            long custMobile = Long.parseLong(jsonObject.getString("CusMobile"));
+                            String soldDate = jsonObject.getString("SoldDate");
                             if (custMobile == 0) {
                                 break;
                             }
                             prodtotrevdetails = new SoldProduct();
                             prodtotrevdetails.setStaffId(staffId);
-                            prodtotrevdetails.setItemName(prodName);
                             prodtotrevdetails.setItemSoldQuantity(soldquantity);
                             prodtotrevdetails.setItemTotalAmnt(custPurAmnt);
                             prodtotrevdetails.setMobile(custMobile);
@@ -277,7 +278,7 @@ public class FilterByProdName extends ActionBarActivity {
             @Override
             protected String doInBackground(String... strings) {
                 nameValuePairs = new ArrayList<>();
-                nameValuePairs.add(new BasicNameValuePair("AdminKey", AdminKey));
+                nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
 
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_PRODUCTNAMES, nameValuePairs);
@@ -307,7 +308,7 @@ public class FilterByProdName extends ActionBarActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
-                            String prodName = jsonObject.getString("");
+                            String prodName = jsonObject.getString("ProductName");
                             if (prodName == null) {
                                 break;
                             }
@@ -331,7 +332,7 @@ public class FilterByProdName extends ActionBarActivity {
                             }
                         });
                     } else
-                        Toast.makeText(getApplicationContext(), "No Staff Ids Available", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "No Product Available", Toast.LENGTH_LONG).show();
                 }
             }
         }.execute();
