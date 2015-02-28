@@ -3,7 +3,7 @@
     style="@style/ToolBarStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/toolbarshadow"
+    android:background="@drawable/hptoolbarshadow"
     android:minHeight="@dimen/abc_action_bar_default_height_material">
 
     <TextView
@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/material_blue_grey_100"
+        android:textColor="@color/material_brown_500"
         android:textSize="25sp"
-        android:text="BIT STORE"
+        android:text=""
         android:textStyle="bold|italic" />
 </android.support.v7.widget.Toolbar>

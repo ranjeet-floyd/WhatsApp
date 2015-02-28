@@ -14,6 +14,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.utilities.GlobalVariables;
@@ -28,7 +31,7 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
     private Button bContinue;
     private EditText[] allEditTexts;
 
-    private String Name, Email, Passwd;
+    private String Name, Email, Passwd, GName, GEmail, FbName, FbEmail;
     private int StoreId;
     private long Mobile;
     private DbLoginCredAdapter loginCredAdapter;
@@ -51,7 +54,7 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_action_previous_item);
-        toolTitle.setText("Sign Up");
+        toolTitle.setText("SIGN UP");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -61,6 +64,14 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
         etname = (EditText) findViewById(R.id.et_signup_name);
         etmobNum = (EditText) findViewById(R.id.et_signup_mobnum);
         etEmail = (EditText) findViewById(R.id.et_signup_email);
+
+        GName = getIntent().getStringExtra("GNameAdmin");
+        GEmail = getIntent().getStringExtra("GEmailAdmin");
+        if (GName != null && !(GName.equals("")))
+            etname.setText(GName);
+        if (GEmail != null && !(GEmail.equals("")))
+            etEmail.setText(GEmail);
+
 
         allEditTexts = new EditText[]{etname, etmobNum, etEmail};
         bContinue = (Button) findViewById(R.id.b_signup_continue);
@@ -90,6 +101,15 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                 Name = etname.getText().toString();
                 Email = etEmail.getText().toString();
                 Mobile = Long.parseLong(etmobNum.getText().toString());
+                Pattern pattern = Pattern.compile("\\d{10}");
+                Matcher matcher = pattern.matcher(String.valueOf(Mobile));
+                if (!matcher.matches()) {
+                    etmobNum.setText("");
+                    etmobNum.setHint("Enter Proper Mobile");
+                    etmobNum.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                }
+
                 Passwd = Store.generatePassword();
                 globalVariable.setAdminPass(Passwd);
                 StoreId = Store.generateStoreId();

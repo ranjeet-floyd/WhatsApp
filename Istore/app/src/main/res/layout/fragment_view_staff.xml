@@ -14,12 +14,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padd5dp"
             android:orientation="horizontal"
+            android:paddingLeft="@dimen/padd5dp"
+            android:paddingRight="@dimen/padd15dp"
             android:weightSum="4">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.1"
                 android:text="ID"
                 android:textColor="@color/black" />
 
@@ -33,7 +35,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="0.9"
                 android:text="Mobile No"
                 android:textColor="@color/black" />
 
@@ -41,6 +43,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_gravity="end"
+                android:gravity="end"
                 android:text="Total Sales"
                 android:textColor="@color/black" />
         </LinearLayout>

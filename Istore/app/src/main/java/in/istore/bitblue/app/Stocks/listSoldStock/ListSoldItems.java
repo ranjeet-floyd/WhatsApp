@@ -19,7 +19,6 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import org.apache.commons.io.FileUtils;
@@ -38,10 +37,13 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.SoldItemAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.pojo.Product;
+import in.istore.bitblue.app.utilities.API;
+import in.istore.bitblue.app.utilities.Cache;
 import in.istore.bitblue.app.utilities.DBHelper;
+import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.ImageUtil;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
 
 public class ListSoldItems extends ActionBarActivity implements View.OnClickListener,
         SearchView.OnQueryTextListener,
@@ -67,10 +69,11 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
     private boolean loadingMoreItems;
     private int offset = 0, limit = 10, StoreId;
     private String UserType, Key;
+    private byte[] byteImage;
+    private static final String KEY = "soldproductList";
 
-    private FloatingActionsMenu itemMenu;
-    private FloatingActionButton delAllItem, sortItems;
-
+    // private FloatingActionsMenu itemMenu;
+    //private FloatingActionButton delAllItem, sortItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,12 +83,10 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
         initViews();
     }
 
-
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("SOLD ITEMS");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -102,34 +103,39 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
             Key = globalVariable.getStaffKey();
         }
 
-        itemMenu = (FloatingActionsMenu) findViewById(R.id.fab_solditems_menu);
+  /*      itemMenu = (FloatingActionsMenu) findViewById(R.id.fab_solditems_menu);
         itemMenu.setOnFloatingActionsMenuUpdateListener(this);
 
         delAllItem = (FloatingActionButton) findViewById(R.id.fab_solditems_delallitem);
         delAllItem.setOnClickListener(this);
 
         sortItems = (FloatingActionButton) findViewById(R.id.fab_solditems_sortitem);
-        sortItems.setOnClickListener(this);
+        sortItems.setOnClickListener(this);*/
 
         lvsoldproductList = (ListView) findViewById(R.id.lv_soldItem_itemlist);
-        lvsoldproductList.setOnScrollListener(this);
+        // lvsoldproductList.setOnScrollListener(this);
         tvnodata = (TextView) findViewById(R.id.tv_soldItem_nodata);
         footerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.listfooter, null, false);
-        dbAdapter = new DbProductAdapter(this);
-        lvsoldproductList.addFooterView(footerView);
+        // dbAdapter = new DbProductAdapter(this);
+        //lvsoldproductList.addFooterView(footerView);
         offset = 0;
         limit = 10;
         // soldproductArrayList = dbAdapter.getAllSoldProducts(limit, offset);
+      /*  soldproductArrayList = (ArrayList<Product>) Cache.getData(getApplicationContext(), KEY);
+        if (soldproductArrayList != null && soldproductArrayList.size() > 0) {
+            listAdapter = new SoldItemAdapter(this, soldproductArrayList);
+            lvsoldproductList.setAdapter(listAdapter);
+        }else*/
         getAllSoldProducts(StoreId, Key);
-        if (soldproductArrayList == null || soldproductArrayList.size() == 0) {
+      /*  if (soldproductArrayList == null || soldproductArrayList.size() == 0) {
             tvnodata.setVisibility(View.VISIBLE);
         } else {
             tvnodata.setVisibility(View.GONE);
             listAdapter = new SoldItemAdapter(this, soldproductArrayList);
             lvsoldproductList.setAdapter(listAdapter);
         }
-
+*/
         searchView = (SearchView) findViewById(R.id.sv_solditems_search);
         lvsoldproductList.setTextFilterEnabled(true);
         setupSearchView();
@@ -161,10 +167,10 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
         if (TextUtils.isEmpty(searchText)) {
             lvsoldproductList.clearTextFilter();
         } else {
-            if (itemMenu.isExpanded()) {
+           /* if (itemMenu.isExpanded()) {
                 itemMenu.toggle();
                 onMenuCollapsed();
-            }
+            }*/
             lvsoldproductList.setFilterText(searchText);
         }
         return true;
@@ -186,7 +192,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
-            case R.id.fab_solditems_delallitem:
+         /*   case R.id.fab_solditems_delallitem:
                 if (soldproductArrayList == null || soldproductArrayList.size() == 0) {
                     Toast.makeText(this, "No Items to Delete", Toast.LENGTH_SHORT).show();
                 } else {
@@ -199,7 +205,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
                 } else {
                     showDialogForSort();
                 }
-                break;
+                break;*/
         }
     }
 
@@ -253,7 +259,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
                         listAdapter = new SoldItemAdapter(getApplicationContext(), soldproductArrayList);
                         lvsoldproductList.setAdapter(listAdapter);
                         tvnodata.setVisibility(View.VISIBLE);
-                        itemMenu.toggle();
+                        //itemMenu.toggle();
                     }
                 });
         AlertDialog alert = builder.create();
@@ -278,7 +284,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
                     sortItemsBy(items[2]);
                 }
                 dialog.dismiss();
-                itemMenu.toggle();
+                // itemMenu.toggle();
             }
         });
         builder.show();
@@ -307,6 +313,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
 
         @Override
         protected void onPreExecute() {
+
         }
 
         @Override
@@ -379,42 +386,40 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
-                            String productId = jsonObject.getString("");
-                            String productImage = jsonObject.getString("");
-                            String productName = jsonObject.getString("");
-                            String productAddedDate = jsonObject.getString("");
+                            String productId = jsonObject.getString("ItemID");
+                            byteImage = ImageUtil.convertBase64ImagetoByteArrayImage(jsonObject.getString("image"));
+                            String productName = jsonObject.getString("Name");
+                            String productSoldDate = DateUtil.getDateInDD_MM_YYYY(jsonObject.getString("SoldDate"));
+                            int productSoldQuantity = jsonObject.getInt("Soldquantity");
+                            double productSellPrice = jsonObject.getDouble("SellPrice");
+                            String productCustMob = jsonObject.getString("CusMobile");
+                            String productDeliverAddress = jsonObject.getString("DeliveryAdd");
                             if (productId == null || productId.equals("null")) {
                                 break;
                             }
                             product = new Product();
                             product.setId(productId);
-                            product.setImage(convertStringtoByteArray(productImage));
+                            product.setImage(byteImage);
                             product.setName(productName);
-                            product.setAddedDate(productAddedDate);
+                            product.setSoldDate(productSoldDate);
+                            product.setSoldQuantity(productSoldQuantity);
+                            product.setSellPrice(productSellPrice);
+                            product.setCustMob(productCustMob);
+                            product.setDeliverAddress(productDeliverAddress);
                             soldproductArrayList.add(product);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                     if (soldproductArrayList != null && soldproductArrayList.size() > 0) {
+                        Cache.writeData(getApplicationContext(), KEY, soldproductArrayList);
                         listAdapter = new SoldItemAdapter(getApplicationContext(), soldproductArrayList);
-                        lvsoldproductList = (ListView) findViewById(R.id.lv_soldItem_itemlist);
                         lvsoldproductList.setAdapter(listAdapter);
+                        tvnodata.setVisibility(View.GONE);
                     } else
                         Toast.makeText(getApplicationContext(), "No Product Available", Toast.LENGTH_LONG).show();
                 }
             }
         }.execute();
     }
-
-    private byte[] convertStringtoByteArray(String image) {
-        String[] byteValues = image.substring(1, image.length() - 1).split(",");
-        byte[] bytes = new byte[byteValues.length];
-        int len = bytes.length;
-        for (int i = 0; i < len; i++) {
-            bytes[i] = Byte.parseByte(byteValues[i].trim());
-        }
-        return bytes;
-    }
-
 }

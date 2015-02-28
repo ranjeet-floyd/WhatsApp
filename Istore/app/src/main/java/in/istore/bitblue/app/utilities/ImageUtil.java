@@ -11,6 +11,4 @@ public class ImageUtil {
     public static String convertByteArrayImagetoBase64Image(byte[] byteImage) {
         return Base64.encodeToString(byteImage, Base64.DEFAULT);
     }
-
-
 }

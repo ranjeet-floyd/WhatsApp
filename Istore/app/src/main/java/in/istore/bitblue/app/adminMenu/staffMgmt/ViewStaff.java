@@ -25,7 +25,7 @@ import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.pojo.Staff;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class ViewStaff extends Fragment {
     private ListView lvViewStaff;
@@ -140,7 +140,7 @@ public class ViewStaff extends Fragment {
                         lvViewStaff = (ListView) view.findViewById(R.id.lv_viewStaff);
                         lvViewStaff.setAdapter(staffAdapter);
                     } else
-                        Toast.makeText(getActivity(), "No Staff found", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "No Staff Available", Toast.LENGTH_LONG).show();
 
                 }
             }

@@ -117,7 +117,7 @@
 
             <Button
                 android:id="@+id/b_addsupp_addsupp"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:background="@drawable/tabshadow"

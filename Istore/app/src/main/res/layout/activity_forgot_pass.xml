@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/material_blue_100"
+    android:background="@color/material_blue_grey_100"
     tools:context="in.istore.bitblue.app.loginScreen.ForgotPass">
 
     <LinearLayout
@@ -28,7 +28,7 @@
         android:layout_marginRight="@dimen/padd20dp"
         android:layout_marginTop="@dimen/padd20dp"
         android:text="Enter your mobile number below and you will receive an SMS with your password"
-        android:textColor="@color/material_blue_A400" />
+        android:textColor="@color/material_blue_300" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Mobile Number"
-            android:textColor="@color/material_blue_A400" />
+            android:textColor="@color/myPrimaryColor" />
 
         <EditText
             android:id="@+id/et_forgotpass_mobilenumber"
@@ -57,8 +57,9 @@
 
         <Button
             android:id="@+id/b_forgotpass_submit"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:layout_gravity="end"
             android:background="@drawable/button_shadow"
             android:text="Submit" />
     </LinearLayout>

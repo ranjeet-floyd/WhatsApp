@@ -25,7 +25,6 @@ public class CusInfoForStaffContent extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("Customer Info");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

@@ -33,7 +33,7 @@ import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class TotalRevSelectRange extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -94,8 +94,6 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
 
         llRevDetails = (LinearLayout) findViewById(R.id.ll_totrev_revenuedetail);
         llRevDetails.setVisibility(View.GONE);
-
-
     }
 
     private void setToolbar() {
@@ -103,7 +101,6 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("Total Revenue: Rs." + tinyDB.getString("TotalRevenue"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -147,8 +144,10 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
     private void getTotalRevenueBetween(final String from, final String to) {
         new AsyncTask<String, String, String>() {
             ProgressDialog dialog = new ProgressDialog(TotalRevSelectRange.this);
+            float totalRevForRange;
 
             @Override
+
             protected void onPreExecute() {
                 dialog.setMessage("Getting Revenue Details...");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -172,6 +171,7 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
                         jsonArray = new JSONArray(Response);
                         jsonObject = jsonArray.getJSONObject(0);
                         TotRevForRange = jsonObject.getString("TotalSalesAmount");
+                        totalRevForRange = Float.parseFloat(TotRevForRange);
                         return TotRevForRange;
                     } catch (JSONException jException) {
                         jException.printStackTrace();
@@ -188,8 +188,8 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
                     Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
                 } else if (Response.equals("error")) {
                     Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
-                } else if (TotRevForRange == null) {
-                    Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
+                } else if (TotRevForRange.equals("0.0")) {
+                    bViewDetails.setVisibility(View.GONE);
                 } else {
                     tvFrom.setText(DateUtil.convertFromYYYY_MM_DDtoDD_MM_YYYY(from));
                     tvTo.setText(DateUtil.convertFromYYYY_MM_DDtoDD_MM_YYYY(to));

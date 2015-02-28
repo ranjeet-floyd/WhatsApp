@@ -42,9 +42,7 @@ public class OutOfStock extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("Out Of Stock Items: " + outofStock);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -52,7 +50,7 @@ public class OutOfStock extends ActionBarActivity {
 
         lvOutOfStock = (ListView) findViewById(R.id.lv_outofstock_list);
         dbOutOfStockAdapter = new DbOutOfStockAdapter(this);
-        outofstockArrayList = dbOutOfStockAdapter.getAllOutOfStockItems();
+        //outofstockArrayList = dbOutOfStockAdapter.getAllOutOfStockItems();
         if (outofstockArrayList != null) {
             outOfStockAdapter = new OutOfStockAdapter(this, outofstockArrayList);
             lvOutOfStock.setAdapter(outOfStockAdapter);

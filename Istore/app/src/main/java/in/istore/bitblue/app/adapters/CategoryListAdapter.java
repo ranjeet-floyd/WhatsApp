@@ -55,7 +55,6 @@ public class CategoryListAdapter extends BaseAdapter {
             listRow.setTag(holder);
         } else
             holder = (ViewHolder) listRow.getTag();
-
         Category category = categoryArrayList.get(position);
         holder.catname.setText(category.getCategoryName());
         listRow.setOnClickListener(new View.OnClickListener() {

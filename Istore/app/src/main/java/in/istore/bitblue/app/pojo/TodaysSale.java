@@ -8,6 +8,7 @@ public class TodaysSale {
     private long Mobile;
     private String Optype;
     private String DeliveryAddress;
+    private String Id;
 
     public TodaysSale() {
     }
@@ -74,6 +75,14 @@ public class TodaysSale {
 
     public void setDeliveryAddress(String deliveryAddress) {
         DeliveryAddress = deliveryAddress;
+    }
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
     }
 }
 

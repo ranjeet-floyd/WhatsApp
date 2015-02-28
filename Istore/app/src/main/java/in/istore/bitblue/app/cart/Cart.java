@@ -41,16 +41,13 @@ import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.Store;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class Cart extends ActionBarActivity {
     private Toolbar toolbar;
     private TextView toolTitle;
     private ListView lvcartitems;
     private TextView tvTotalPayAmnt;
-    private RadioGroup rdSellDeliver;
-    private RadioButton rbSell;
-    private RadioButton rbDeliver;
 
     private ArrayList<CartItem> cartItemArrayList = new ArrayList<CartItem>();
     private DbCartAdapter dbCartAdapter;
@@ -75,7 +72,6 @@ public class Cart extends ActionBarActivity {
     private ArrayList<NameValuePair> nameValuePairs;
     private CartItem cartItem;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,9 +84,7 @@ public class Cart extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("CART");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -147,6 +141,7 @@ public class Cart extends ActionBarActivity {
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_CART_ITEMS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
@@ -232,7 +227,20 @@ public class Cart extends ActionBarActivity {
         final RadioButton rbSell = (RadioButton) dialog.findViewById(R.id.rb_custdetails_sell);
         final RadioButton rbDeliver = (RadioButton) dialog.findViewById(R.id.rb_custdetails_delivery);
         final EditText etDeliver = (EditText) dialog.findViewById(R.id.et_custdetails_deliveryaddress);
+        etDeliver.setVisibility(View.GONE);
         Button add = (Button) dialog.findViewById(R.id.b_addcust_dialog_addMobile);
+        rbSell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                etDeliver.setVisibility(View.GONE);
+            }
+        });
+        rbDeliver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                etDeliver.setVisibility(View.VISIBLE);
+            }
+        });
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,6 +254,12 @@ public class Cart extends ActionBarActivity {
                         OpType = rbSell.getText().toString();
                     }
                     DeliveryAddress = etDeliver.getText().toString();
+                    if (DeliveryAddress != null)
+                        globalVariable.setDeliveryAddress(DeliveryAddress);
+                    else {
+                        globalVariable.setDeliveryAddress("");
+                        DeliveryAddress = "";
+                    }
                     prefCustMobile.putLong("custMobile", Mobile).commit();
                     totalPayAmount = Float.parseFloat(tvTotalPayAmnt.getText().toString());
                     Date date = new Date();
@@ -274,7 +288,6 @@ public class Cart extends ActionBarActivity {
 
     private void addSoldProductToDbTables(final String prodId, final String prodName, final float prodSellPrice, final int prodQuantity) {
         new AsyncTask<String, String, String>() {
-
             ProgressDialog dialog = new ProgressDialog(Cart.this);
 
             @Override
@@ -326,7 +339,6 @@ public class Cart extends ActionBarActivity {
                 } else if (Response.equals("error")) {
                     Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
                 } else if (Status.equals("1")) {
-                    Toast.makeText(getApplicationContext(), "Added Product", Toast.LENGTH_LONG).show();
                 } else if (Status.equals("2")) {
                     Toast.makeText(getApplicationContext(), "Failed to add Product", Toast.LENGTH_LONG).show();
                 }

@@ -3,49 +3,77 @@
     <!-- Drop Shadow Stack -->
     <item>
         <shape>
-            <padding android:top="0dp" android:right="0dp" android:bottom="1dp" android:left="0dp" />
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
             <solid android:color="#02000000" />
             <corners android:radius="8dp" />
         </shape>
     </item>
     <item>
         <shape>
-            <padding android:top="0dp" android:right="0dp" android:bottom="1dp" android:left="0dp" />
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
             <solid android:color="#05000000" />
             <corners android:radius="7dp" />
         </shape>
     </item>
     <item>
         <shape>
-            <padding android:top="0dp" android:right="0dp" android:bottom="1dp" android:left="0dp" />
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
             <solid android:color="#10000000" />
             <corners android:radius="6dp" />
         </shape>
     </item>
     <item>
         <shape>
-            <padding android:top="0dp" android:right="0dp" android:bottom="1dp" android:left="0dp" />
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
             <solid android:color="#15000000" />
             <corners android:radius="5dp" />
         </shape>
     </item>
     <item>
         <shape>
-            <padding android:top="0dp" android:right="0dp" android:bottom="1dp" android:left="0dp" />
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
             <solid android:color="#20000000" />
             <corners android:radius="4dp" />
         </shape>
     </item>
     <item>
         <shape>
-            <padding android:top="0dp" android:right="0dp" android:bottom="1dp" android:left="0dp" />
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
             <solid android:color="#25000000" />
             <corners android:radius="3dp" />
         </shape>
     </item>
     <item>
         <shape>
-            <padding android:top="0dp" android:right="0dp" android:bottom="1dp" android:left="0dp" />
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
             <solid android:color="#30000000" />
             <corners android:radius="3dp" />
         </shape>
@@ -54,7 +82,7 @@
     <!-- Background -->
     <item>
         <shape>
-            <solid android:color="@color/material_blue_500" />
+            <solid android:color="@color/material_blue_grey_100" />
         </shape>
     </item>
 </layer-list>

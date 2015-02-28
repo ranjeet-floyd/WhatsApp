@@ -22,7 +22,7 @@ import in.istore.bitblue.app.adapters.CategoryListAdapter;
 import in.istore.bitblue.app.pojo.Category;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class CategoryList extends ActionBarActivity {
     private Toolbar toolbar;
@@ -54,7 +54,6 @@ public class CategoryList extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("SELECT CATEGORY");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -136,8 +135,8 @@ public class CategoryList extends ActionBarActivity {
                         categorylistAdapter = new CategoryListAdapter(getApplicationContext(), categoryArrayList);
                         lvcategorylist = (ListView) findViewById(R.id.lv_categorylist);
                         lvcategorylist.setAdapter(categorylistAdapter);
-                    } else
-                        Toast.makeText(getApplicationContext(), "No Categories Available", Toast.LENGTH_LONG).show();
+                    } else {
+                    }
                 }
             }
         }.execute();

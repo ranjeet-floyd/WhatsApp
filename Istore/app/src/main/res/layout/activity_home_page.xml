@@ -3,7 +3,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/loginbackground"
+    android:background="@drawable/homepagebg"
     android:fitsSystemWindows="false"
     tools:context=".HomePage">
 
@@ -42,12 +42,6 @@
                 android:verticalSpacing="@dimen/padd5dp" />
         </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/frame_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/linearLayout"
-            android:visibility="gone" />
     </RelativeLayout>
 
     <include layout="@layout/nav_draw_fragment" />

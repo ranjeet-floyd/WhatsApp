@@ -26,7 +26,7 @@ import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class TodaySales extends ActionBarActivity {
     private Toolbar toolbar;
@@ -34,6 +34,7 @@ public class TodaySales extends ActionBarActivity {
     private ListView lvtodaysales;
 
     private int StoreId;
+    private long AdminId;
     private float TodaySales;
     private String AdminKey, TodayDate;
     private ArrayList<TodaysSale> todaysSaleArrayList = new ArrayList<>();
@@ -65,9 +66,7 @@ public class TodaySales extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("Today's Total Sales: Rs " + tinyDB.getString("TodaySales"));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -76,6 +75,7 @@ public class TodaySales extends ActionBarActivity {
         TodayDate = DateUtil.convertToStringDateOnly(date);
         globalVariables = (GlobalVariables) getApplicationContext();
         AdminKey = globalVariables.getAdminKey();
+        AdminId = globalVariables.getAdminId();
         StoreId = globalVariables.getStoreId();
         custPurHistAdapter = new DbCustPurHistAdapter(this);
         lvtodaysales = (ListView) findViewById(R.id.lv_todaysales_list);
@@ -104,13 +104,13 @@ public class TodaySales extends ActionBarActivity {
             @Override
             protected String doInBackground(String... strings) {
                 nameValuePairs = new ArrayList<>();
-                nameValuePairs.add(new BasicNameValuePair("AdminKey", AdminKey));
+                nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("FromDate", TodayDate));
                 nameValuePairs.add(new BasicNameValuePair("todate", TodayDate));
                 nameValuePairs.add(new BasicNameValuePair("StaffId", ""));
+                nameValuePairs.add(new BasicNameValuePair("AdminId", ""));
                 nameValuePairs.add(new BasicNameValuePair("ProductName", ""));
-
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_ALL_STAFFANDPRODUCTS, nameValuePairs);      //check the API Path
                 if (Response == null || Response.equals("error")) {
                     return Response;
@@ -137,8 +137,7 @@ public class TodaySales extends ActionBarActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
-
-                            long staffId = Long.parseLong(jsonObject.getString("StaffId"));
+                            String Id = jsonObject.getString("StaffId");
                             String prodName = jsonObject.getString("ProductName");
                             int soldquantity = Integer.parseInt(jsonObject.getString("Quantity"));
                             float custPurAmnt = Float.parseFloat(jsonObject.getString("TotalAmount"));
@@ -147,7 +146,9 @@ public class TodaySales extends ActionBarActivity {
                                 break;
                             }
                             todaySales = new TodaysSale();
-                            todaySales.setStaffId(staffId);
+                            if (Id.equals("-1"))
+                                todaySales.setId("admin");
+                            else todaySales.setId(Id);
                             todaySales.setProdName(prodName);
                             todaySales.setQuantity(soldquantity);
                             todaySales.setPurchaseAmnt(custPurAmnt);

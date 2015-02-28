@@ -29,7 +29,7 @@ import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.ImageUtil;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class SellItem extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -40,7 +40,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
     private ImageView ivProdImage;
 
     private GlobalVariables globalVariable;
-    private String id, scanContent, category, name, desc, Key, UserType;
+    private String id, productId, scanContent, category, name, desc, Key, UserType;
     private float sellprice;
     private byte[] byteImage;
     private Bitmap bitmap;
@@ -81,46 +81,48 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
         }
         StoreId = globalVariable.getStoreId();
 
-        id = getIntent().getStringExtra("id");  //Obtained when list item is selected
-        scanContent = getIntent().getStringExtra("scanContentsellitem");  //Obtained when barcode is scanned
+        name = getIntent().getStringExtra("prodName");  //Obtained when list item is selected
+        category = getIntent().getStringExtra("categoryName");
 
+        scanContent = getIntent().getStringExtra("scanContentsellitem");  //Obtained when barcode is scanned
         ivProdImage = (ImageView) findViewById(R.id.iv_sellitems_image);
         tvbarcode = (TextView) findViewById(R.id.tv_sellitems_barcode_prod_id);
-        if (scanContent != null) {
+        /*if (scanContent != null) {
             tvbarcode.setText(scanContent);
         } else if (id != null) {
             tvbarcode.setText(id);
         } else startActivity(new Intent(this, SellItemsMenu.class));
-
-
+*/
         tvname = (TextView) findViewById(R.id.tv_sellitems_prod_name);
         tvdesc = (TextView) findViewById(R.id.tv_sellitem_prod_desc);
         tvsellprice = (TextView) findViewById(R.id.tv_sellitems_prod_sellprice);
 //        dbProAdapter = new DbProductAdapter(this);
         if (id != null) {
             // getProductfor(id);
-            getProductDetails(id);
+            getProductDetails(id, "", "");
         } else if (scanContent != null) {
             id = scanContent;
             // getProductfor(id);
-            getProductDetails(id);
+            getProductDetails(id, "", "");
+        } else if (name != null) {
+            getProductDetails("", category, name);
         } else {
-            startActivity(new Intent(this, SellItemsMenu.class));
+            Toast.makeText(getApplicationContext(), "Nothing to show", Toast.LENGTH_SHORT).show();
         }
 
         baddtocart = (Button) findViewById(R.id.b_sellitems_addtocart);
         baddtocart.setOnClickListener(this);
 
-        bEdit = (Button) findViewById(R.id.b_sellitems_edit);
-        bEdit.setOnClickListener(this);
+        // bEdit = (Button) findViewById(R.id.b_sellitems_edit);
+        // bEdit.setOnClickListener(this);
 
 
     }
 
-    private void getProductDetails(final String id) {
+    private void getProductDetails(final String prodID, final String categoryName, final String prodName) {
         new AsyncTask<String, String, String>() {
             ProgressDialog dialog = new ProgressDialog(SellItem.this);
-            String prodId,prodDesc;
+            String prodDesc;
             byte[] prodImage;
             int prodQuantity;
             float prodSellPrice;
@@ -138,7 +140,9 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
-                nameValuePairs.add(new BasicNameValuePair("PId", id));
+                nameValuePairs.add(new BasicNameValuePair("PId", prodID));
+                nameValuePairs.add(new BasicNameValuePair("CategoryName", categoryName));
+                nameValuePairs.add(new BasicNameValuePair("Name", prodName));
 
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_PRODUCTDETAILS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
@@ -147,7 +151,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
                     try {
                         jsonArray = new JSONArray(Response);
                         jsonObject = jsonArray.getJSONObject(0);
-                        prodId = jsonObject.getString("Id");
+                        productId = jsonObject.getString("Id");
                         category = jsonObject.getString("Category");
                         name = jsonObject.getString("Name");
                         prodImage = ImageUtil.convertBase64ImagetoByteArrayImage(jsonObject.getString("Image"));
@@ -169,7 +173,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
                     Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
                 } else if (Response.equals("error")) {
                     Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
-                } else if (prodId == null) {
+                } else if (productId == null) {
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
                     //set all textviews
@@ -177,7 +181,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
                     if (prodImage != null)
                         bitmap = BitmapFactory.decodeByteArray(prodImage, 0, prodImage.length, options);
                     tvname.setText(name);
-                    tvbarcode.setText(prodId);
+                    tvbarcode.setText(productId);
                     tvdesc.setText(prodDesc);
                     tvsellprice.setText(String.valueOf(prodSellPrice));
                     ivProdImage.setImageBitmap(bitmap);
@@ -189,9 +193,9 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
-            case R.id.b_sellitems_edit:
+          /*  case R.id.b_sellitems_edit:
                 startEditItemActivity();
-                break;
+                break;*/
 
             case R.id.b_sellitems_addtocart:
                 startSoldItemActivity();
@@ -201,7 +205,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
 
     private void startSoldItemActivity() {
         Intent soldItemForm = new Intent(this, SoldItemForm.class);
-        soldItemForm.putExtra("productid", id);
+        soldItemForm.putExtra("productid", productId);
         startActivity(soldItemForm);
     }
 

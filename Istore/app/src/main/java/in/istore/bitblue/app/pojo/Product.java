@@ -1,6 +1,8 @@
 package in.istore.bitblue.app.pojo;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable{
     private String Id;
     private byte[] Image;
     private String Category;
@@ -13,11 +15,37 @@ public class Product {
     private String Supplier;
     private String AddedDate;
     private int IsFavorite;
-
+    private int sellby;
+    private String custMob;
+    private String deliverAddress;
     private String SoldDate;
     private int SoldQuantity;
     private int RemQuantity;
-    private float SellPrice;
+    private double SellPrice;
+
+    public String getDeliverAddress() {
+        return deliverAddress;
+    }
+
+    public void setDeliverAddress(String deliverAddress) {
+        this.deliverAddress = deliverAddress;
+    }
+
+    public String getCustMob() {
+        return custMob;
+    }
+
+    public void setCustMob(String custMob) {
+        this.custMob = custMob;
+    }
+
+    public int getSellby() {
+        return sellby;
+    }
+
+    public void setSellby(int sellby) {
+        this.sellby = sellby;
+    }
 
     public Product() {
     }
@@ -185,11 +213,11 @@ public class Product {
         RemQuantity = remQuantity;
     }
 
-    public float getSellPrice() {
+    public double getSellPrice() {
         return SellPrice;
     }
 
-    public void setSellPrice(float sellPrice) {
+    public void setSellPrice(double sellPrice) {
         SellPrice = sellPrice;
     }
 }

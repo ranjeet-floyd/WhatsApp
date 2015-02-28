@@ -61,7 +61,8 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
         if (listRow == null) {
             listRow = mInflater.inflate(R.layout.listitem, null);
             holder = new ViewHolder();
-            holder.id = (TextView) listRow.findViewById(R.id.tv_listitem_category);
+            holder.category = (TextView) listRow.findViewById(R.id.tv_listitem_category);
+            holder.quantity = (TextView) listRow.findViewById(R.id.tv_listitem_quantity);
             holder.image = (ImageView) listRow.findViewById(R.id.iv_listitem_img);
             holder.name = (TextView) listRow.findViewById(R.id.tv_listitem_name);
             holder.date = (TextView) listRow.findViewById(R.id.tv_listitem_date);
@@ -71,14 +72,14 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
         }
         final Product product = productArrayList.get(position);
 
-        holder.id.setText(product.getId());
         byte[] outImage = product.getImage();
         if (outImage != null) {
             ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
             Bitmap theImage = BitmapFactory.decodeStream(imageStream);
             holder.image.setImageBitmap(theImage);
         }
-
+        holder.category.setText(product.getCategory());
+        holder.quantity.setText(String.valueOf(product.getQuantity()));
         holder.name.setText(product.getName());
         holder.date.setText(DateUtil.getDateInDD_MM_YYYY(product.getAddedDate()));
 
@@ -87,11 +88,14 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
 
             @Override
             public void onClick(View view) {
-                holder.id = (TextView) view.findViewById(R.id.tv_listitem_category);
-                String id = holder.id.getText().toString();
+                holder.name = (TextView) view.findViewById(R.id.tv_listitem_name);
+                holder.category = (TextView) view.findViewById(R.id.tv_listitem_category);
+                String categoryName = holder.category.getText().toString();
+                String prodName = holder.name.getText().toString();
                 Intent viewItem = new Intent(context, SellItem.class);
-                if (id != null) {
-                    viewItem.putExtra("id", id);
+                if (prodName != null && categoryName != null) {
+                    viewItem.putExtra("prodName", prodName);
+                    viewItem.putExtra("categoryName", categoryName);
                     viewItem.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(viewItem);
                 } else {
@@ -106,7 +110,6 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
         lastPosition = position;
         return listRow;
     }
-
 
     //This filter is used to get the searchText from SearchView
     @Override
@@ -146,7 +149,7 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
     }
 
     private static class ViewHolder {
-        TextView id, name, date;
+        TextView category, name, date, quantity;
         ImageView image;
     }
 }

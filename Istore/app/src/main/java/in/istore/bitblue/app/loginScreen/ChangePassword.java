@@ -3,6 +3,7 @@ package in.istore.bitblue.app.loginScreen;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -23,9 +24,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.home.HomePage;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class ChangePassword extends ActionBarActivity implements View.OnClickListener {
 
@@ -57,9 +59,7 @@ public class ChangePassword extends ActionBarActivity implements View.OnClickLis
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
-        toolTitle.setText("Change Password");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolTitle.setText("CHANGE PASSWORD");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -188,6 +188,7 @@ public class ChangePassword extends ActionBarActivity implements View.OnClickLis
 
                 } else if (Status.equals("1")) {
                     Toast.makeText(getApplicationContext(), "Password Changed", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getApplicationContext(), HomePage.class));
                 } else if (Status.equals("2")) {
                     Toast.makeText(getApplicationContext(), "Password Change Failed", Toast.LENGTH_LONG).show();
                 }

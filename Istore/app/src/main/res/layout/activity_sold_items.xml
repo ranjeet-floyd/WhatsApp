@@ -55,7 +55,7 @@
             android:layout_height="match_parent" />
     </LinearLayout>
 
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
+   <!-- <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/fab_solditems_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -87,5 +87,5 @@
             fab:fab_colorNormal="@color/material_red_100"
             fab:fab_colorPressed="@color/material_blue_grey_100"
             fab:fab_title="Delete All Item" />
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>-->
 </RelativeLayout>

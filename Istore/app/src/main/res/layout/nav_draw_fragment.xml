@@ -72,6 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/rl_gmail_content"
+        android:background="@color/material_blue_grey_100"
         android:orientation="vertical"
         android:weightSum="3">
 
@@ -80,23 +81,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:listSelector="@color/material_blue_500" />
+            android:listSelector="@color/material_grey_500" />
 
         <View
             android:id="@+id/separator"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@+id/lv_nav_drawer"
             android:layout_weight="1"
             android:background="@color/primary_material_light" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/separator"
             android:layout_marginLeft="@dimen/padd5dp"
-            android:layout_weight="4"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/padd15dp"
             android:paddingRight="@dimen/padd15dp"

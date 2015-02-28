@@ -31,7 +31,7 @@ import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.ImageUtil;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class ViewStockItems extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -66,7 +66,6 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("VIEW STOCK ITEM");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -268,9 +267,9 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
                 } else if (Response.equals("error")) {
                     Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
                 } else if (Status.equals("1")) {
-                    Toast.makeText(getApplicationContext(), "Failed to Update Quantity", Toast.LENGTH_LONG).show();
-                } else if (Status.equals("2")) {
                     Toast.makeText(getApplicationContext(), "Quantity Updated", Toast.LENGTH_LONG).show();
+                } else if (Status.equals("2")) {
+                    Toast.makeText(getApplicationContext(), "Quantity Update Failed", Toast.LENGTH_LONG).show();
                 }
             }
         }.execute();

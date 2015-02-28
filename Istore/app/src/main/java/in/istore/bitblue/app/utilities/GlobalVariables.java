@@ -16,7 +16,7 @@ public class GlobalVariables extends Application {
     private static int prodImageCount = 1;
     private int storeId;
     private long adminMobile, staffMobile, staffId, adminId, StaffTotalSales;
-    private String StaffPass, AdminPass, StaffKey, AdminKey, StaffEmail, AdminEmail, categoryName, fbName, fbEmail, gName, gEmail, Email, imagePath, UserType, StaffName, AdminName;
+    private String StaffPass, AdminPass, StaffKey, AdminKey, StaffEmail, AdminEmail, categoryName, fbName, fbEmail, gName, gEmail, Email, imagePath, UserType, StaffName, AdminName,DeliveryAddress;
 
     private ArrayList<String> categoryNames;
     private ArrayList<Product> productsList;
@@ -230,5 +230,13 @@ public class GlobalVariables extends Application {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public String getDeliveryAddress() {
+        return DeliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        DeliveryAddress = deliveryAddress;
     }
 }

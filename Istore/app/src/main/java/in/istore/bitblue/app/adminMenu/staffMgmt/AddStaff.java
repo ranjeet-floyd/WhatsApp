@@ -35,7 +35,7 @@ import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.Mail;
 import in.istore.bitblue.app.utilities.Store;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class AddStaff extends Fragment {
 
@@ -88,22 +88,32 @@ public class AddStaff extends Fragment {
         baddStaff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkForValidation(allEditTexts);
-
-              /*  StoreId = loginCredAdapter.getStoreId(AdminMobile);              //Remove if using api
+              /*  StoreId = loginCredAdapter.getStoreId(AdminMobile);         //Remove if using api
                 AdminEmail = loginCredAdapter.getAdminEmail(StoreId);             //*/
 
                 StoreId = globalVariable.getStoreId();
                 StaffId = Store.generateStaffId();
-
+                if (etName.getText().toString().equals("")) {
+                    etName.setHint("Field Required");
+                    etName.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    return;
+                } else if (etMobile.getText().toString().equals("")) {
+                    etMobile.setHint("Field Required");
+                    etMobile.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    return;
+                } else if (etAddress.getText().toString().equals("")) {
+                    etAddress.setHint("Field Required");
+                    etAddress.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    return;
+                }
                 StaffName = etName.getText().toString();
-                StaffMobile = Long.parseLong(etMobile.getText().toString());
+                if (!etMobile.getText().toString().equals(""))
+                    StaffMobile = Long.parseLong(etMobile.getText().toString());
                 StaffAddress = etAddress.getText().toString();
                 StaffPass = Store.generatePassword();
                 AdminEmail = globalVariable.getAdminEmail();
                 Date date = new Date();
                 joinDate = DateUtil.convertToStringDateOnly(date);
-                sendMailToUser(AdminEmail, StaffPass);
                 addStaffInfoToDatabase();
                 // long result = staffAdapter.insertStaffInfo(StoreId, StaffId, 0, StaffName, StaffMobile, StaffPass, StaffAddress, joinDate);      //Remove if using api
                /* if (result <= 0) {
@@ -116,7 +126,6 @@ public class AddStaff extends Fragment {
 
     private void addStaffInfoToDatabase() {
         new AsyncTask<String, String, String>() {
-
             ProgressDialog dialog = new ProgressDialog(getActivity());
 
             @Override
@@ -169,6 +178,7 @@ public class AddStaff extends Fragment {
                     String NotificationTitle = "BITSTORE PASSWORD";
                     String NotificationMessage = "Your Password is: " + StaffPass;
                     sendPasswordThroughNotification(NotificationTitle, NotificationMessage);
+                    sendMailToUser(AdminEmail, StaffPass);
                     clearField(allEditTexts);
                 } else if (Status.equals("2")) {
                     Toast.makeText(getActivity(), "Staff Already Exists", Toast.LENGTH_LONG).show();
@@ -185,16 +195,6 @@ public class AddStaff extends Fragment {
         NotificationManager mNotificationManager =
                 (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, mBuilder.build());
-    }
-
-    private void checkForValidation(EditText[] allEditTexts) {
-        for (EditText editText : allEditTexts) {
-            if (editText.getText().toString().equals("")) {
-                editText.setHint("Field Required");
-                editText.setHintTextColor(getResources().getColor(R.color.material_red_A400));
-                return;
-            }
-        }
     }
 
     private void showDatePicker() {
@@ -215,16 +215,16 @@ public class AddStaff extends Fragment {
         date.show(getFragmentManager(), "Date Picker");
     }
 
-    DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
+DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear,
+                          int dayOfMonth) {
 
-            bDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-            joinDate = bDate.getText().toString();
-        }
+        bDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+        joinDate = bDate.getText().toString();
+    }
 
-    };
+};
 
     private void clearField(EditText[] allEditTexts) {
         for (EditText editText :

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/material_blue_100"
+    android:background="@color/material_blue_grey_100"
     tools:context="in.istore.bitblue.app.loginScreen.StaffMobile">
 
     <LinearLayout
@@ -28,15 +28,17 @@
         android:paddingRight="@dimen/padd40dp">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginBottom="@dimen/padd20dp"
+            android:gravity="center"
             android:text="If You Are Owner/Admin Skip this step"
-            android:textColor="@color/material_blue_A400" />
+            android:textColor="@color/material_blue_300" />
 
         <Button
             android:id="@+id/b_staffmobile_skip"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/padd40dp"
             android:layout_marginBottom="@dimen/padd70dp"
             android:background="@drawable/button_shadow"
@@ -46,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Staff Mobile Number:"
-            android:textColor="@color/material_blue_A400" />
+            android:textColor="@color/myPrimaryColor" />
 
         <EditText
             android:id="@+id/et_staffmobile_mobile"
@@ -59,8 +61,10 @@
 
         <Button
             android:id="@+id/b_staffmobile_submit"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/padd30dp"
             android:background="@drawable/button_shadow"
             android:gravity="center"
             android:text="Submit" />

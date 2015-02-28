@@ -30,7 +30,7 @@ import in.istore.bitblue.app.utilities.DatePickerFragment;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class AddSupplier extends Fragment {
 
@@ -82,7 +82,21 @@ public class AddSupplier extends Fragment {
         baddSupp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkForValidation(allEditTexts);
+
+                if (etName.getText().toString().equals("")) {
+                    etName.setHint("Field Required");
+                    etName.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    return;
+                } else if (etMobile.getText().toString().equals("")) {
+                    etMobile.setHint("Field Required");
+                    etMobile.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    return;
+                } else if (etAddress.getText().toString().equals("")) {
+                    etAddress.setHint("Field Required");
+                    etAddress.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    return;
+                }
+                
                 SuppName = etName.getText().toString();
                 SuppMobile = Long.parseLong(etMobile.getText().toString());
                 SuppAddress = etAddress.getText().toString();

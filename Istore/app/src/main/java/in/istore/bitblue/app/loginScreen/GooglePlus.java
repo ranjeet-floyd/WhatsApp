@@ -1,6 +1,7 @@
 package in.istore.bitblue.app.loginScreen;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
@@ -16,36 +17,55 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.home.HomePage;
 import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.JSONParser;
+import in.istore.bitblue.app.utilities.TinyDB;
+import in.istore.bitblue.app.utilities.API;
 
 public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private static final int RC_SIGN_IN = 0;
+
     private boolean intentInProgress, signInClicked;
-    private String GpersonName, Gemail;
-    private static final int PROFILE_PIC_SIZE = 400;
-    private int Gresponse;
-    private String filePath;
+    private String GpersonName, Gemail, filePath, Status, UserType, Password, StaffName, StaffEmail, StaffKey, AdminName, AdminEmail, AdminKey;
+    private static final int PROFILE_PIC_SIZE = 400, RC_SIGN_IN = 0, GPLUS_LOGIN = 1000;
+    private int Gresponse, Id, StoreId, AdminId, StaffId, StaffTotalSale;
+    private boolean isAdminEmail, isStaffEmail;
+    private long Mobile;
+
     private GlobalVariables globalVariable;
     private GoogleApiClient googleApiClient;
     private ConnectionResult connectionResult;
     private DbLoginCredAdapter dbloginCredAdapter;
     private DbStaffAdapter dbStaffAdapter;
+    private TinyDB tinyDB;
+
+    private JSONParser jsonParser = new JSONParser();
+    private JSONArray jsonArray;
+    private JSONObject jsonObject;
+    private ArrayList<NameValuePair> nameValuePairs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_googleplus);
+        tinyDB = new TinyDB(this);
         dbloginCredAdapter = new DbLoginCredAdapter(this);
         dbStaffAdapter = new DbStaffAdapter(this);
         Gresponse = getIntent().getIntExtra("google", 0);
@@ -69,25 +89,90 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
     protected void onStop() {
         super.onStop();
         if (googleApiClient.isConnected()) {
-           // googleApiClient.disconnect();
+            // googleApiClient.disconnect();
         }
     }
 
     @Override
     public void onConnected(Bundle bundle) {
         signInClicked = false;
-        signInWithGplus();
+        signInWithGooglePlus();
     }
 
-    private void signInWithGplus() {
+    private void signInWithGooglePlus() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(GooglePlus.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Logging in...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+
+            @Override
+            protected String doInBackground(String... strings) {
+                resolveSignInError();
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                dialog.dismiss();
+                getProfileInformationforGmail();
+            }
+        }.execute();
         if (!googleApiClient.isConnecting()) {
             signInClicked = true;
-            resolveSignInError();
-            getProfileInformationforGmail();
         }
     }
 
     private void getProfileInformationforGmail() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(GooglePlus.this);
+            String personPhotoUrl;
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Logging in...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                try {
+                    if (Plus.PeopleApi.getCurrentPerson(googleApiClient) != null) {
+                        Person currentPerson = Plus.PeopleApi
+                                .getCurrentPerson(googleApiClient);
+                        GpersonName = currentPerson.getDisplayName();
+                        personPhotoUrl = currentPerson.getImage().getUrl();
+                        Gemail = Plus.AccountApi.getAccountName(googleApiClient);
+
+                        globalVariable.setgName(GpersonName);
+                        globalVariable.setgEmail(Gemail);
+
+                        personPhotoUrl = personPhotoUrl.substring(0,
+                                personPhotoUrl.length() - 2)
+                                + PROFILE_PIC_SIZE;
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                dialog.dismiss();
+                new LoadProfileImage().execute(personPhotoUrl);
+                isEmailForAdminOrStaff();
+            }
+        }.execute();
         try {
             if (Plus.PeopleApi.getCurrentPerson(googleApiClient) != null) {
                 Person currentPerson = Plus.PeopleApi
@@ -103,28 +188,21 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
                         personPhotoUrl.length() - 2)
                         + PROFILE_PIC_SIZE;
                 new LoadProfileImage().execute(personPhotoUrl);
-                boolean isEmailExistForAdmin = dbloginCredAdapter.isEmailExists(Gemail);
-                boolean isEmailExistForStaff = dbStaffAdapter.isEmailExists(Gemail);
-                if (isEmailExistForAdmin) {
-                    long adminMobile = dbloginCredAdapter.getAdminMobile(Gemail);
-                    globalVariable.setAdminMobile(adminMobile);
-                    Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
+                isEmailForAdminOrStaff();
+                // if (isAdminEmail) {
+                //long adminMobile = dbloginCredAdapter.getAdminMobile(Gemail);
+                //globalVariable.setAdminMobile(adminMobile);
+                  /*  Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
                     homePageFacebook.putExtra("gresponse", Gresponse);
                     homePageFacebook.putExtra("filePath", filePath);
-                    startActivity(homePageFacebook);
-                } else if (isEmailExistForStaff) {
-                    Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
+                    startActivity(homePageFacebook);*/
+                // } else if (isStaffEmail) {
+                   /* Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
                     homePageFacebook.putExtra("gresponse", Gresponse);
                     homePageFacebook.putExtra("filePath", filePath);
-                    startActivity(homePageFacebook);
-                } else {
-                    Intent staffMobile = new Intent(getApplicationContext(), StaffMobile.class);
-                    staffMobile.putExtra("gresponse", Gresponse);
-                    startActivity(staffMobile);
-                }
-            } else {
-                Toast.makeText(this, "Login Failed.Check Network", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(this, LoginPage.class));
+                    startActivity(homePageFacebook);*/
+                // proceedToLoginProcess();
+                //  }
             }
 
         } catch (Exception e) {
@@ -132,11 +210,65 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
         }
     }
 
+    private void isEmailForAdminOrStaff() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(GooglePlus.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Logging in...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("EmailId", Gemail));
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_CHECK_EMAIL_EXISTS, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        Mobile = jsonObject.getLong("Mobile");
+                        Password = jsonObject.getString("Password");          //
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (Password == null || Password.equals("null")) {
+                    Intent staffMobile = new Intent(getApplicationContext(), StaffMobile.class);
+                    staffMobile.putExtra("Gname", GpersonName);
+                    staffMobile.putExtra("Gemail", Gemail);
+                    staffMobile.putExtra("gresponse", Gresponse);
+                    staffMobile.putExtra("filepath", filePath);
+
+                    startActivity(staffMobile);
+                } else {
+                    proceedToLoginProcess();
+                }
+            }
+        }.execute();
+    }
+
     private void resolveSignInError() {
         if (connectionResult != null && connectionResult.hasResolution()) {
             try {
                 intentInProgress = true;
-                connectionResult.startResolutionForResult(this, RC_SIGN_IN);
+                connectionResult.startResolutionForResult(GooglePlus.this, RC_SIGN_IN);
             } catch (IntentSender.SendIntentException e) {
                 intentInProgress = false;
                 googleApiClient.connect();
@@ -160,7 +292,6 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
             }
         }
     }
-
 
     @Override
     public void onConnectionSuspended(int arg0) {
@@ -186,6 +317,16 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
     }
 
     private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
+        ProgressDialog dialog = new ProgressDialog(GooglePlus.this);
+
+        @Override
+        protected void onPreExecute() {
+            dialog.setMessage("Logging in...");
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap profImage = null;
@@ -200,7 +341,9 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
 
         protected void onPostExecute(Bitmap profImage) {
             if (profImage != null) {
+                dialog.dismiss();
                 filePath = createImageFromBitmap(profImage);
+                tinyDB.putString("googleFilePath", filePath);
             }
         }
     }
@@ -228,4 +371,148 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
             return null;
         }
     }
+
+    private void proceedToLoginProcess() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(GooglePlus.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Logging in...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                /*boolean validCredforAdmin = dbloginCredAdapter.isValidCred(Mobile, Pass);   //remove this if using api
+                boolean validCredforStaff = dbStaffAdapter.isValidCred(Mobile, Pass);
+                if (validCredforAdmin) {
+                    String[] adminNameAndEmail = dbloginCredAdapter.getAdminNameAndEmail(Mobile);
+                    StoreId = dbloginCredAdapter.getStoreId(Mobile);
+                    globalVariable.setStoreId(StoreId);
+                    globalVariable.setAdminId(0);
+                    AdminName = adminNameAndEmail[0];
+                    AdminEmail = adminNameAndEmail[1];
+                    return "credAdmin";
+                } else if (validCredforStaff) {
+                    StaffName = dbStaffAdapter.getStaffName(Mobile);
+                    StaffId = dbStaffAdapter.getStaffId(Mobile);
+                    StoreId = dbStaffAdapter.getStoreId(Mobile);
+                    globalVariable.setStaffId(StaffId);
+                    globalVariable.setStoreId(StoreId);
+                    return "credStaff";
+                } else return null;*/
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("Mobile", String.valueOf(Mobile)));
+                nameValuePairs.add(new BasicNameValuePair("Pass", Password));
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_LOGIN, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        UserType = jsonObject.getString("UserType");
+                        Id = jsonObject.getInt("ID");
+                        StoreId = jsonObject.getInt("StoreId");
+                        return UserType;
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+               /* if (Response == null) {                 //remove this if using api
+                    clearField(allEditTexts);
+                } else if (StaffId <= 0) {
+                    globalVariable.setAdminMobile(Mobile);
+                    Intent HomePage = new Intent(LoginPage.this, HomePage.class);
+                    preflogin.putString("Name", AdminName);
+                    preflogin.putString("Email", AdminEmail);
+                    preflogin.putLong("Mobile", Mobile);
+                    preflogin.commit();
+                    startActivity(HomePage);
+                } else if (StaffId > 0) {
+                    Intent HomePage = new Intent(LoginPage.this, HomePage.class);
+                    preflogin.putString("Name", StaffName);
+                    preflogin.putLong("Mobile", Mobile);
+                    preflogin.commit();
+                    startActivity(HomePage);
+                }           */                       //
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
+                } else if (UserType.equals("Admin")) {
+                    if (Id == 0) {
+                        Toast.makeText(getApplicationContext(), "Error:Incorrect Credentials", Toast.LENGTH_SHORT).show();
+                    } else if (Id > 0) {
+                        getAdminInfo();
+                        Intent homepage = new Intent(getApplicationContext(), HomePage.class);
+                        homepage.putExtra("gPlusLogin", GPLUS_LOGIN);
+                        startActivity(homepage);
+                    }
+                } else if (UserType.equals("Staff")) {
+                    if (Id == 0) {
+                        Toast.makeText(getApplicationContext(), "Error:Incorrect Credentials", Toast.LENGTH_SHORT).show();
+                    } else if (Id > 0) {
+                        getStaffInfo();
+                        Intent homepage = new Intent(getApplicationContext(), HomePage.class);
+                        homepage.putExtra("gPlusLogin", GPLUS_LOGIN);
+                        startActivity(homepage);
+                    }
+                } else if (UserType.equals("NONE")) {
+                    Toast.makeText(getApplicationContext(), "No Account Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
+    }
+
+    private void getStaffInfo() {
+
+        try {
+            StaffId = Id;
+            StaffName = jsonObject.getString("Name");
+            StaffEmail = jsonObject.getString("Email");
+            StaffTotalSale = jsonObject.getInt("StaffTotalSale");
+            StaffKey = jsonObject.getString("Key");
+
+            globalVariable.setUserType(UserType);
+            globalVariable.setStoreId(StoreId);
+            globalVariable.setStaffId(StaffId);
+            globalVariable.setStaffName(StaffName);
+            globalVariable.setStaffMobile(Mobile);
+            globalVariable.setStaffEmail(StaffEmail);
+            globalVariable.setStaffTotalSales(StaffTotalSale);
+            globalVariable.setStaffKey(StaffKey);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getAdminInfo() {
+        try {
+            AdminId = Id;
+            AdminName = jsonObject.getString("Name");
+            AdminEmail = jsonObject.getString("Email");
+            AdminKey = jsonObject.getString("Key");
+
+            globalVariable.setUserType(UserType);
+            globalVariable.setStoreId(StoreId);
+            globalVariable.setAdminId(AdminId);
+            globalVariable.setAdminName(AdminName);
+            globalVariable.setAdminMobile(Mobile);
+            globalVariable.setAdminEmail(AdminEmail);
+            globalVariable.setAdminKey(AdminKey);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

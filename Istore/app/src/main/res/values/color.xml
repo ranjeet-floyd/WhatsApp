@@ -122,7 +122,7 @@
         <color name="material_blue_grey_600">#ff546e7a</color>
         <color name="material_blue_grey_700">#ff455a64</color>
         <color name="material_blue_grey_800">#ff37474f</color>
-
+        <color name="darkgreen">#ff00bb00</color>
         <!-- Primary color used by Settings -->
         <color name="material_blue_grey_900">#ff263238</color>
 

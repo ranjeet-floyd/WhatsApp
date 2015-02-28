@@ -26,7 +26,7 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.Mail;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class ForgotPass extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -54,9 +54,7 @@ public class ForgotPass extends ActionBarActivity implements View.OnClickListene
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
-        toolTitle.setText("Forgot Password");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolTitle.setText("FORGOT PASSWORD");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -109,7 +107,7 @@ public class ForgotPass extends ActionBarActivity implements View.OnClickListene
                 } else if (Password == null) {
                     Toast.makeText(getApplicationContext(), "Mobile Number Does not Exists", Toast.LENGTH_LONG).show();
                 } else {
-                     //sendMailToUser(Email, Password);      //commented due to internet unavailable
+                    //sendMailToUser(Email, Password);      //commented due to internet unavailable
                     String NotificationTitle = "BITSTORE PASSWORD";
                     String NotificationMessage = "Your Password is: " + Password;
                     sendPasswordThroughNotification(NotificationTitle, NotificationMessage);

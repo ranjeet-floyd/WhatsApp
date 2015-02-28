@@ -57,7 +57,7 @@ public class FilterByProdNameAdapter extends BaseAdapter {
             holder = (ViewHolder) listRow.getTag();
 
         SoldProduct soldProduct = soldProductArrayList.get(position);
-        holder.staffid.setText(String.valueOf(soldProduct.getStaffId()));
+        holder.staffid.setText(soldProduct.getId());
         holder.quantity.setText(String.valueOf(soldProduct.getItemSoldQuantity()));
         holder.totalsales.setText(String.valueOf(soldProduct.getItemTotalAmnt()));
         holder.custmobile.setText(String.valueOf(soldProduct.getMobile()));

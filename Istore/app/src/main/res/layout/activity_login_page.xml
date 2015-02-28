@@ -187,16 +187,16 @@
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/sign_in_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_weight="1" />
 
             <com.facebook.widget.LoginButton
                 android:id="@+id/authButton"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:gravity="bottom" />
+                android:gravity="center" />
         </LinearLayout>
     </LinearLayout>
 
@@ -208,9 +208,9 @@
 
         <com.facebook.widget.ProfilePictureView
             android:id="@+id/fbImg"
-            android:layout_width="1dp"
-            android:layout_height="1dp"
-            android:visibility="visible"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:visibility="invisible"
             facebook:preset_size="small" />
     </LinearLayout>
 </RelativeLayout>

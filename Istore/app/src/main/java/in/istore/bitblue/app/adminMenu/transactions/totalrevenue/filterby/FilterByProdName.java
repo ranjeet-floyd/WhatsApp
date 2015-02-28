@@ -32,7 +32,8 @@ import in.istore.bitblue.app.pojo.SoldProduct;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.TinyDB;
+import in.istore.bitblue.app.utilities.API;
 
 public class FilterByProdName extends ActionBarActivity {
     private Toolbar toolbar;
@@ -60,6 +61,7 @@ public class FilterByProdName extends ActionBarActivity {
     private JSONObject jsonObject;
     private ArrayList<NameValuePair> nameValuePairs;
     private SoldProduct prodtotrevdetails;
+    private TinyDB tinyDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +71,8 @@ public class FilterByProdName extends ActionBarActivity {
         initViews();
     }
 
-
     private void setToolbar() {
+        tinyDB = new TinyDB(this);
         prefFromTo = getSharedPreferences(FROM_TO, MODE_PRIVATE);
         fromdate = prefFromTo.getString("fromdate", "");
         todate = prefFromTo.getString("todate", "");
@@ -78,14 +80,12 @@ public class FilterByProdName extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
 
-        toolTitle.setText(fromdate + " to " + todate + " Rs: " + totrevforrange);
+        toolTitle.setText(fromdate + " to " + todate + " Rs: " + tinyDB.getString("totrevforrange"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initViews() {
-
         globalVariable = (GlobalVariables) getApplicationContext();
         AdminKey = globalVariable.getAdminKey();
         StoreId = globalVariable.getStoreId();
@@ -120,6 +120,9 @@ public class FilterByProdName extends ActionBarActivity {
         bSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                soldProductArrayList.clear();
+                filtProNameAdapter = new FilterByProdNameAdapter(getApplicationContext(), soldProductArrayList);
+                lvfilterproname.setAdapter(filtProNameAdapter);
                 prodName = actvProdName.getText().toString();
                 getRevenueGeneratedByProduct(prodName);
                 getRevenueDetailsForProduct(prodName);
@@ -134,7 +137,6 @@ public class FilterByProdName extends ActionBarActivity {
             }
         });
     }
-
 
     private void getRevenueGeneratedByProduct(final String prodName) {
         new AsyncTask<String, String, String>() {
@@ -151,7 +153,7 @@ public class FilterByProdName extends ActionBarActivity {
             @Override
             protected String doInBackground(String... strings) {
                 nameValuePairs = new ArrayList<>();
-                nameValuePairs.add(new BasicNameValuePair("AdminKey", AdminKey));
+                nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("FromDate", formattedFrom));
                 nameValuePairs.add(new BasicNameValuePair("todate", formattedTo));
@@ -205,11 +207,12 @@ public class FilterByProdName extends ActionBarActivity {
             @Override
             protected String doInBackground(String... strings) {
                 nameValuePairs = new ArrayList<>();
-                nameValuePairs.add(new BasicNameValuePair("AdminKey", AdminKey));
+                nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("FromDate", formattedFrom));
                 nameValuePairs.add(new BasicNameValuePair("todate", formattedTo));
                 nameValuePairs.add(new BasicNameValuePair("StaffId", ""));
+                nameValuePairs.add(new BasicNameValuePair("AdminId", ""));
                 nameValuePairs.add(new BasicNameValuePair("ProductName", prodName));
 
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_PRODNAME, nameValuePairs);      //check the API Path
@@ -238,8 +241,7 @@ public class FilterByProdName extends ActionBarActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
-
-                            long staffId = Long.parseLong(jsonObject.getString("StaffId"));
+                            String Id = jsonObject.getString("StaffId");
                             int soldquantity = Integer.parseInt(jsonObject.getString("Quantity"));
                             float custPurAmnt = Float.parseFloat(jsonObject.getString("TotalAmount"));
                             long custMobile = Long.parseLong(jsonObject.getString("CusMobile"));
@@ -248,7 +250,9 @@ public class FilterByProdName extends ActionBarActivity {
                                 break;
                             }
                             prodtotrevdetails = new SoldProduct();
-                            prodtotrevdetails.setStaffId(staffId);
+                            if (Id.equals("-1"))
+                                prodtotrevdetails.setId("admin");
+                            else prodtotrevdetails.setId(Id);
                             prodtotrevdetails.setItemSoldQuantity(soldquantity);
                             prodtotrevdetails.setItemTotalAmnt(custPurAmnt);
                             prodtotrevdetails.setMobile(custMobile);

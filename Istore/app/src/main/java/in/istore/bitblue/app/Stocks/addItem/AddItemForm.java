@@ -45,11 +45,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.Stocks.listStock.ViewStockItems;
+import in.istore.bitblue.app.Stocks.Stocks;
 import in.istore.bitblue.app.databaseAdapter.DbCategoryAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProSubCatAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbSuppAdapter;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.Check;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
@@ -57,11 +58,10 @@ import in.istore.bitblue.app.utilities.ImageUtil;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.Store;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.api.API;
 
 public class AddItemForm extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
-    private Button bCaptureImage, bScanBarcode, bSubmit, bCancel;
+    private Button bCaptureImage, bScanBarcode, bSubmit, bCancel, bUpdate;
     private EditText etbarcode, etdesc, etquantity, etminlimit, etcostprice, etsellprice;
     private ImageView ivProdImage;
     private AutoCompleteTextView actvcategory, actvProdName, actvsupplier;
@@ -88,8 +88,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     private int proImgCount = 1, iquantity, iminlimit, StoreId;
     private float fcostprice, fsellprice;
     private String scanContent, imagePath, id, categoryName, name, desc, quantity, minlimit, costprice, sellprice, supplier, Key, UserType, AddedOn, Status;
-    private static final int CAPTURE_PIC_REQ = 1111, SCAN_BARCODE = 2222;
-
+    private static final int CAPTURE_PIC_REQ = 1111;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,10 +113,12 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         StoreId = globalVariable.getStoreId();
 
         UserType = globalVariable.getUserType();
-        if (UserType.equals("Admin")) {
-            Key = globalVariable.getAdminKey();
-        } else if (UserType.equals("Staff")) {
-            Key = globalVariable.getStaffKey();
+        if (UserType != null) {
+            if (UserType.equals("Admin")) {
+                Key = globalVariable.getAdminKey();
+            } else if (UserType.equals("Staff")) {
+                Key = globalVariable.getStaffKey();
+            }
         }
 
         tinyDB = new TinyDB(this);
@@ -155,6 +156,9 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         bSubmit = (Button) findViewById(R.id.b_additems_submit);
         bSubmit.setOnClickListener(this);
 
+        bUpdate = (Button) findViewById(R.id.b_additems_updatequantityAndsellingprice);
+        bUpdate.setOnClickListener(this);
+
         bCancel = (Button) findViewById(R.id.b_additems_cancel);
         bCancel.setOnClickListener(this);
 
@@ -164,7 +168,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         etbarcode = (EditText) findViewById(R.id.et_additems_barcode_prod_id);
 
         ivProdImage = (ImageView) findViewById(R.id.iv_additems_image);
-
+        ivProdImage.setOnClickListener(this);
         // getAllCategories(StoreId, Key);
         actvcategory.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -217,6 +221,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int pos, long l) {
                 name = parent.getItemAtPosition(pos).toString();
+                checkIfProductExists(categoryName, name, "");                //check existing product on adding product category and name keep prodId blank
             }
         });
         etbarcode.setOnTouchListener(new View.OnTouchListener() {
@@ -248,6 +253,22 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
             }
         });
 
+        etminlimit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                int quanttity = 0, minllimit = 0;
+                try {
+                    quanttity = Integer.parseInt(etquantity.getText().toString());
+                    minllimit = Integer.parseInt(etminlimit.getText().toString());
+                } catch (NumberFormatException nfe) {
+                    quanttity = 0;
+                }
+                if (minllimit >= quanttity) {
+                    Toast.makeText(getApplicationContext(), "Min limit must be less than Quantity", Toast.LENGTH_LONG).show();
+                    etminlimit.setText("");
+                }
+            }
+        });
     }
 
     public void getAllSubCategories(final int StoreId, final String Key, final String CategoryName) {
@@ -337,7 +358,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 else return false;*/
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("Storeid", String.valueOf(StoreId)));
-                nameValuePairs.add(new BasicNameValuePair("AdminKey", Key));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_SUPPLIER_INFO, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
@@ -392,9 +413,18 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         etbarcode.setFocusableInTouchMode(false);
     }
 
+    private void disableFocus(AutoCompleteTextView actvfield) {
+        actvfield.setFocusable(false);
+        actvfield.setFocusableInTouchMode(false);
+        actvfield.setClickable(false);
+    }
+
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
+            case R.id.iv_additems_image:
+                captureImage();
+                break;
             case R.id.b_additems_captureImage:
                 captureImage();
                 break;
@@ -403,7 +433,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 scanIntegrator.initiateScan();
                 break;
             case R.id.b_additems_cancel:
-                startActivity(new Intent(this, AddItemsMenu.class));
+                startActivity(new Intent(this, Stocks.class));
                 break;
             case R.id.b_additems_submit:
                 id = etbarcode.getText().toString();
@@ -423,6 +453,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
 
                 } catch (NumberFormatException ignored) {
                 }
+
                 if (imagePath != null) {
                     try {
                         //Convert Image path to byte array
@@ -470,6 +501,9 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 } else if (iminlimit == 0) {
                     Toast.makeText(this, "Min limit cannot be blank", Toast.LENGTH_SHORT).show();
                     break;
+                } else if (iminlimit > iquantity) {
+                    Toast.makeText(this, "Min limit cannot be greater than quantity", Toast.LENGTH_SHORT).show();
+                    break;
                 } else if (Check.ifNull(costprice) || Check.ifNull(sellprice)) {
                     etcostprice.setHint("Field Required");
                     etcostprice.setHintTextColor(getResources().getColor(R.color.material_red_A400));
@@ -493,12 +527,101 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     }*/
                 }
                 break;
+            case R.id.b_additems_updatequantityAndsellingprice:
+                id = etbarcode.getText().toString();
+                categoryName = actvcategory.getText().toString();
+                name = actvProdName.getText().toString();
+                desc = etdesc.getText().toString();
+                quantity = etquantity.getText().toString();
+                minlimit = etminlimit.getText().toString();
+                costprice = etcostprice.getText().toString();
+                sellprice = etsellprice.getText().toString();
+                supplier = actvsupplier.getText().toString();
+                try {
+                    iquantity = Integer.parseInt(quantity);
+                    iminlimit = Integer.parseInt(minlimit);
+                    fcostprice = Float.parseFloat(costprice);
+                    fsellprice = Float.parseFloat(sellprice);
+
+                } catch (NumberFormatException ignored) {
+                }
+                if (byteThumbnailArray == null) {
+                    Toast.makeText(this, "Capture Product Image", Toast.LENGTH_LONG).show();
+                    break;
+                }
+               /* if (imagePath != null) {
+                    try {
+                        //Convert Image path to byte array
+                        FileInputStream instream = new FileInputStream(imagePath);
+                        BufferedInputStream bif = new BufferedInputStream(instream);
+                        byteImage = new byte[bif.available()];
+                        int read = bif.read(byteImage);
+                    } catch (IOException e) {
+                        Toast.makeText(this, "Error:Unable to get the Image Location", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Capture Product Image", Toast.LENGTH_LONG).show();
+                    break;
+                }*/
+                else if (Check.ifNull(id)) {
+                    etbarcode.setHint("Field Required");
+                    etbarcode.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                } else if (dbAdapter.idAlreadyPresent(id)) {
+                    Toast.makeText(this, "\tId " + id + " ALREADY EXISTS\n please enter unique id ", Toast.LENGTH_LONG).show();
+                    break;
+                } else if (Check.ifNull(categoryName)) {
+                    actvcategory.setHint("Field Required");
+                    actvcategory.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                } else if (Check.ifNull(name)) {
+                    actvProdName.setHint("Field Required");
+                    actvProdName.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                } else if (Check.ifNull(desc)) {
+                    etdesc.setHint("Field Required");
+                    etdesc.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                } else if (Check.ifNull(quantity)) {
+                    etquantity.setHint("Field Required");
+                    etquantity.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                } else if (iquantity == 0) {
+                    Toast.makeText(this, "Quantity cannot be blank", Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (Check.ifNull(minlimit)) {
+                    etminlimit.setHint("Field Required");
+                    etminlimit.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                } else if (iminlimit == 0) {
+                    Toast.makeText(this, "Min limit cannot be blank", Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (iminlimit > iquantity) {
+                    Toast.makeText(this, "Min limit cannot be greater than quantity", Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (Check.ifNull(costprice) || Check.ifNull(sellprice)) {
+                    etcostprice.setHint("Field Required");
+                    etcostprice.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                } else if (fcostprice == 0 || fsellprice == 0) {
+                    Toast.makeText(this, "Price cannot be blank", Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (Check.ifNull(supplier)) {
+                    actvsupplier.setHint("Field Required");
+                    actvsupplier.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                } else {
+                    Date date = new Date();
+                    AddedOn = DateUtil.convertToStringDateOnly(date);
+                    updateProductQuantityAndPrice();
+                }
+                break;
         }
+
     }
 
     private void addProductToDatabase() {
         new AsyncTask<String, String, String>() {
-
             ProgressDialog dialog = new ProgressDialog(AddItemForm.this);
 
             @Override
@@ -550,8 +673,69 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
                 } else if (Status.equals("1")) {
                     Toast.makeText(getApplicationContext(), "Added Product", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getApplicationContext(), Stocks.class));
                 } else if (Status.equals("2")) {
                     Toast.makeText(getApplicationContext(), "Failed to add Product", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+    }
+
+    private void updateProductQuantityAndPrice() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(AddItemForm.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Updating Product Details...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
+                nameValuePairs.add(new BasicNameValuePair("PId", id));
+                nameValuePairs.add(new BasicNameValuePair("Category", categoryName));
+                nameValuePairs.add(new BasicNameValuePair("Name", name));
+                nameValuePairs.add(new BasicNameValuePair("Image", ImageUtil.convertByteArrayImagetoBase64Image(byteThumbnailArray)));
+                nameValuePairs.add(new BasicNameValuePair("ProductDesc", desc));
+                nameValuePairs.add(new BasicNameValuePair("Quantity", quantity));
+                nameValuePairs.add(new BasicNameValuePair("Minlimit", minlimit));
+                nameValuePairs.add(new BasicNameValuePair("Costprice", costprice));
+                nameValuePairs.add(new BasicNameValuePair("Sellingprice", sellprice));
+                nameValuePairs.add(new BasicNameValuePair("Supplier", supplier));
+                nameValuePairs.add(new BasicNameValuePair("AddedOn", AddedOn));
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_UPDATE_PRODUCTDETAILS, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        Status = jsonObject.getString("status");
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (Status.equals("1")) {
+                    Toast.makeText(getApplicationContext(), "Stock Updated", Toast.LENGTH_LONG).show();
+                } else if (Status.equals("2")) {
+                    Toast.makeText(getApplicationContext(), "Quantity Update Failed", Toast.LENGTH_LONG).show();
                 }
             }
         }.execute();
@@ -573,7 +757,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
             scanContent = scanningResult.getContents();
             if (scanContent != null && !(scanContent.equals("")))
                 //isProductExisting = checkForExistingProduct(scanContent);
-                checkIfProductExists(scanContent);
+                checkIfProductExists("", "", scanContent);                //check existing product on barcode scanning, keep catname and prodname blank
             etbarcode.setText(scanContent);
             disableFocus(etbarcode);
 
@@ -587,7 +771,6 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 case -1:
                     Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
                     ivProdImage.setImageBitmap(bitmap);
-
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 
@@ -623,7 +806,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
         }
     }
 
-    private void checkIfProductExists(final String id) {
+    private void checkIfProductExists(final String categoryName, final String prodName, final String prodID) {
         new AsyncTask<String, String, String>() {
             ProgressDialog dialog = new ProgressDialog(AddItemForm.this);
 
@@ -640,7 +823,9 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
-                nameValuePairs.add(new BasicNameValuePair("PId", id));
+                nameValuePairs.add(new BasicNameValuePair("CategoryName", categoryName));
+                nameValuePairs.add(new BasicNameValuePair("Name", prodName));
+                nameValuePairs.add(new BasicNameValuePair("PId", prodID));
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_CHECK_EXISTINGPRODUCTID, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
@@ -663,16 +848,119 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
                 } else if (Response.equals("error")) {
                     Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
-                } else if (Status.equals("2")) {
+                } else if (Status.equals("0")) {               //product does not exist
                 } else if (Status.equals("1")) {
-                    Intent viewStockItem = new Intent(getApplicationContext(), ViewStockItems.class);
+                   /* Intent viewStockItem = new Intent(getApplicationContext(), ViewStockItems.class);
                     viewStockItem.putExtra("barcode", scanContent);
-                    startActivity(viewStockItem);
+                    startActivity(viewStockItem);*/
+                    //  getExistingProductDetailsForID(prodID);
+                    getExistingProductDetails(categoryName, prodName, "");          //prodname exist
+                } else if (Status.equals("2")) {             //product id exists
+                    getExistingProductDetails("", "", prodID);
                 }
             }
         }.execute();
     }
 
+    private void getExistingProductDetails(final String categoryName, final String prodname, final String prodID) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(AddItemForm.this);
+            String prodCategory
+                    ,
+                    prodId
+                    ,
+                    prodName
+                    ,
+                    prodDesc
+                    ,
+                    prodMinlimit
+                    ,
+                    prodCostPrice
+                    ,
+                    prodSupplier;
+            byte[] prodImage;
+            int prodQuantity;
+            float prodSellPrice;
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Getting Product Details...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("key", Key));
+                nameValuePairs.add(new BasicNameValuePair("PId", prodID));
+                nameValuePairs.add(new BasicNameValuePair("CategoryName", categoryName));
+                nameValuePairs.add(new BasicNameValuePair("Name", prodname));
+
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_PRODUCTDETAILS, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        prodId = jsonObject.getString("Id");
+                        prodCategory = jsonObject.getString("Category");
+                        prodName = jsonObject.getString("Name");
+                        prodImage = ImageUtil.convertBase64ImagetoByteArrayImage(jsonObject.getString("Image"));
+                        prodDesc = jsonObject.getString("ProductDesc");
+                        prodMinlimit = jsonObject.getString("Minlimit");
+                        prodCostPrice = jsonObject.getString("Costprice");
+                        prodSupplier = jsonObject.getString("Supplier");
+                        prodQuantity = Integer.parseInt(jsonObject.getString("Quantity"));
+                        prodSellPrice = Float.parseFloat(jsonObject.getString("Sellingprice"));
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (prodId == null) {
+                    Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
+                } else {
+                    //set all textviews
+                    byteThumbnailArray = prodImage;
+                    ivProdImage.setImageBitmap(BitmapFactory.decodeByteArray(prodImage, 0, prodImage.length));
+                    actvcategory.setText(prodCategory);
+                    disableFocus(actvcategory);
+                    actvProdName.setText(prodName);
+                    disableFocus(actvProdName);
+                    etbarcode.setText(prodId);
+                    disableFocus(etbarcode);
+                    etdesc.setText(prodDesc);
+                    disableFocus(etdesc);
+                    etquantity.setText("");
+                    etminlimit.setText(prodMinlimit);
+                    disableFocus(etminlimit);
+                    etcostprice.setText(prodCostPrice);
+                    disableFocus(etcostprice);
+                    etsellprice.setText(String.valueOf(prodSellPrice));
+                    actvsupplier.setText(prodSupplier);
+                    disableFocus(actvsupplier);
+
+                    bSubmit.setVisibility(View.GONE);
+                    bUpdate.setVisibility(View.VISIBLE);
+                }
+            }
+        }.execute();
+
+    }
 
     //Get the URI of Image
     public static Uri getImageContentUri(Context context, File imageFile) {

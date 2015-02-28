@@ -24,7 +24,7 @@ import in.istore.bitblue.app.pojo.Outofstock;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class OutOfStock extends ActionBarActivity {
     private Toolbar toolbar;
@@ -62,7 +62,6 @@ public class OutOfStock extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("Out Of Stock Items: " + outofStock);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

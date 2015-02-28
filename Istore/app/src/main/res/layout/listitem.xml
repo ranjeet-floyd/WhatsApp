@@ -78,13 +78,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/padd15dp"
+                    android:visibility="gone"
                     android:weightSum="2">
 
                     <TextView
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Id: "
+                        android:text="Category: "
                         android:textColor="@color/myPrimaryColor" />
 
                     <TextView
@@ -93,6 +94,28 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="book"
+                        android:textColor="@color/myPrimaryColor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Quantity: "
+                        android:textColor="@color/myPrimaryColor" />
+
+                    <TextView
+                        android:id="@+id/tv_listitem_quantity"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="10"
                         android:textColor="@color/myPrimaryColor" />
                 </LinearLayout>
 

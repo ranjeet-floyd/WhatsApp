@@ -120,78 +120,103 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".loginScreen.StoreName"
-            android:parentActivityName=".home.HomePage" />
-        <activity android:name=".loginScreen.GooglePlus" />
-        >
+            android:parentActivityName=".home.HomePage"
+            android:screenOrientation="portrait" />
+        <activity android:name=".loginScreen.GooglePlus"
+            android:screenOrientation="portrait"  />
+
         <activity
             android:name=".adminMenu.staffMgmt.StaffMgntContent"
-            android:parentActivityName=".home.HomePage" />
+            android:parentActivityName=".home.HomePage"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".adminMenu.suppInfo.SuppInfoContent"
-            android:parentActivityName=".home.HomePage" />
+            android:parentActivityName=".home.HomePage"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".adminMenu.transactions.Trans"
-            android:parentActivityName=".home.HomePage" />
+            android:parentActivityName=".home.HomePage"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".adminMenu.custInfo.CusInfoContent"
-            android:parentActivityName=".home.HomePage" />
+            android:parentActivityName=".home.HomePage"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".category.Categories"
-            android:parentActivityName=".home.HomePage" />
+            android:parentActivityName=".home.HomePage"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".category.products.ProSubCat"
-            android:parentActivityName=".category.Categories" />
+            android:parentActivityName=".category.Categories"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".cart.Cart"
-            android:parentActivityName=".Stocks.Stocks" />
+            android:parentActivityName=".home.HomePage"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".adminMenu.transactions.totalrevenue.TotalRevSelectRange"
-            android:parentActivityName=".adminMenu.transactions.Trans" />
+            android:parentActivityName=".adminMenu.transactions.Trans"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".adminMenu.transactions.todaysales.TodaySales"
-            android:parentActivityName=".adminMenu.transactions.Trans" />
+            android:parentActivityName=".adminMenu.transactions.Trans"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".adminMenu.transactions.outofstock.OutOfStock"
-            android:parentActivityName=".adminMenu.transactions.Trans" />
+            android:parentActivityName=".adminMenu.transactions.Trans"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".adminMenu.transactions.totalrevenue.TotalRevViewDetails"
-            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevSelectRange" />
+            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevSelectRange"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".adminMenu.transactions.totalrevenue.filterby.FilterByProdName"
-            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevViewDetails" />
+            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevViewDetails"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".adminMenu.transactions.totalrevenue.filterby.FilterByStaffId"
-            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevViewDetails" />
+            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevViewDetails"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".staffMenu.transactions.TransStaff"
-            android:parentActivityName=".home.HomePage" />
+            android:parentActivityName=".home.HomePage"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".staffMenu.custInfo.CusInfoForStaffContent"
-            android:parentActivityName=".home.HomePage" />
+            android:parentActivityName=".home.HomePage"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".staffMenu.transactions.todaysales.TodaySalesStaff"
-            android:parentActivityName=".staffMenu.transactions.TransStaff" />
+            android:parentActivityName=".staffMenu.transactions.TransStaff"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".invoice.Invoice"
-            android:parentActivityName=".Stocks.listStock.ListMyStock" />
+            android:parentActivityName=".Stocks.listStock.ListMyStock"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".loginScreen.StaffMobile"
-            android:parentActivityName=".loginScreen.LoginPage" />
+            android:parentActivityName=".loginScreen.LoginPage"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".loginScreen.ForgotPass"
-            android:parentActivityName=".loginScreen.LoginPage" />
+            android:parentActivityName=".loginScreen.LoginPage"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".loginScreen.ChangePassword"
-            android:parentActivityName=".home.HomePage" />
+            android:parentActivityName=".home.HomePage"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".cloudprint.PrintDialogActivity"
-            android:label="@string/title_activity_print_dialog" />
+            android:label="@string/title_activity_print_dialog"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".Stocks.Stocks"
-            android:parentActivityName=".home.HomePage" />
+            android:parentActivityName=".home.HomePage"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Stocks.listStock.CategoryList"
-            android:parentActivityName=".Stocks.Stocks"/>
+            android:parentActivityName=".Stocks.Stocks"
+            android:screenOrientation="portrait"  />
     </application>
 
 </manifest>

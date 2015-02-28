@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/iv_soldlistitem_img"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
                 android:src="@drawable/no_image" />
         </LinearLayout>
 
@@ -45,20 +45,26 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="1">
+                    android:weightSum="2">
 
                     <TextView
                         android:id="@+id/tv_soldlistitem_name"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="1"
                         android:text="Name"
                         android:textAllCaps="true"
                         android:textColor="@color/myPrimaryColor"
                         android:textSize="20sp"
                         android:textStyle="bold|italic" />
+                    <TextView
+                        android:id="@+id/tv_soldlistitem_id"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="book"
+                        android:textColor="@color/myPrimaryColor" />
                 </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -69,15 +75,37 @@
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Id: "
+                        android:text="Sell Price: "
                         android:textColor="@color/myPrimaryColor" />
 
                     <TextView
-                        android:id="@+id/tv_soldlistitem_category"
+                        android:id="@+id/tv_soldlistitem_sellprice"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="book"
+                        android:text=""
+                        android:textColor="@color/myPrimaryColor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Quantity: "
+                        android:textColor="@color/myPrimaryColor" />
+
+                    <TextView
+                        android:id="@+id/tv_soldlistitem_quantity"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
                         android:textColor="@color/myPrimaryColor" />
                 </LinearLayout>
 
@@ -99,7 +127,50 @@
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="date"
+                        android:text=""
+                        android:textColor="@color/myPrimaryColor" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Customer Mob: "
+                        android:textColor="@color/myPrimaryColor" />
+
+                    <TextView
+                        android:id="@+id/tv_soldlistitem_custMob"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textColor="@color/myPrimaryColor" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/ll_solditem_deliveraddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padd5dp"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Delivery Add: "
+                        android:textColor="@color/myPrimaryColor" />
+
+                    <TextView
+                        android:id="@+id/tv_soldlistitem_deliverAddress"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
                         android:textColor="@color/myPrimaryColor" />
                 </LinearLayout>
             </LinearLayout>

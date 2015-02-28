@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/padd5dp"
             android:layout_weight="1"
-            android:text="29/01/2015"
+            android:text=""
             android:textColor="@color/black" />
 
         <TextView
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="02/02/2015"
+            android:text=""
             android:textColor="@color/black" />
 
         <TextView
@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Staff Id"
+            android:text="Id"
             android:textColor="@color/black" />
 
         <TextView
@@ -125,6 +125,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Date"
+            android:layout_gravity="end"
+            android:gravity="end"
             android:textColor="@color/black" />
     </LinearLayout>
 

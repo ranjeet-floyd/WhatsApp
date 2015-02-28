@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -35,7 +36,7 @@ import in.istore.bitblue.app.pojo.Category;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class Categories extends ActionBarActivity implements View.OnClickListener,
         SearchView.OnQueryTextListener,
@@ -75,7 +76,6 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("CATEGORIES");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -103,10 +103,10 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
         StoreId = globalVariable.getStoreId();
         /*dbCategoryAdapter = new DbCategoryAdapter(this);                          //Remove this if using api
         categoryArrayList = dbCategoryAdapter.getAllCategories();*/                 //
-
+        Debug.startMethodTracing("myapp");
         //get All Categories list from server
         getAllCategories(StoreId, Key);
-
+        Debug.stopMethodTracing();
        /* if (categoryArrayList != null) {
             categoryAdapter = new CategoryAdapter(this, categoryArrayList);
             lvcategories.setAdapter(categoryAdapter);
@@ -236,7 +236,6 @@ public class Categories extends ActionBarActivity implements View.OnClickListene
                     // categoryArrayList =getAllCategories(StoreId);
                     // categoryAdapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
                     // lvcategories.setAdapter(categoryAdapter);
-
                     Toast.makeText(getApplicationContext(), "Added Category: " + CategoryName, Toast.LENGTH_SHORT).show();
                 } else if (Status.equals("2")) {
                     Toast.makeText(getApplicationContext(), "Category Already Exists", Toast.LENGTH_LONG).show();

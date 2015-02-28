@@ -33,7 +33,7 @@ import in.istore.bitblue.app.databaseAdapter.DbProSubCatAdapter;
 import in.istore.bitblue.app.pojo.ProductSubCategory;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class ProSubCat extends ActionBarActivity implements View.OnClickListener,
         SearchView.OnQueryTextListener,
@@ -74,7 +74,6 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
         toolTitle.setText("Products: " + CategoryName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -239,7 +238,7 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
                 } else if (Response.equals("error")) {
                     Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
                 } else if (Status.equals("1")) {
-                    Toast.makeText(getApplicationContext(), "Added SubCategory: " + SubCategoryName, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Added Product: " + SubCategoryName, Toast.LENGTH_LONG).show();
                 } else if (Status.equals("2")) {
                     Toast.makeText(getApplicationContext(), "SubCategory Already Exists", Toast.LENGTH_LONG).show();
                 }
@@ -310,8 +309,9 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
                         proSubCatAdapter = new ProSubCatAdapter(getApplicationContext(), prodSubCatArrayList);
                         lvprosubcat = (ListView) findViewById(R.id.lv_prosubcat);
                         lvprosubcat.setAdapter(proSubCatAdapter);
-                    } else
-                        Toast.makeText(getApplicationContext(), "No Categories Available", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "No Products Available", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         }.execute();

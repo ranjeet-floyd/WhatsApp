@@ -26,17 +26,18 @@ import in.istore.bitblue.app.adapters.SoldHistoryAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbSoldItemAdapter;
 import in.istore.bitblue.app.pojo.Product;
 import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.ImageUtil;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class ViewSoldItem extends ActionBarActivity {
     private Toolbar toolbar;
 
-    private TextView tvbarcode, tvname, tvdesc, tvsoldquantity, tvremquantity;
+    private TextView tvbarcode, tvname, tvdesc, tvsoldquantity, tvsellPrice;
     private ImageView ivProdImage;
     private ListView lvsoldhist;
 
-    private String id, UserType, Key, ProdName;
+    private String id, UserType, Key, ProdName, prodId, Image, SoldDate, OpType, DeliveryAdd, Soldquantity, SellPrice;
     private byte[] byteImage;
     private int StoreId;
     private Bitmap bitmap;
@@ -85,9 +86,9 @@ public class ViewSoldItem extends ActionBarActivity {
 
         tvbarcode = (TextView) findViewById(R.id.tv_viewsolditem_barcode_prod_id);
         tvname = (TextView) findViewById(R.id.tv_viewsolditem_prod_name);
-        tvdesc = (TextView) findViewById(R.id.tv_viewsolditem_desc);
+        // tvdesc = (TextView) findViewById(R.id.tv_viewsolditem_desc);
         tvsoldquantity = (TextView) findViewById(R.id.tv_viewsolditem_soldquan);
-        tvremquantity = (TextView) findViewById(R.id.tv_viewsolditem_availquan);
+        tvsellPrice = (TextView) findViewById(R.id.tv_viewsolditem_sellPrice);
 
         id = getIntent().getStringExtra("id");  //Obtained when list item is selected
         dbsolAdapter = new DbSoldItemAdapter(this);
@@ -125,7 +126,7 @@ public class ViewSoldItem extends ActionBarActivity {
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
-                nameValuePairs.add(new BasicNameValuePair("ItemId ", id));
+                nameValuePairs.add(new BasicNameValuePair("ItemId", id));
 
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_SOLDPRODUCTDETAILS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
@@ -134,7 +135,14 @@ public class ViewSoldItem extends ActionBarActivity {
                     try {
                         jsonArray = new JSONArray(Response);
                         jsonObject = jsonArray.getJSONObject(0);
-                        ProdName = jsonObject.getString("");
+                        ProdName = jsonObject.getString("Name");
+                        prodId = jsonObject.getString("ItemID");
+                        byteImage = ImageUtil.convertBase64ImagetoByteArrayImage(jsonObject.getString("Image"));
+                        SoldDate = jsonObject.getString("SoldDate");
+                        OpType = jsonObject.getString("OpType");
+                        DeliveryAdd = jsonObject.getString("DeliveryAdd");
+                        Soldquantity = jsonObject.getString("Soldquantity");
+                        SellPrice = jsonObject.getString("SellPrice");
                     } catch (JSONException jException) {
                         jException.printStackTrace();
                     }
@@ -154,6 +162,15 @@ public class ViewSoldItem extends ActionBarActivity {
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
                     //set all textviews
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    if (byteImage != null)
+                        bitmap = BitmapFactory.decodeByteArray(byteImage, 0, byteImage.length, options);
+                    tvname.setText(ProdName);
+                    tvbarcode.setText(prodId);
+                    // tvdesc.setText(prodDesc);
+                    tvsoldquantity.setText(String.valueOf(Soldquantity));
+                    tvsellPrice.setText(SellPrice);
+                    ivProdImage.setImageBitmap(bitmap);
                 }
             }
         }.execute();
@@ -176,7 +193,7 @@ public class ViewSoldItem extends ActionBarActivity {
             tvname.setText(product.getName());
             tvdesc.setText(product.getDesc());
             tvsoldquantity.setText(String.valueOf(product.getSoldQuantity()));
-            tvremquantity.setText(String.valueOf(product.getRemQuantity()));
+            //tvremquantity.setText(String.valueOf(product.getRemQuantity()));
         }
 
     }

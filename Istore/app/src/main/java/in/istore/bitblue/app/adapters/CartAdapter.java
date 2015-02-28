@@ -46,6 +46,7 @@ public class CartAdapter extends BaseAdapter {
         if (listRow == null) {
             listRow = mInflater.inflate(R.layout.cartlistitem, null);
             holder = new ViewHolder();
+            holder.itemId = (TextView) listRow.findViewById(R.id.tv_cartlistitem_id);
             holder.itemName = (TextView) listRow.findViewById(R.id.tv_cartlistitem_name);
             holder.itemSoldQuan = (TextView) listRow.findViewById(R.id.tv_cartlistitem_soldquantity);
             holder.itemTotAmnt = (TextView) listRow.findViewById(R.id.tv_cartlistitem_totalamount);
@@ -54,14 +55,24 @@ public class CartAdapter extends BaseAdapter {
             holder = (ViewHolder) listRow.getTag();
 
         CartItem cartItem = cartArrayList.get(position);
+        holder.itemId.setText(cartItem.getItemId());
         holder.itemName.setText(cartItem.getItemName());
         holder.itemSoldQuan.setText(String.valueOf(cartItem.getItemSoldQuantity()));
         holder.itemTotAmnt.setText(String.valueOf(cartItem.getItemTotalAmnt()));
+
+        listRow.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                holder.itemId = (TextView) view.findViewById(R.id.tv_cartlistitem_id);
+                return true;
+            }
+        });
+
         return listRow;
     }
 
     private static class ViewHolder {
-        TextView itemName, itemSoldQuan, itemTotAmnt;
+        TextView itemId, itemName, itemSoldQuan, itemTotAmnt;
     }
 
 }

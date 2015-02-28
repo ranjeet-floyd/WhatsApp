@@ -6,11 +6,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -37,6 +39,12 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -73,7 +81,9 @@ import in.istore.bitblue.app.pojo.GridItemsList;
 import in.istore.bitblue.app.staffMenu.custInfo.CusInfoForStaffContent;
 import in.istore.bitblue.app.staffMenu.transactions.TransStaff;
 import in.istore.bitblue.app.utilities.GlobalVariables;
+import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
+import in.istore.bitblue.app.utilities.API;
 
 public class HomePage extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Toolbar toolbar;
@@ -84,15 +94,15 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private ListView navDrawList, navDrawListAdmin, navDrawListStaff;
 
-    private String FpersonName, Femail, GpersonName, Gemail, Name, Email;
-    private int responseGmail, responseFacebook, StaffId, Gresponse;
+    private String FpersonName, Femail, GpersonName, Gemail, Name, Email, allContactNumber, googleFilePath, fBFilePath;
+    private int responseGmail, responseFacebook, StaffId, Gresponse, StoreId;
     private static final int G_LOGOUT = 1;
     private static final int F_LOGOUT = 2;
     private static final int RC_SIGN_IN = 0;
     private static final int PROFILE_PIC_SIZE = 400;
-    private long Mobile;
+    private long Mobile, UserMobile, UserId;
     private final static String LOGIN = "login";
-    private boolean intentInProgress, signInClicked;
+    private boolean intentInProgress, signInClicked, previouslogin;
 
     private SharedPreferences preflogin;
     private List<NavDrawItems> navDrawItemsList, navDrawItemsListForAdmin, navDrawItemsListForStaff;
@@ -106,6 +116,11 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     private DbLoginCredAdapter dbloginCredAdapter;
     private DbStaffAdapter dbStaffAdapter;
     private TinyDB tinyDB;
+
+    private JSONParser jsonParser = new JSONParser();
+    private JSONArray jsonArray;
+    private JSONObject jsonObject;
+    private ArrayList<NameValuePair> nameValuePairs;
 
     // Google client to interact with Google API
     private GoogleApiClient googleApiClient;
@@ -124,8 +139,8 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
 
         //Check which button was selected on login page
-        responseGmail = getIntent().getIntExtra("google", 0);
-        responseFacebook = getIntent().getIntExtra("facebook", 0);
+        responseGmail = getIntent().getIntExtra("gPlusLogin", 0);
+        responseFacebook = getIntent().getIntExtra("fBLogin", 0);
         preflogin = getSharedPreferences(LOGIN, MODE_PRIVATE);
         globalVariable = (GlobalVariables) getApplicationContext();
         UserType = globalVariable.getUserType();
@@ -137,43 +152,61 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         Mobile = preflogin.getLong("Mobile", 0);
         dbStaffAdapter = new DbStaffAdapter(this);
         StaffId = dbStaffAdapter.getStaffId(Mobile);
+
+        if (UserType != null) {
+            if (UserType.equals("Admin")) {
+                UserId = globalVariable.getAdminId();
+                UserMobile = globalVariable.getAdminMobile();
+                StoreId = globalVariable.getStoreId();
+            } else if (UserType.equals("Staff")) {
+                UserId = globalVariable.getStaffId();
+                UserMobile = globalVariable.getStaffMobile();
+            }
+        }
         initViews();
-        if (responseGmail == 1) {
+        if (responseGmail == 1000) {
             Flogout.setVisibility(View.GONE);
             blogout.setVisibility(View.GONE);
+            tvuserName.setText(globalVariable.getgName());
+            tvuserEmail.setText(globalVariable.getgEmail());
+
+            bitmap = BitmapFactory.decodeFile(tinyDB.getString("googleFilePath"));
+            ivuserPic.setImageBitmap(bitmap);
+
             if (!googleApiClient.isConnected()) {
-                onConnected(savedInstanceState);
+                //onConnected(savedInstanceState);
             }
-        } else if (responseFacebook == 2) {
+
+        } else if (responseFacebook == 2000) {
             Glogout.setVisibility(View.GONE);
             blogout.setVisibility(View.GONE);
 
             //If facebook then get all values
             FpersonName = globalVariable.getFbName();
             Femail = globalVariable.getFbEmail();
-            String path = getIntent().getStringExtra("filePath");
-            bitmap = BitmapFactory.decodeFile(path);
+            bitmap = BitmapFactory.decodeFile(tinyDB.getString("googleFilePath"));
             if (FpersonName != null) {
                 tvuserName.setText(FpersonName);
             }
             if (Femail != null)
                 tvuserEmail.setText(Femail);
-
             if (bitmap != null)
                 ivuserPic.setImageBitmap(bitmap);
         } else if (UserType.equals("Admin")) {
             Name = preflogin.getString("Name", "");
             tvuserName.setText(globalVariable.getAdminName());
-            Email = preflogin.getString("Email", "");
-            globalVariable.setEmail(Email);
             tvuserEmail.setText(globalVariable.getAdminEmail());
+            bitmap = BitmapFactory.decodeFile(tinyDB.getString("googleFilePath"));
+            ivuserPic.setImageBitmap(bitmap);
+
             Flogout.setVisibility(View.GONE);
             Glogout.setVisibility(View.GONE);
-
         } else if (UserType.equals("Staff")) {
             Name = preflogin.getString("Name", "");
             tvuserName.setText(globalVariable.getStaffName());
-            tvuserEmail.setText("");
+            tvuserEmail.setText(globalVariable.getStaffEmail() == null || globalVariable.getStaffEmail().equals("null") ? "" : globalVariable.getStaffEmail());
+            bitmap = BitmapFactory.decodeFile(tinyDB.getString("googleFilePath"));
+            ivuserPic.setImageBitmap(bitmap);
             Flogout.setVisibility(View.GONE);
             Glogout.setVisibility(View.GONE);
         }
@@ -185,10 +218,13 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         TextView toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        toolTitle.setText(tinyDB.getString("StoreName"));
+        toolTitle.setText(tinyDB.getString("StoreName").toUpperCase());
     }
 
     private void initViews() {
+
+        previouslogin = tinyDB.getBoolean("previousLogin");
+        if (!previouslogin) retrieveContactsAndSendToDB();
 
         dbAdapter = new DbProductAdapter(this);
         dbloginCredAdapter = new DbLoginCredAdapter(this);
@@ -202,15 +238,17 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         navDrawList = (ListView) findViewById(R.id.lv_nav_drawer);
         navDrawList.setOnItemClickListener(new DrawerItemClickListener());
 
-        if (UserType.equals("Admin")) {
-            navDrawItemsList = getAdminListItems();
-            navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsList);
-            navDrawList.setAdapter(navDrawAdapter);
+        if (UserType != null) {
+            if (UserType.equals("Admin")) {
+                navDrawItemsList = getAdminListItems();
+                navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsList);
+                navDrawList.setAdapter(navDrawAdapter);
 
-        } else if (UserType.equals("Staff")) {
-            navDrawItemsList = getStaffListItems();
-            navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsList);
-            navDrawList.setAdapter(navDrawAdapter);
+            } else if (UserType.equals("Staff")) {
+                navDrawItemsList = getStaffListItems();
+                navDrawAdapter = new NavDrawAdapter(this, R.layout.navdrawitem, navDrawItemsList);
+                navDrawList.setAdapter(navDrawAdapter);
+            }
         }
 
         tvuserName = (TextView) findViewById(R.id.tv_username);
@@ -281,6 +319,59 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 }
             }
         });
+    }
+
+    private void retrieveContactsAndSendToDB() {
+        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        while (phones.moveToNext()) {
+            allContactNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            addContactsToDb();
+        }
+        phones.close();
+    }
+
+    private void addContactsToDb() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(HomePage.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Please Wait...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("UserMob", String.valueOf(UserMobile)));
+                nameValuePairs.add(new BasicNameValuePair("ContactNum", allContactNumber));
+                nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
+                nameValuePairs.add(new BasicNameValuePair("ID", String.valueOf(UserId)));
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_USER_CONTACT, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    tinyDB.putBoolean("previousLogin", true);
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
     }
 
     private List<NavDrawItems> getAdminListItems() {
@@ -370,7 +461,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 })
                 .setIcon(R.drawable.ic_drawer)
                 .setMessage("Google Cloud Service must be enabled to print invoice.\n" +
-                        "For setting up google cloud print go to:\n" + cloudprintLink)
+                        "For setting up Google Cloud Print go to:\n" + cloudprintLink)
                 .create();
 
         d.show();
@@ -467,8 +558,9 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         finish();
     }
 
+
     private void signOutFromGplus() {
-        if (responseGmail == 1) {
+        if (responseGmail == 1000) {
             if (googleApiClient.isConnected()) {
                 Plus.AccountApi.clearDefaultAccount(googleApiClient);
                 Plus.AccountApi.revokeAccessAndDisconnect(googleApiClient)
@@ -501,7 +593,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
     protected void onStart() {
         super.onStart();
-        if (responseGmail == 1) {
+        if (responseGmail == 1000) {
             if (!googleApiClient.isConnected()) {
                 googleApiClient.connect();
             }
@@ -510,17 +602,18 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
     protected void onStop() {
         super.onStop();
-        if (responseGmail == 1) {
+        if (responseGmail == 1000) {
             if (googleApiClient.isConnected()) {
                 googleApiClient.disconnect();
             }
+        } else if (responseFacebook == 2000) {
         }
     }
 
     @Override
     public void onConnected(Bundle bundle) {
         signInClicked = false;
-        signInWithGplus();
+        //signInWithGplus();
     }
 
     private void signInWithGplus() {
@@ -581,7 +674,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                         personPhotoUrl.length() - 2)
                         + PROFILE_PIC_SIZE;
                 new LoadProfileImage().execute(personPhotoUrl);
-                verifyEmailWithDB();
+                //  verifyEmailWithDB();
             } else {
                 startActivity(new Intent(getApplicationContext(), LoginPage.class));
             }
@@ -656,7 +749,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
     protected void onActivityResult(int requestCode, int responseCode,
                                     Intent intent) {
         super.onActivityResult(requestCode, responseCode, intent);
-        if (responseGmail == 1) {
+        if (responseGmail == 1000) {
             if (requestCode == RC_SIGN_IN) {
                 if (responseCode != RESULT_OK) {
                     signInClicked = false;
@@ -672,13 +765,13 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
     @Override
     public void onConnectionSuspended(int arg0) {
-        if (responseGmail == 1)
+        if (responseGmail == 1000)
             googleApiClient.connect();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        if (responseGmail == 1) {
+        if (responseGmail == 1000) {
 
             if (!result.hasResolution()) {
                 GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this,

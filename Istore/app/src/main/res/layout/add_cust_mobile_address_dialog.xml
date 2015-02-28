@@ -43,10 +43,12 @@
         android:id="@+id/et_custdetails_deliveryaddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padd10dp"
+        android:layout_marginRight="@dimen/padd10dp"
         android:hint="Delivery Address"
         android:inputType="text"
-        android:textColorHint="@color/black"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:textColorHint="@color/black" />
 
     <Button
         android:id="@+id/b_addcust_dialog_addMobile"

@@ -52,7 +52,7 @@ import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.ImageUtil;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class EditItemForm extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;

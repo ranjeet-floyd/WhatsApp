@@ -59,7 +59,7 @@ public class TotRevDetailsAdapter extends BaseAdapter {
             holder = (ViewHolder) listRow.getTag();
 
         TotRevDetails totRevDetails = totRevDetailsArrayList.get(position);
-        holder.staffid.setText(String.valueOf(totRevDetails.getStaffid()));
+        holder.staffid.setText(totRevDetails.getId());
         holder.prodname.setText(totRevDetails.getProdName());
         holder.quantity.setText(String.valueOf(totRevDetails.getQuantity()));
         holder.purchaseamount.setText(String.valueOf(totRevDetails.getPurchaseAmnt()));

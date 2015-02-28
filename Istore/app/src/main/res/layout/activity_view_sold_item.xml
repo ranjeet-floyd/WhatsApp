@@ -118,22 +118,22 @@
                                 android:text="987654321012"
                                 android:textColor="@color/black"
                                 android:textSize="15sp" />
+                            <!--
+                                                        <TextView
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:text="Description:"
+                                                            android:textColor="@color/black"
+                                                            android:textSize="15sp" />
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Description:"
-                                android:textColor="@color/black"
-                                android:textSize="15sp" />
-
-                            <TextView
-                                android:id="@+id/tv_viewsolditem_desc"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="10dp"
-                                android:textColor="@color/black"
-                                android:textSize="15sp" />
+                                                        <TextView
+                                                            android:id="@+id/tv_viewsolditem_desc"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_marginLeft="10dp"
+                                                            android:layout_marginRight="10dp"
+                                                            android:textColor="@color/black"
+                                                            android:textSize="15sp" />-->
 
                         </LinearLayout>
                     </LinearLayout>
@@ -150,13 +150,13 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:text="Available:"
+                        android:layout_weight="1.3"
+                        android:text="Sell Price:"
                         android:textColor="@color/black"
                         android:textSize="17sp" />
 
                     <TextView
-                        android:id="@+id/tv_viewsolditem_availquan"
+                        android:id="@+id/tv_viewsolditem_sellPrice"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight=".5"

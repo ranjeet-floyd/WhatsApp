@@ -42,7 +42,7 @@ import in.istore.bitblue.app.utilities.DBHelper;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.ImageUtil;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class ListMyStock extends ActionBarActivity
         implements View.OnClickListener,
@@ -55,7 +55,7 @@ public class ListMyStock extends ActionBarActivity
     private Toolbar toolbar;
     private View footerView;
     private FloatingActionsMenu itemMenu;
-    private FloatingActionButton addNewItem, delAllItem, sortItems;
+    private FloatingActionButton addNewItem;
 
     private DbProductAdapter dbAdapter;
     private ListStockAdapter listAdapter;
@@ -89,7 +89,6 @@ public class ListMyStock extends ActionBarActivity
     }
 
     private void initViews() {
-        globalVariable = (GlobalVariables) getApplicationContext();
         StoreId = globalVariable.getStoreId();
         UserType = globalVariable.getUserType();
         if (UserType.equals("Admin")) {
@@ -97,19 +96,17 @@ public class ListMyStock extends ActionBarActivity
         } else if (UserType.equals("Staff")) {
             Key = globalVariable.getStaffKey();
         }
-        CategoryName = globalVariable.getCategoryName();
-
         itemMenu = (FloatingActionsMenu) findViewById(R.id.fab_listmystock_menu);
         itemMenu.setOnFloatingActionsMenuUpdateListener(this);
 
         addNewItem = (FloatingActionButton) findViewById(R.id.fab_listmystock_additem);
         addNewItem.setOnClickListener(this);
-
+/*
         delAllItem = (FloatingActionButton) findViewById(R.id.fab_listmystock_delallitem);
         delAllItem.setOnClickListener(this);
 
         sortItems = (FloatingActionButton) findViewById(R.id.fab_listmystock_sortitem);
-        sortItems.setOnClickListener(this);
+        sortItems.setOnClickListener(this);*/
 
         tvnodata = (TextView) findViewById(R.id.tv_listmystock_nodata);
 
@@ -169,11 +166,15 @@ public class ListMyStock extends ActionBarActivity
     }
 
     private void setToolbar() {
+        globalVariable = (GlobalVariables) getApplicationContext();
+        CategoryName = globalVariable.getCategoryName();
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
-        toolTitle.setText(CategoryName);
+        if (CategoryName == null || CategoryName.equals("null"))
+            toolTitle.setText("LIST STOCK");
+        else
+            toolTitle.setText(CategoryName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -186,7 +187,7 @@ public class ListMyStock extends ActionBarActivity
                 startActivity(addItem);
                 break;
 
-            case R.id.fab_listmystock_delallitem:
+          /*  case R.id.fab_listmystock_delallitem:
                 if (productArrayList == null || productArrayList.size() == 0) {
                     Toast.makeText(this, "No Items to Delete", Toast.LENGTH_SHORT).show();
                 } else {
@@ -199,7 +200,7 @@ public class ListMyStock extends ActionBarActivity
                 } else {
                     showDialogForSort();
                 }
-                break;
+                break;*/
         }
     }
 
@@ -397,6 +398,8 @@ public class ListMyStock extends ActionBarActivity
                         try {
                             jsonObject = jsonArray.getJSONObject(i);
                             String productId = jsonObject.getString("Id");
+                            String productQuantity = jsonObject.getString("Quantity");
+                            String productCategory = jsonObject.getString("Category");
                             String productImage = jsonObject.getString("Image");
                             String productName = jsonObject.getString("Name");
                             String productAddedDate = jsonObject.getString("AddedOn");
@@ -406,6 +409,8 @@ public class ListMyStock extends ActionBarActivity
                             product = new Product();
                             product.setId(productId);
                             product.setImage(ImageUtil.convertBase64ImagetoByteArrayImage(productImage));
+                            product.setCategory(productCategory);
+                            product.setQuantity(Integer.parseInt(productQuantity));
                             product.setName(productName);
                             product.setAddedDate(productAddedDate);
                             productArrayList.add(product);

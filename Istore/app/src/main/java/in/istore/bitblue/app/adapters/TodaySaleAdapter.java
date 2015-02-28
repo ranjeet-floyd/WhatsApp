@@ -57,7 +57,7 @@ public class TodaySaleAdapter extends BaseAdapter {
             holder = (ViewHolder) listRow.getTag();
 
         TodaysSale todaysSale = todaysSaleArrayList.get(position);
-        holder.staffid.setText(String.valueOf(todaysSale.getStaffId()));
+        holder.staffid.setText(String.valueOf(todaysSale.getId()));
         holder.prodname.setText(todaysSale.getProdName());
         holder.quantity.setText(String.valueOf(todaysSale.getQuantity()));
         holder.purchaseamount.setText(String.valueOf(todaysSale.getPurchaseAmnt()));

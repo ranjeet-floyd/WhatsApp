@@ -9,6 +9,7 @@ public class TotRevDetails {
     private String Date;
     private String Optype;
     private String DeliveryAddress;
+    private String Id;
 
     public TotRevDetails() {
     }
@@ -83,5 +84,13 @@ public class TotRevDetails {
 
     public void setDeliveryAddress(String deliveryAddress) {
         DeliveryAddress = deliveryAddress;
+    }
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
     }
 }

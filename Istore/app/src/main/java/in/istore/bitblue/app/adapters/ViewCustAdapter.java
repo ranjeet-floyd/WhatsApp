@@ -54,7 +54,7 @@ public class ViewCustAdapter extends BaseAdapter {
         Customer customer = custArrayList.get(position);
 
         holder.mobile.setText(String.valueOf(customer.getMobile()));
-        holder.amount.setText(String.valueOf(customer.getPurchaseAmount()));
+        holder.amount.setText(context.getResources().getString(R.string.rs)+" "+String.valueOf(customer.getPurchaseAmount()));
         return listRow;
     }
 

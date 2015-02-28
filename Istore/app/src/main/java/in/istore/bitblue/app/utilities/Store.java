@@ -1,7 +1,5 @@
 package in.istore.bitblue.app.utilities;
 
-import org.apache.commons.lang3.RandomStringUtils;
-
 import java.util.Random;
 
 public class Store {
@@ -26,7 +24,10 @@ public class Store {
     }
 
     public static String generatePassword() {
-        return RandomStringUtils.randomAlphanumeric(5);
+        int min = 11111;
+        int max = 99999;
+        Random random = new Random();
+        return String.valueOf(random.nextInt((max - min) + 1) + min);
     }
 
     public static long generateInVoiceNumber() {

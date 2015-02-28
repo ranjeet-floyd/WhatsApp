@@ -31,7 +31,7 @@ import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class Trans extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -67,9 +67,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
-        toolTitle.setText("Transaction Menu");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolTitle.setText("TRANSACTION DETAILS");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -145,7 +143,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                 } else if (TotRev == null) {
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
-                    tvTotalSales.setText(String.valueOf(TotRev));
+                    tvTotalSales.setText(getResources().getString(R.string.rs) + "  " + String.valueOf(TotRev));
                     tinyDB.putString("TotalRevenue", TotRev);
                 }
             }
@@ -196,7 +194,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                 } else if (TodSale == null) {
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
-                    tvTodaySales.setText(TodSale);
+                    tvTodaySales.setText(getResources().getString(R.string.rs) + "  " + TodSale);
                     tinyDB.putString("TodaySales", TodSale);
 
                 }
@@ -248,7 +246,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                 } else if (OutOfStock == null) {
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
-                    tvOutOfStock.setText(String.valueOf(OutOfStock));
+                    tvOutOfStock.setText(String.valueOf(OutOfStock) + " " + "ITEM(S)");
                     tinyDB.putString("OOSItems", OutOfStock);
                 }
             }

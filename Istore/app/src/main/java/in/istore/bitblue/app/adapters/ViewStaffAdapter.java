@@ -59,7 +59,7 @@ public class ViewStaffAdapter extends BaseAdapter {
         holder.id.setText(String.valueOf(staff.getStaffId()));
         holder.name.setText(staff.getName());
         holder.mobile.setText(String.valueOf(staff.getMobile()));
-        holder.sales.setText(String.valueOf(staff.getTotalSales()));
+        holder.sales.setText(context.getResources().getString(R.string.rs) + " " + String.valueOf(staff.getTotalSales()));
         return listRow;
     }
 

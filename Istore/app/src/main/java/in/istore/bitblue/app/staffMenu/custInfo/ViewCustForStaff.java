@@ -24,7 +24,7 @@ import in.istore.bitblue.app.databaseAdapter.DbCustPurHistAdapter;
 import in.istore.bitblue.app.pojo.SoldProduct;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class ViewCustForStaff extends Fragment {
     private ListView lvViewCust;

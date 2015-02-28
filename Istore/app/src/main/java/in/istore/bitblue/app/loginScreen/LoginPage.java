@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -21,12 +19,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookRequestError;
+import com.facebook.HttpMethod;
 import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.android.Facebook;
+import com.facebook.android.FacebookError;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.ProfilePictureView;
@@ -47,6 +49,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -56,7 +59,8 @@ import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.home.HomePage;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.TinyDB;
+import in.istore.bitblue.app.utilities.API;
 
 public class LoginPage extends Activity implements View.OnClickListener {
 
@@ -67,16 +71,17 @@ public class LoginPage extends Activity implements View.OnClickListener {
     private EditText etmobNum, etPass;
     private EditText[] allEditTexts;
 
-    private static final int GMAIL = 1;
-    private static final int FACEBOOK = 2;
-    private String userName, userEmail, regid;
+    private static final int GMAIL = 1000;
+    private static final int FACEBOOK = 2000;
     private long Mobile;
     private int Id, AdminId, StaffId, StoreId, StaffTotalSale;
-    private String AdminName, AdminEmail, AdminKey, StaffName, StaffEmail, StaffKey, UserType, Pass;
+    private String FbName, FbEmail, regid, AdminName, AdminEmail, AdminKey, StaffName, StaffEmail, StaffKey, UserType, Pass, facebookFilePath;
+    private boolean fbpreviouslogin;
     private GlobalVariables globalVariable;
     private Bitmap bitmap;
     private DbLoginCredAdapter dbloginCredAdapter;
     private DbStaffAdapter dbStaffAdapter;
+    private TinyDB tinyDB;
 
     private JSONParser jsonParser = new JSONParser();
     private JSONArray jsonArray;
@@ -109,7 +114,6 @@ public class LoginPage extends Activity implements View.OnClickListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login_page);
-
         //Gcm Setup
         gcm = GoogleCloudMessaging.getInstance(this);
 
@@ -148,7 +152,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
 
     private void initViews() {
         preflogin = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
-
+        tinyDB = new TinyDB(this);
         dbloginCredAdapter = new DbLoginCredAdapter(this);
         dbStaffAdapter = new DbStaffAdapter(this);
 
@@ -158,7 +162,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
 
         bFacebook = (LoginButton) findViewById(R.id.authButton);
         bFacebook.setOnClickListener(this);
-        bFacebook.setPublishPermissions(Arrays.asList("email", "public_profile", "user_friends", "publish_stream"));
+        bFacebook.setPublishPermissions(Arrays.asList("publish_actions", "read_stream"));
         bFacebook.setText("Sign In");
         globalVariable = (GlobalVariables) getApplicationContext();
 
@@ -173,31 +177,16 @@ public class LoginPage extends Activity implements View.OnClickListener {
         etmobNum = (EditText) findViewById(R.id.et_login_mob_num);
         etPass = (EditText) findViewById(R.id.et_login_password);
         allEditTexts = new EditText[]{etmobNum, etPass};
-
-        retrieveContactsAndSendToDB();
-
-    }
-
-    private void retrieveContactsAndSendToDB() {
-        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-        ArrayList<String> contactNumbers = new ArrayList<String>();
-        while (phones.moveToNext()) {
-            String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            contactNumbers.add(phoneNumber);
-
-        }
-        phones.close();
     }
 
     @Override
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.sign_in_button:
-                Intent googleplus = new Intent(getApplicationContext(), HomePage.class);
+                Intent googleplus = new Intent(getApplicationContext(), GooglePlus.class);
                 googleplus.putExtra("google", GMAIL);
                 startActivity(googleplus);
                 break;
-
             case R.id.b_login_signup:
                 clearField(allEditTexts);
                 startActivity(new Intent(this, SignUpAdmin.class));
@@ -208,7 +197,15 @@ public class LoginPage extends Activity implements View.OnClickListener {
                 overridePendingTransition(R.anim.right_in, R.anim.left_out);
                 break;
             case R.id.b_login_login:
-                checkForValidation(allEditTexts);
+                if (etmobNum.getText().toString().equals("")) {
+                    etmobNum.setHint("Field Required");
+                    etmobNum.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                } else if (etmobNum.getText().toString().equals("")) {
+                    etmobNum.setHint("Field Required");
+                    etmobNum.setHintTextColor(getResources().getColor(R.color.material_red_A400));
+                    break;
+                }
                 try {
                     Mobile = Long.parseLong(etmobNum.getText().toString());
                 } catch (NumberFormatException nfe) {
@@ -220,6 +217,112 @@ public class LoginPage extends Activity implements View.OnClickListener {
                     proceedToLoginProcess();
                 break;
         }
+    }
+
+    private void proceedToFacebookLoginProcess() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(LoginPage.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Logging in...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                /*boolean validCredforAdmin = dbloginCredAdapter.isValidCred(Mobile, Pass);   //remove this if using api
+                boolean validCredforStaff = dbStaffAdapter.isValidCred(Mobile, Pass);
+                if (validCredforAdmin) {
+                    String[] adminNameAndEmail = dbloginCredAdapter.getAdminNameAndEmail(Mobile);
+                    StoreId = dbloginCredAdapter.getStoreId(Mobile);
+                    globalVariable.setStoreId(StoreId);
+                    globalVariable.setAdminId(0);
+                    AdminName = adminNameAndEmail[0];
+                    AdminEmail = adminNameAndEmail[1];
+                    return "credAdmin";
+                } else if (validCredforStaff) {
+                    StaffName = dbStaffAdapter.getStaffName(Mobile);
+                    StaffId = dbStaffAdapter.getStaffId(Mobile);
+                    StoreId = dbStaffAdapter.getStoreId(Mobile);
+                    globalVariable.setStaffId(StaffId);
+                    globalVariable.setStoreId(StoreId);
+                    return "credStaff";
+                } else return null;*/
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("Mobile", String.valueOf(Mobile)));
+                nameValuePairs.add(new BasicNameValuePair("Pass", Pass));
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_LOGIN, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        UserType = jsonObject.getString("UserType");
+                        Id = jsonObject.getInt("ID");
+                        StoreId = jsonObject.getInt("StoreId");
+                        return UserType;
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+               /* if (Response == null) {                 //remove this if using api
+                    clearField(allEditTexts);
+                } else if (StaffId <= 0) {
+                    globalVariable.setAdminMobile(Mobile);
+                    Intent HomePage = new Intent(LoginPage.this, HomePage.class);
+                    preflogin.putString("Name", AdminName);
+                    preflogin.putString("Email", AdminEmail);
+                    preflogin.putLong("Mobile", Mobile);
+                    preflogin.commit();
+                    startActivity(HomePage);
+                } else if (StaffId > 0) {
+                    Intent HomePage = new Intent(LoginPage.this, HomePage.class);
+                    preflogin.putString("Name", StaffName);
+                    preflogin.putLong("Mobile", Mobile);
+                    preflogin.commit();
+                    startActivity(HomePage);
+                }           */                       //
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                    clearField(allEditTexts);
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
+                    clearField(allEditTexts);
+                } else if (UserType.equals("Admin")) {
+                    if (Id == 0) {
+                        Toast.makeText(getApplicationContext(), "Error:Incorrect Credentials", Toast.LENGTH_SHORT).show();
+                    } else if (Id > 0) {
+                        getAdminInfo();
+                        fbpreviouslogin = tinyDB.getBoolean("fbpreviouslogin");
+                        if (!fbpreviouslogin)
+                            postonfacebook("test2");
+                        else startHomePageActivity();
+                    }
+                } else if (UserType.equals("Staff")) {
+                    if (Id == 0) {
+                        Toast.makeText(getApplicationContext(), "Error:Incorrect Credentials", Toast.LENGTH_SHORT).show();
+                    } else if (Id > 0) {
+                        getStaffInfo();
+                        fbpreviouslogin = tinyDB.getBoolean("fbpreviouslogin");
+                        if (!fbpreviouslogin)
+                            postonfacebook("test2");
+                        else startHomePageActivity();
+                    }
+                } else if (UserType.equals("NONE")) {
+                    Toast.makeText(getApplicationContext(), "No Account Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
     }
 
     private void proceedToLoginProcess() {
@@ -305,17 +408,17 @@ public class LoginPage extends Activity implements View.OnClickListener {
                     if (Id == 0) {
                         Toast.makeText(getApplicationContext(), "Error:Incorrect Credentials", Toast.LENGTH_SHORT).show();
                     } else if (Id > 0) {
-                        Toast.makeText(getApplicationContext(), "Success:Login Admin", Toast.LENGTH_SHORT).show();
                         getAdminInfo();
-                        startActivity(new Intent(getApplicationContext(), HomePage.class));
+                        Intent homePage = new Intent(getApplicationContext(), HomePage.class);
+                        startActivity(homePage);
                     }
                 } else if (UserType.equals("Staff")) {
                     if (Id == 0) {
                         Toast.makeText(getApplicationContext(), "Error:Incorrect Credentials", Toast.LENGTH_SHORT).show();
                     } else if (Id > 0) {
-                        Toast.makeText(getApplicationContext(), "Success:Login Staff", Toast.LENGTH_SHORT).show();
                         getStaffInfo();
-                        startActivity(new Intent(getApplicationContext(), HomePage.class));
+                        Intent homePage = new Intent(getApplicationContext(), HomePage.class);
+                        startActivity(homePage);
                     }
                 } else if (UserType.equals("NONE")) {
                     Toast.makeText(getApplicationContext(), "No Account Found", Toast.LENGTH_SHORT).show();
@@ -367,11 +470,6 @@ public class LoginPage extends Activity implements View.OnClickListener {
 
     private void checkForValidation(EditText[] allEditTexts) {
         for (EditText editText : allEditTexts) {
-            if (editText.getText().toString().equals("")) {
-                editText.setHint("Field Required");
-                editText.setHintTextColor(getResources().getColor(R.color.material_red_A400));
-                return;
-            }
         }
     }
 
@@ -413,30 +511,31 @@ public class LoginPage extends Activity implements View.OnClickListener {
     }
 
     // METHODS FACEBOOK
-    public void onSessionStateChanged(final Session session, final SessionState state, final Exception exception) {
+    public void onSessionStateChanged(final Session session, final SessionState state,
+                                      final Exception exception) {
         if (session != null && session.isOpened()) {
-            postOnWall("Test");
             Request.newMeRequest(session, new Request.GraphUserCallback() {
                 @Override
                 public void onCompleted(GraphUser user, Response response) {
                     if (user != null) {
 
-                        userName = user.getFirstName() + " " + user.getLastName();
-                        userEmail = user.getProperty("email").toString();
+                        FbName = user.getFirstName() + " " + user.getLastName();
+                        FbEmail = user.getProperty("email").toString();
 
-                        globalVariable.setFbName(userName);
-                        globalVariable.setFbEmail(userEmail);
+                        globalVariable.setFbName(FbName);
+                        globalVariable.setFbEmail(FbEmail);
 
                         ProfilePictureView ppv = (ProfilePictureView) findViewById(R.id.fbImg);
                         // ppv.setProfileId(user.getId());
                         userImage = ((ImageView) ppv.getChildAt(0));
                         bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
-                        String filePath = createImageFromBitmap(bitmap);
-
-                        boolean isEmailExistForAdmin = dbloginCredAdapter.isEmailExists(userEmail);
-                        boolean isEmailExistForStaff = dbStaffAdapter.isEmailExists(userEmail);
-                        if (isEmailExistForAdmin) {
-                            long adminMobile = dbloginCredAdapter.getAdminMobile(userEmail);
+                        facebookFilePath = createImageFromBitmap(bitmap);
+                        tinyDB.putString("fbFilePath", facebookFilePath);
+                        isEmailForAdminOrStaff();
+                        //boolean isEmailExistForAdmin = dbloginCredAdapter.isEmailExists(FbName);
+                        //boolean isEmailExistForStaff = dbStaffAdapter.isEmailExists(FbEmail);
+                       /* if (isEmailExistForAdmin) {
+                            long adminMobile = dbloginCredAdapter.getAdminMobile(FbEmail);
                             globalVariable.setAdminMobile(adminMobile);
                             Intent homePageFacebook = new Intent(getApplicationContext(), HomePage.class);
                             homePageFacebook.putExtra("facebook", FACEBOOK);
@@ -451,7 +550,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
                             Intent staffMobile = new Intent(getApplicationContext(), StaffMobile.class);
                             staffMobile.putExtra("facebook", FACEBOOK);
                             startActivity(staffMobile);
-                        }
+                        }*/
                     }
                 }
             }).executeAsync();
@@ -460,7 +559,30 @@ public class LoginPage extends Activity implements View.OnClickListener {
         }
     }
 
-    public void postOnWall(final String msg) {
+    public void postOnWall() {
+        /*facebook.dialog(this, "feed", new Facebook.DialogListener() {
+
+            @Override
+            public void onFacebookError(FacebookError e) {
+                Toast.makeText(getApplicationContext(), "FB error", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(DialogError e) {
+                Toast.makeText(getApplicationContext(), "error ", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onComplete(Bundle values) {
+                tinyDB.putBoolean("fbfirstlogin", true);
+                startHomePageActivity();
+            }
+
+
+            @Override
+            public void onCancel() {
+            }
+        });*/
         new AsyncTask<String, String, String>() {
             String response;
 
@@ -468,11 +590,10 @@ public class LoginPage extends Activity implements View.OnClickListener {
             protected String doInBackground(String... strings) {
                 try {
                     Bundle parameters = new Bundle();
-                    parameters.putString("message", "Timely App For Android");
-                    parameters.putString("description", "Good Design");
+                    parameters.putString("message", "Demo");
+                    parameters.putString("description", "Demo");
                     response = facebook.request("me/feed", parameters,
                             "POST");
-
                     if (response == null || response.equals("") ||
                             response.equals("false")) {
                         return null;
@@ -488,10 +609,16 @@ public class LoginPage extends Activity implements View.OnClickListener {
                 if (response == null) {
                     Toast.makeText(getApplicationContext(), "Failed to post ", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Posted on Facebook ", Toast.LENGTH_SHORT).show();
+                    startHomePageActivity();
                 }
             }
         }.execute();
+    }
+
+    private void startHomePageActivity() {
+        Intent homePage = new Intent(getApplicationContext(), HomePage.class);
+        homePage.putExtra("fBLogin", FACEBOOK);
+        startActivity(homePage);
     }
 
     public String createImageFromBitmap(Bitmap bmp) {
@@ -528,6 +655,117 @@ public class LoginPage extends Activity implements View.OnClickListener {
                 tv.setText(buttonText);
                 return;
             }
+        }
+    }
+
+    private void isEmailForAdminOrStaff() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(LoginPage.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Logging in...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("EmailId", FbEmail));
+                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_CHECK_EMAIL_EXISTS, nameValuePairs);
+                if (Response == null || Response.equals("error")) {
+                    return Response;
+                } else {
+                    try {
+                        jsonArray = new JSONArray(Response);
+                        jsonObject = jsonArray.getJSONObject(0);
+                        Mobile = jsonObject.getLong("Mobile");
+                        Pass = jsonObject.getString("Password");
+                    } catch (JSONException jException) {
+                        jException.printStackTrace();
+                    }
+                }
+                return Response;
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response == null) {
+                    Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
+                } else if (Response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
+                } else if (Pass == null || Pass.equals("null")) {
+                    Intent staffMobile = new Intent(getApplicationContext(), StaffMobile.class);
+                    staffMobile.putExtra("Fname", FbName);
+                    staffMobile.putExtra("Femail", FbEmail);
+                    staffMobile.putExtra("facebook", FACEBOOK);
+                    startActivity(staffMobile);
+                } else {
+                    proceedToFacebookLoginProcess();
+                }
+            }
+        }.execute();
+    }
+
+    private void signOutFromFacebook() {
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            if (!session.isClosed()) {
+                // run the closeAndClearTokenInformation which does the following
+                // DOCS : Closes the local in-memory Session object and clears any persistent
+                // cache related to the Session.
+                session.closeAndClearTokenInformation();
+                Session.setActiveSession(null);
+            }
+        }
+    }
+
+    private void postonfacebook(String status) {
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            Bundle postParams = new Bundle();
+            postParams.putString("message", status);
+            Request.Callback callback = new Request.Callback() {
+                public void onMalformedURLException(MalformedURLException e) {
+
+                }
+
+                public void onIOException(IOException e) {
+
+                }
+
+                public void onFileNotFoundException(FileNotFoundException e) {
+
+                }
+
+                public void onFacebookError(FacebookError e) {
+
+                }
+
+                public void onCompleted(Response response) {
+                  /*  JSONObject graphResponse = response.getGraphObject().getInnerJSONObject();
+                    String postId = null;
+                    try {
+                        postId = graphResponse.getString("id");
+                    } catch (JSONException e) {
+                        Log.i("JSON", "JSON error " + e.getMessage());
+                    }*/
+                    FacebookRequestError error = response.getError();
+                    if (error != null) {
+                        Toast.makeText(getApplicationContext(), error.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Posted", Toast.LENGTH_SHORT).show();
+                        tinyDB.putBoolean("fbpreviouslogin", true);
+                        startHomePageActivity();
+                    }
+                }
+            };
+            Request request = new Request(session, "me/feed", postParams, HttpMethod.POST, callback);
+            RequestAsyncTask task = new RequestAsyncTask(request);
+            task.execute();
         }
     }
 }

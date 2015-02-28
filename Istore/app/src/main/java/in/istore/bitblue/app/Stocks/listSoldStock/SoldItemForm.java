@@ -37,7 +37,7 @@ import in.istore.bitblue.app.utilities.Check;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.ImageUtil;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class SoldItemForm extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -150,7 +150,7 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
 
                     if (soldQuantity > prodQuantity) {
                         etquantity.setText(String.valueOf(prodQuantity));
-                        Toast.makeText(this, "You Cannot Sell more than " + quantity + " items", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "You Cannot Sell more than " + prodQuantity + " items", Toast.LENGTH_SHORT).show();
                         break;
                     }
                     sellQuantity = etquantity.getText().toString();

@@ -33,7 +33,7 @@ import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.api.API;
+import in.istore.bitblue.app.utilities.API;
 
 public class FilterByStaffId extends ActionBarActivity {
     private Toolbar toolbar;
@@ -81,7 +81,6 @@ public class FilterByStaffId extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.nav_draw_icon_remback);
 
         toolTitle.setText(fromdate + " to " + todate + " Rs: " + tinyDB.getString("totrevforrange"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -110,6 +109,9 @@ public class FilterByStaffId extends ActionBarActivity {
         bSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                stafftotrevArrayList.clear();
+                filtstaffidAdapter = new FilterByStaffIdAdapter(getApplicationContext(), stafftotrevArrayList);
+                lvfilterproname.setAdapter(filtstaffidAdapter);
                 StaffId = Integer.parseInt(actvStaffId.getText().toString());
                 getRevenueGeneratedByStaff(StaffId);
                 getRevenueDetailsFor(StaffId);
@@ -141,7 +143,7 @@ public class FilterByStaffId extends ActionBarActivity {
             @Override
             protected String doInBackground(String... strings) {
                 nameValuePairs = new ArrayList<>();
-                nameValuePairs.add(new BasicNameValuePair("AdminKey", AdminKey));
+                nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("FromDate", formattedFrom));
                 nameValuePairs.add(new BasicNameValuePair("todate", formattedTo));
@@ -196,11 +198,12 @@ public class FilterByStaffId extends ActionBarActivity {
             @Override
             protected String doInBackground(String... strings) {
                 nameValuePairs = new ArrayList<>();
-                nameValuePairs.add(new BasicNameValuePair("AdminKey", AdminKey));
+                nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("FromDate", formattedFrom));
                 nameValuePairs.add(new BasicNameValuePair("todate", formattedTo));
                 nameValuePairs.add(new BasicNameValuePair("StaffId", String.valueOf(staffId)));
+                nameValuePairs.add(new BasicNameValuePair("AdminId", ""));
                 nameValuePairs.add(new BasicNameValuePair("ProductName", ""));
 
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_STAFF, nameValuePairs);      //check the API Path
@@ -251,8 +254,9 @@ public class FilterByStaffId extends ActionBarActivity {
                     if (stafftotrevArrayList != null && stafftotrevArrayList.size() > 0) {
                         filtstaffidAdapter = new FilterByStaffIdAdapter(getApplicationContext(), stafftotrevArrayList);
                         lvfilterproname.setAdapter(filtstaffidAdapter);
-                    } else
+                    } else {
                         Toast.makeText(getApplicationContext(), "No Details Available", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         }.execute();
