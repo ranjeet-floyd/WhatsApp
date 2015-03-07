@@ -90,7 +90,7 @@ public class BaseFoldingLayout extends ViewGroup {
 	protected float mAnchorFactor = 0;
 	private float mFoldFactor = 0;
 
-	private int mNumberOfFolds = 2;
+	private int mNumberOfFolds = 4;
 
 	private boolean mIsHorizontal = true;
 

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.Stocks.addItem.AddItemsMenu">
+    tools:context="in.istore.bitblue.app.home.Stocks.addItem.AddItemsMenu">
 
     <LinearLayout
         android:id="@+id/linearLayout"

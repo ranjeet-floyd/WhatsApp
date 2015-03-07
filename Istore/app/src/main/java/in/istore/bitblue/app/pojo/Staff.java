@@ -1,19 +1,18 @@
 package in.istore.bitblue.app.pojo;
 
 public class Staff {
-    private int StaffId;
-    private int StoreId;
+    private String StaffId;
+    private String StoreId;
     private String Name;
-    private long Mobile;
+    private String Mobile;
     private String Passwd;
     private String Address;
     private String JoinDate;
-
-    private long TotalSales;
+    private String TotalSales;
 
     public Staff(){}
 
-    public Staff(int staffId, int storeId, String name, long mobile, String passwd, String address, String joinDate) {
+    public Staff(String staffId, String storeId, String name, String mobile, String passwd, String address, String joinDate) {
         StaffId = staffId;
         StoreId = storeId;
         Name = name;
@@ -23,19 +22,19 @@ public class Staff {
         JoinDate = joinDate;
     }
 
-    public int getStaffId() {
+    public String getStaffId() {
         return StaffId;
     }
 
-    public void setStaffId(int staffId) {
+    public void setStaffId(String staffId) {
         StaffId = staffId;
     }
 
-    public int getStoreId() {
+    public String getStoreId() {
         return StoreId;
     }
 
-    public void setStoreId(int storeId) {
+    public void setStoreId(String storeId) {
         StoreId = storeId;
     }
 
@@ -47,11 +46,11 @@ public class Staff {
         Name = name;
     }
 
-    public long getMobile() {
+    public String getMobile() {
         return Mobile;
     }
 
-    public void setMobile(long mobile) {
+    public void setMobile(String mobile) {
         Mobile = mobile;
     }
 
@@ -79,11 +78,11 @@ public class Staff {
         JoinDate = joinDate;
     }
 
-    public long getTotalSales() {
+    public String getTotalSales() {
         return TotalSales;
     }
 
-    public void setTotalSales(long totalSales) {
+    public void setTotalSales(String totalSales) {
         TotalSales = totalSales;
     }
 }

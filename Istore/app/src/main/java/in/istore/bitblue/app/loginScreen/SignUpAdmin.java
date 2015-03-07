@@ -84,7 +84,6 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
     public void onClick(View button) {
         switch (button.getId()) {
             case R.id.b_signup_continue:
-                overridePendingTransition(R.anim.right_in, R.anim.left_out);
                 CharSequence email = etEmail.getText().toString();
                 checkForValidation(allEditTexts);
                 boolean isValidEmail = checkEmailValidation(email);
@@ -136,9 +135,8 @@ public class SignUpAdmin extends ActionBarActivity implements View.OnClickListen
                 dialog.setTitle("");
                 dialog.setMessage("Please Wait...");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                dialog.setCancelable(false);
+                dialog.setCancelable(true);
                 dialog.show();
-
             }
 
             @Override

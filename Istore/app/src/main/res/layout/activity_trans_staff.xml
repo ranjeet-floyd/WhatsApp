@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/material_grey_500"
     tools:context="in.istore.bitblue.app.staffMenu.transactions.TransStaff">
 
     <LinearLayout
@@ -32,15 +33,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padd10dp"
             android:layout_weight="1"
-            android:background="@color/material_blue_grey_400"
-            android:text="Today Sales" />
+            android:background="@drawable/todaysalesshadow"
+            android:text="Today Sales"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/tv_transaction_todaysalesstaff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:background="@color/material_blue_grey_400"
+            android:background="@color/material_grey_600"
             android:gravity="center"
             android:paddingBottom="@dimen/padd10dp"
             android:text=""
@@ -50,21 +52,21 @@
             android:id="@+id/b_transaction_outofstockstaff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padd10dp"
+            android:layout_marginTop="@dimen/padd30dp"
             android:layout_weight="1"
-            android:background="@color/material_blue_grey_400"
-            android:text="Out Of Stock" />
+            android:background="@drawable/oosshadow"
+            android:text="Out Of Stock"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/tv_transaction_outofstockitemsstaff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:background="@color/material_blue_grey_400"
+            android:background="@color/material_grey_600"
             android:gravity="center"
             android:paddingBottom="@dimen/padd10dp"
             android:text=""
-            android:textColor="@color/material_red_500"
             android:textStyle="bold" />
     </LinearLayout>
 

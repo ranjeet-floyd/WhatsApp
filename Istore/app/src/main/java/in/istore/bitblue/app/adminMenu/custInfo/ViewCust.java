@@ -22,9 +22,9 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.ViewCustAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbCustAdapter;
 import in.istore.bitblue.app.pojo.Customer;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.API;
 
 public class ViewCust extends Fragment {
     private ListView lvViewCust;
@@ -61,7 +61,7 @@ public class ViewCust extends Fragment {
         // dbcustAdapter = new DbCustAdapter(getActivity());
         StoreId = globalVariable.getStoreId();
         AdminKey = globalVariable.getAdminKey();
-        getAllCustomersPurchaseAmount(view, StoreId, AdminKey);
+        getAllCustomersPurchaseAmountOnServer(view, StoreId, AdminKey);
        /* new AsyncTask<String, String, Boolean>() {
             ProgressDialog dialog;
 
@@ -94,16 +94,16 @@ public class ViewCust extends Fragment {
 
     }
 
-    private void getAllCustomersPurchaseAmount(final View view, final int StoreId, final String AdminKey) {
+    private void getAllCustomersPurchaseAmountOnServer(final View view, final int StoreId, final String AdminKey) {
         new AsyncTask<String, String, String>() {
             ProgressDialog dialog = new ProgressDialog(getActivity());
-
             @Override
             protected void onPreExecute() {
-                dialog.setMessage("Getting Customers Details...");
+            /*    dialog.setMessage("Getting Customers Details...");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.setCancelable(false);
-                dialog.show();
+                dialog.show();*/
+                ((CusInfoContent) getActivity()).showProgress();
             }
 
             @Override
@@ -127,7 +127,8 @@ public class ViewCust extends Fragment {
 
             @Override
             protected void onPostExecute(String Response) {
-                dialog.dismiss();
+                //dialog.dismiss();
+                ((CusInfoContent) getActivity()).hideProgress();
                 if (Response == null) {
                     Toast.makeText(getActivity(), "Response null", Toast.LENGTH_LONG).show();
                 } else if (Response.equals("error")) {

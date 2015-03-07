@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,26 +34,33 @@ import in.istore.bitblue.app.adapters.CartAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbCartAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbCustAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbCustPurHistAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
+import in.istore.bitblue.app.databaseAdapter.DbSoldItemAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbTotSaleAmtByDateAdapter;
+import in.istore.bitblue.app.home.HomePage;
 import in.istore.bitblue.app.invoice.Invoice;
 import in.istore.bitblue.app.pojo.CartItem;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.Store;
-import in.istore.bitblue.app.utilities.API;
 
 public class Cart extends ActionBarActivity {
     private Toolbar toolbar;
     private TextView toolTitle;
     private ListView lvcartitems;
     private TextView tvTotalPayAmnt;
+    private ProgressBar progressBar;
 
     private ArrayList<CartItem> cartItemArrayList = new ArrayList<CartItem>();
     private DbCartAdapter dbCartAdapter;
     private DbCustAdapter dbCustAdapter;
     private DbStaffAdapter dbStaffAdapter;
+    private DbSoldItemAdapter dbSoldItemAdapter;
+    private DbProductAdapter dbProductAdapter;
+    private DbCustPurHistAdapter dbCustPurHistAdapter;
 
     private CartAdapter cartAdapter;
     private GlobalVariables globalVariable;
@@ -64,7 +72,7 @@ public class Cart extends ActionBarActivity {
     private int optype, StoreId, prodQuantity;
     private long Mobile, PersonId, InVoiceNum;
     private float totalPayAmount, prodSellPrice, prodTotalPrice;
-    private String Key, UserType, OpType, DeliveryAddress, prodId, prodName, soldDate, Status;
+    private String Key, TotPayAmnt, UserType, OpType, DeliveryAddress, prodId, prodName, soldDate, Status;
 
     private JSONParser jsonParser = new JSONParser();
     private JSONArray jsonArray;
@@ -83,6 +91,7 @@ public class Cart extends ActionBarActivity {
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        progressBar = (ProgressBar) toolbar.findViewById(R.id.ll_progressbar);
         setSupportActionBar(toolbar);
         toolTitle.setText("CART");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -91,6 +100,7 @@ public class Cart extends ActionBarActivity {
     private void initViews() {
         globalVariable = (GlobalVariables) getApplicationContext();
 
+        findViewById(R.id.totalpayAmountlayout).setVisibility(View.GONE);
         UserType = globalVariable.getUserType();
         if (UserType.equals("Admin")) {
             Key = globalVariable.getAdminKey();
@@ -107,12 +117,16 @@ public class Cart extends ActionBarActivity {
 
         dbCartAdapter = new DbCartAdapter(this);
         dbCustAdapter = new DbCustAdapter(this);
+        dbSoldItemAdapter = new DbSoldItemAdapter(this);
         custPurHistAdapter = new DbCustPurHistAdapter(this);
         dbTotSaleAmtByDateAdapter = new DbTotSaleAmtByDateAdapter(this);
         dbStaffAdapter = new DbStaffAdapter(this);
+        dbProductAdapter = new DbProductAdapter(this);
 
         //cartItemArrayList = dbCartAdapter.getAllCartItems();
-        getAllCartItems();
+        getAllCartItemsOnServer();
+        //getAllCartItemsOnLocal();
+
         // totalPayAmount = dbCartAdapter.getTotalPayAmount();
        /* if (totalPayAmount != 0) {
             tvTotalPayAmnt.setText(String.valueOf(totalPayAmount));
@@ -123,8 +137,7 @@ public class Cart extends ActionBarActivity {
         } else Toast.makeText(this, "Cart is Empty", Toast.LENGTH_SHORT).show();*/
     }
 
-    private void getAllCartItems() {
-
+    private void getAllCartItemsOnLocal() {
         new AsyncTask<String, String, String>() {
             ProgressDialog dialog = new ProgressDialog(Cart.this);
 
@@ -134,6 +147,48 @@ public class Cart extends ActionBarActivity {
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.setCancelable(false);
                 dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                cartItemArrayList = dbCartAdapter.getAllCartItems();
+                TotPayAmnt = getTotalPayAmount();
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                tvTotalPayAmnt.setText(TotPayAmnt);
+                if (cartItemArrayList != null && cartItemArrayList.size() > 0) {
+                    cartAdapter = new CartAdapter(getApplicationContext(), cartItemArrayList);
+                    lvcartitems.setAdapter(cartAdapter);
+                } else
+                    Toast.makeText(getApplicationContext(), "Cart is Empty", Toast.LENGTH_LONG).show();
+            }
+
+            private String getTotalPayAmount() {
+                float totalAmount = 0;
+                for (CartItem cartItem : cartItemArrayList) {
+                    totalAmount += cartItem.getItemTotalAmnt();
+                }
+                return String.valueOf(totalAmount);
+            }
+
+        }.execute();
+    }
+
+    private void getAllCartItemsOnServer() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(Cart.this);
+
+            @Override
+            protected void onPreExecute() {
+              /*  dialog.setMessage("Getting Cart Details...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(true);
+                dialog.show();*/
+                progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -157,7 +212,8 @@ public class Cart extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(String Response) {
-                dialog.dismiss();
+                //dialog.dismiss();
+                progressBar.setVisibility(View.INVISIBLE);
                 if (Response == null) {
                     Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
                 } else if (Response.equals("error")) {
@@ -190,11 +246,14 @@ public class Cart extends ActionBarActivity {
                         }
                     }
                     if (cartItemArrayList != null && cartItemArrayList.size() > 0) {
-                        tvTotalPayAmnt.setText(String.valueOf(totalPayAmount));
+                        findViewById(R.id.totalpayAmountlayout).setVisibility(View.VISIBLE);
+                        tvTotalPayAmnt.setText(getResources().getString(R.string.rs) + " " + String.valueOf(totalPayAmount));
                         cartAdapter = new CartAdapter(getApplicationContext(), cartItemArrayList);
                         lvcartitems.setAdapter(cartAdapter);
-                    } else
-                        Toast.makeText(getApplicationContext(), "No Product Available", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "No Product Available", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(), HomePage.class));
+                    }
                 }
             }
         }.execute();
@@ -248,12 +307,18 @@ public class Cart extends ActionBarActivity {
                 try {
                     Mobile = Long.parseLong(etMobile.getText().toString());
                     optype = rg.getCheckedRadioButtonId();
+                    DeliveryAddress = etDeliver.getText().toString();
                     if (optype == R.id.rb_custdetails_delivery) {
-                        OpType = rbDeliver.getText().toString();
+                        if (DeliveryAddress.equals("")) {
+                            etDeliver.setText("");
+                            etDeliver.setHint("Delivery Address");
+                            etDeliver.setHintTextColor(getResources().getColor(R.color.material_red_300));
+                            return;
+                        } else OpType = rbDeliver.getText().toString();
+
                     } else if (optype == R.id.rb_custdetails_sell) {
                         OpType = rbSell.getText().toString();
                     }
-                    DeliveryAddress = etDeliver.getText().toString();
                     if (DeliveryAddress != null)
                         globalVariable.setDeliveryAddress(DeliveryAddress);
                     else {
@@ -261,14 +326,17 @@ public class Cart extends ActionBarActivity {
                         DeliveryAddress = "";
                     }
                     prefCustMobile.putLong("custMobile", Mobile).commit();
-                    totalPayAmount = Float.parseFloat(tvTotalPayAmnt.getText().toString());
+                    //totalPayAmount = Float.parseFloat(tvTotalPayAmnt.getText().toString());
                     Date date = new Date();
                     soldDate = DateUtil.convertToStringDateOnly(date);
                     InVoiceNum = Store.generateInVoiceNumber();
                     addToDb();
                     showSoldItemsToCustomer();
                 } catch (NumberFormatException nfe) {
-                    Toast.makeText(getApplicationContext(), "Invalid Number", Toast.LENGTH_SHORT).show();
+                    etDeliver.setText("");
+                    etDeliver.setHint("Mobile Number");
+                    etDeliver.setHintTextColor(getResources().getColor(R.color.material_red_300));
+                    return;
                 }
             }
         });
@@ -282,11 +350,14 @@ public class Cart extends ActionBarActivity {
             String prodName = cartItem.getItemName();
             float prodSellPrice = cartItem.getItemSellPrice();
             int prodQuantity = cartItem.getItemSoldQuantity();
-            addSoldProductToDbTables(prodId, prodName, prodSellPrice, prodQuantity);
+            float prodTotalPrice = cartItem.getItemTotalAmnt();
+            addSoldProductToDbTablesOnServer(prodId, prodName, prodSellPrice, prodQuantity);
+            //addSoldProductToDbTablesOnLocal(prodId, prodName, prodSellPrice, prodQuantity);
         }
     }
 
-    private void addSoldProductToDbTables(final String prodId, final String prodName, final float prodSellPrice, final int prodQuantity) {
+    private void addSoldProductToDbTablesOnLocal(final String prodId, final String prodName, final float prodSellPrice,
+                                                 final int prodQuantity) {
         new AsyncTask<String, String, String>() {
             ProgressDialog dialog = new ProgressDialog(Cart.this);
 
@@ -295,6 +366,55 @@ public class Cart extends ActionBarActivity {
                 dialog.setMessage("Please Wait...");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.setCancelable(false);
+                dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                addToSoldItemTable();
+                addToCustPurchaseTable();
+                addToCustPurchaseAmountTable();
+                addToTotalStockSales();
+                return "";
+            }
+
+            private void addToSoldItemTable() {
+                String Image = dbProductAdapter.getProductImage(prodId);
+                dbSoldItemAdapter.insertSoldItemQuantityDetail(prodId, Image, prodName, String.valueOf(prodSellPrice),
+                        String.valueOf(prodQuantity), String.valueOf(Mobile), OpType, DeliveryAddress, String.valueOf(StoreId));
+            }
+
+            private void addToCustPurchaseTable() {
+                custPurHistAdapter.insertIntoCustomerPurchase(prodId, String.valueOf(Mobile), prodName,
+                        String.valueOf(prodQuantity), String.valueOf(prodSellPrice), String.valueOf(prodTotalPrice),
+                        String.valueOf(PersonId), String.valueOf(StoreId));
+            }
+
+            private void addToCustPurchaseAmountTable() {
+                dbCustAdapter.insertCustPurchaseInfo(String.valueOf(Mobile), TotPayAmnt, String.valueOf(StoreId));
+            }
+
+            private void addToTotalStockSales() {
+                dbTotSaleAmtByDateAdapter.insertTodaySales(TotPayAmnt, String.valueOf(StoreId));
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+            }
+        }.execute();
+    }
+
+    private void addSoldProductToDbTablesOnServer(final String prodId, final String prodName,
+                                                  final float prodSellPrice, final int prodQuantity) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(Cart.this);
+
+            @Override
+            protected void onPreExecute() {
+                dialog.setMessage("Please Wait...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(true);
                 dialog.show();
             }
 

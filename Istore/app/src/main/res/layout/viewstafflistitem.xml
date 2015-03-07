@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/padd5dp"
+    android:alpha="0.9"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/padd5dp"
     android:paddingRight="@dimen/padd15dp"
@@ -13,21 +14,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1.1"
-        android:textColor="@color/black" />
+        android:textColor="@color/dark_grey" />
 
     <TextView
         android:id="@+id/tv_view_staff_staffname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="@color/black" />
+        android:textColor="@color/dark_grey" />
 
     <TextView
         android:id="@+id/tv_view_staff_staffmobile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.9"
-        android:textColor="@color/black" />
+        android:textColor="@color/dark_grey" />
 
     <TextView
         android:id="@+id/tv_view_staff_staffsales"
@@ -37,5 +38,5 @@
         android:layout_weight="1"
         android:gravity="end"
         android:text="12000"
-        android:textColor="@color/black" />
+        android:textColor="@color/dark_grey" />
 </LinearLayout>

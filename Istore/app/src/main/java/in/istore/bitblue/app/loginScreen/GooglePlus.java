@@ -35,10 +35,10 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.home.HomePage;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.API;
 
 public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -248,14 +248,12 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
                 if (Response == null) {
                     Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
                 } else if (Response.equals("error")) {
-                    Toast.makeText(getApplicationContext(), "Error 500", Toast.LENGTH_LONG).show();
                 } else if (Password == null || Password.equals("null")) {
                     Intent staffMobile = new Intent(getApplicationContext(), StaffMobile.class);
                     staffMobile.putExtra("Gname", GpersonName);
                     staffMobile.putExtra("Gemail", Gemail);
                     staffMobile.putExtra("gresponse", Gresponse);
                     staffMobile.putExtra("filepath", filePath);
-
                     startActivity(staffMobile);
                 } else {
                     proceedToLoginProcess();

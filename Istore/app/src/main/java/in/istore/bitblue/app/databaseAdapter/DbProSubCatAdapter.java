@@ -26,42 +26,41 @@ public class DbProSubCatAdapter {
         return this;
     }
 
-    public long addNewProSubCategory(String CategoryName, String SubCategoryName) {
+    public long addNewProductInCategory(String CategoryName, String SubCategoryName, String StoreId) {
         ContentValues row = new ContentValues();
         row.put(DBHelper.COL_CATEGORY_NAME, CategoryName);
         row.put(DBHelper.COL_SUBCATEGORY_NAME, SubCategoryName);
+        row.put(DBHelper.STOREID_COL, StoreId);
+        row.put(DBHelper.IS_UPDATED, "no");
         openWritableDatabase();
         long result = sqLiteDb.insert(DBHelper.TABLE_SUBCATEGORY, null, row);
         return result;
     }
 
     public ArrayList<ProductSubCategory> getAllProSubCategories(String Category) {
-        ArrayList<ProductSubCategory> categoryArrayList = new ArrayList<ProductSubCategory>();
+        ArrayList<ProductSubCategory> productsInCategory = new ArrayList<ProductSubCategory>();
         openWritableDatabase();
-
-        String CATEGORY_CATEGORYNAME = DBHelper.TABLE_CATEGORY + "." + DBHelper.COL_CATEGORY_NAME;
-        String SUBCATEGORY_CATEGORYNAME = DBHelper.TABLE_SUBCATEGORY + "." + DBHelper.COL_CATEGORY_NAME;
-
-        String rawQuery = "SELECT " + DBHelper.COL_SUBCATEGORY_NAME +
-                " FROM " + DBHelper.TABLE_SUBCATEGORY +
-                " INNER JOIN " + DBHelper.TABLE_CATEGORY + " ON " +
+        String CATEGORY_CATEGORYNAME = DBHelper.CATEGORY_TABLE + "." + DBHelper.CATEGORY_NAME_COL;
+        String SUBCATEGORY_CATEGORYNAME = DBHelper.SUBCATEGORY_TABLE + "." + DBHelper.SUBCATEGORY_CATEGORYNAME_COL;
+        String rawQuery = "SELECT " + DBHelper.SUBCATEGORY_PRODUCTCATEGORY_NAME_COL +
+                " FROM " + DBHelper.SUBCATEGORY_TABLE +
+                " INNER JOIN " + DBHelper.CATEGORY_TABLE + " ON " +
                 CATEGORY_CATEGORYNAME + "=" + SUBCATEGORY_CATEGORYNAME +
                 " WHERE " + SUBCATEGORY_CATEGORYNAME + "='" + Category + "'";
-
         Cursor c = sqLiteDb.rawQuery(rawQuery, null);
         if (c != null && c.moveToFirst()) {
             do {
                 ProductSubCategory productSubCategory = new ProductSubCategory();
-                productSubCategory.setProductSubCategoryName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUBCATEGORY_NAME)));
-                categoryArrayList.add(productSubCategory);
+                productSubCategory.setProductSubCategoryName(c.getString(c.getColumnIndexOrThrow(DBHelper.SUBCATEGORY_PRODUCTCATEGORY_NAME_COL)));
+                productsInCategory.add(productSubCategory);
             } while (c.moveToNext());
-            return categoryArrayList;
+            return productsInCategory;
         } else {
             return null;
         }
     }
 
-    public boolean isCategoryAlreadyExist(String SubCategoryName) {
+    public boolean isProductAlreadyExist(String SubCategoryName) {
         openWritableDatabase();
         Cursor c = sqLiteDb.query(DBHelper.TABLE_SUBCATEGORY, DBHelper.PROSUBCAT_COLUMNS,
                 DBHelper.COL_SUBCATEGORY_NAME + "='" + SubCategoryName + "'", null, null, null, null);
@@ -75,19 +74,19 @@ public class DbProSubCatAdapter {
     public ArrayList<String> getAllProductNamesIn(String Category) {
         ArrayList<String> prodCatNameList = new ArrayList<String>();
         openWritableDatabase();
-        String CATEGORY_CATEGORYNAME = DBHelper.TABLE_CATEGORY + "." + DBHelper.COL_CATEGORY_NAME;
-        String SUBCATEGORY_CATEGORYNAME = DBHelper.TABLE_SUBCATEGORY + "." + DBHelper.COL_CATEGORY_NAME;
+        String CATEGORY_CATEGORYNAME = DBHelper.CATEGORY_TABLE + "." + DBHelper.CATEGORY_NAME_COL;
+        String SUBCATEGORY_CATEGORYNAME = DBHelper.SUBCATEGORY_TABLE + "." + DBHelper.SUBCATEGORY_CATEGORYNAME_COL;
 
-        String rawQuery = "SELECT " + DBHelper.COL_SUBCATEGORY_NAME +
-                " FROM " + DBHelper.TABLE_SUBCATEGORY +
-                " INNER JOIN " + DBHelper.TABLE_CATEGORY + " ON " +
+        String rawQuery = "SELECT " + DBHelper.SUBCATEGORY_PRODUCTCATEGORY_NAME_COL +
+                " FROM " + DBHelper.SUBCATEGORY_TABLE +
+                " INNER JOIN " + DBHelper.CATEGORY_TABLE + " ON " +
                 CATEGORY_CATEGORYNAME + "=" + SUBCATEGORY_CATEGORYNAME +
                 " WHERE " + SUBCATEGORY_CATEGORYNAME + "='" + Category + "'";
 
         Cursor c = sqLiteDb.rawQuery(rawQuery, null);
         if (c != null && c.moveToFirst()) {
             do {
-                prodCatNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUBCATEGORY_NAME)));
+                prodCatNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.SUBCATEGORY_PRODUCTCATEGORY_NAME_COL)));
             } while (c.moveToNext());
             return prodCatNameList;
         } else {
@@ -98,19 +97,34 @@ public class DbProSubCatAdapter {
     public ArrayList<String> getAllProductNames() {
         ArrayList<String> prodNameList = new ArrayList<String>();
         openWritableDatabase();
-
-        String rawQuery = "SELECT " + DBHelper.COL_SUBCATEGORY_NAME +
-                " FROM " + DBHelper.TABLE_SUBCATEGORY;
-
+        String rawQuery = "SELECT " + DBHelper.SUBCATEGORY_CATEGORYNAME_COL +
+                " FROM " + DBHelper.SUBCATEGORY_TABLE;
         Cursor c = sqLiteDb.rawQuery(rawQuery, null);
         if (c != null && c.moveToFirst()) {
             do {
-                prodNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUBCATEGORY_NAME)));
+                prodNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.SUBCATEGORY_CATEGORYNAME_COL)));
             } while (c.moveToNext());
             return prodNameList;
         } else {
             return null;
         }
-
     }
+
+    public ArrayList<ProductSubCategory> fetchPendingRowsToUpdate() {
+        ArrayList<ProductSubCategory> productsInCategory = new ArrayList<ProductSubCategory>();
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.SUBCATEGORY_TABLE, DBHelper.PRODUCTSUBCATEGORY_COLUMNS,
+                DBHelper.IS_UPDATED + "='" + "no" + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                ProductSubCategory prodInCategory = new ProductSubCategory();
+                prodInCategory.setProductSubCategoryName(c.getString(c.getColumnIndexOrThrow(DBHelper.SUBCATEGORY_PRODUCTCATEGORY_NAME_COL)));
+                productsInCategory.add(prodInCategory);
+            } while (c.moveToNext());
+            return productsInCategory;
+        } else {
+            return null;
+        }
+    }
+
 }

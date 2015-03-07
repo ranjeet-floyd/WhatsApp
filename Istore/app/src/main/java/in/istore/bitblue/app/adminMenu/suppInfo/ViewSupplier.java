@@ -22,9 +22,9 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.adapters.ViewSuppAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbSuppAdapter;
 import in.istore.bitblue.app.pojo.Supplier;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.API;
 
 public class ViewSupplier extends Fragment {
     private ListView lvViewSupp;
@@ -60,20 +60,54 @@ public class ViewSupplier extends Fragment {
 
     private void initViews(final View view) {
         dbsuppAdapter = new DbSuppAdapter(getActivity());
-        viewSupplierForThisStore(view);
-
+        viewSupplierForThisStoreOnServer(view);
+        //viewSupplierForThisStoreOnLocal(view);
     }
 
-    private void viewSupplierForThisStore(final View view) {
+    private void viewSupplierForThisStoreOnLocal(final View view) {
         new AsyncTask<String, String, String>() {
             ProgressDialog dialog;
 
             @Override
             protected void onPreExecute() {
                 dialog = new ProgressDialog(getActivity());
-                dialog.setCancelable(false);
+                dialog.setCancelable(true);
                 dialog.setMessage("Getting Suppliers...");
                 dialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                suppArrayList = dbsuppAdapter.getAllSuppliers();
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (suppArrayList != null && suppArrayList.size() > 0) {
+                    suppAdapter = new ViewSuppAdapter(getActivity(), suppArrayList);
+                    lvViewSupp = (ListView) view.findViewById(R.id.lv_viewSupp);
+                    lvViewSupp.setAdapter(suppAdapter);
+                } else
+                    Toast.makeText(getActivity(), "No Supplier Available", Toast.LENGTH_LONG).show();
+            }
+        }.execute();
+
+    }
+
+    private void viewSupplierForThisStoreOnServer(final View view) {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog;
+
+            @Override
+            protected void onPreExecute() {
+              /*  dialog = new ProgressDialog(getActivity());
+                dialog.setCancelable(false);
+                dialog.setMessage("Getting Suppliers...");
+                dialog.show();*/
+                //Toast.makeText(getActivity(), "Getting Suppliers", Toast.LENGTH_SHORT).show();
+                ((SuppInfoContent) getActivity()).showProgress();
             }
 
             @Override
@@ -100,13 +134,15 @@ public class ViewSupplier extends Fragment {
 
             @Override
             protected void onPostExecute(String Response) {
-                dialog.dismiss();
+                //dialog.dismiss();
                /* if (result) {
                     suppAdapter = new ViewSuppAdapter(getActivity(), suppArrayList);             //remove if using api
                     lvViewSupp = (ListView) view.findViewById(R.id.lv_viewSupp);
-                    lvViewSupp.setAdapter(suppAdapter);                            //
+                    lvViewSupp.setAdapter(suppAdapter);
                 }*/
-                if (Response == null) {                                          //
+                ((SuppInfoContent) getActivity()).hideProgress();
+
+                if (Response == null) {
                     Toast.makeText(getActivity(), "Response null", Toast.LENGTH_LONG).show();
 
                 } else if (Response.equals("error")) {

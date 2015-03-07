@@ -61,32 +61,32 @@
             android:screenOrientation="portrait" />
         <activity android:name=".home.HomePage" />
         <activity
-            android:name=".Stocks.listStock.ListMyStock"
-            android:parentActivityName=".Stocks.listStock.CategoryList"
+            android:name=".home.Stocks.listStock.ListMyStock"
+            android:parentActivityName=".home.Stocks.listStock.CategoryList"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Stocks.addItem.AddItemsMenu"
-            android:parentActivityName=".Stocks.Stocks"
+            android:name=".home.Stocks.addItem.AddItemsMenu"
+            android:parentActivityName=".home.Stocks.Stocks"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Stocks.sellItem.SellItemsMenu"
-            android:parentActivityName=".Stocks.Stocks"
+            android:name=".home.Stocks.sellItem.SellItemsMenu"
+            android:parentActivityName=".home.Stocks.Stocks"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Stocks.listSoldStock.ListSoldItems"
-            android:parentActivityName=".Stocks.Stocks"
+            android:name=".home.Stocks.listSoldStock.ListSoldItems"
+            android:parentActivityName=".home.Stocks.Stocks"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Stocks.addItem.AddItemForm"
-            android:parentActivityName=".Stocks.addItem.AddItemsMenu"
+            android:name=".home.Stocks.addItem.AddItemForm"
+            android:parentActivityName=".home.Stocks.addItem.AddItemsMenu"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Stocks.sellItem.SellItem"
-            android:parentActivityName=".Stocks.listStock.ListMyStock"
+            android:name=".home.Stocks.sellItem.SellItem"
+            android:parentActivityName=".home.Stocks.listStock.ListMyStock"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Stocks.listSoldStock.ViewSoldItem"
-            android:parentActivityName=".Stocks.listSoldStock.ListSoldItems"
+            android:name=".home.Stocks.listSoldStock.ViewSoldItem"
+            android:parentActivityName=".home.Stocks.listSoldStock.ListSoldItems"
             android:screenOrientation="portrait" />
         <activity
             android:name=".data.ImportData"
@@ -100,16 +100,16 @@
             android:name=".FileChooser.FileDialog"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Stocks.listStock.ViewStockItems"
-            android:parentActivityName=".Stocks.addItem.AddItemsMenu"
+            android:name=".home.Stocks.listStock.ViewStockItems"
+            android:parentActivityName=".home.Stocks.addItem.AddItemsMenu"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Stocks.sellItem.EditItemForm"
-            android:parentActivityName=".Stocks.listStock.CategoryList"
+            android:name=".home.Stocks.sellItem.EditItemForm"
+            android:parentActivityName=".home.Stocks.listStock.CategoryList"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Stocks.listSoldStock.SoldItemForm"
-            android:parentActivityName=".Stocks.listStock.ListMyStock"
+            android:name=".home.Stocks.listSoldStock.SoldItemForm"
+            android:parentActivityName=".home.Stocks.listStock.ListMyStock"
             android:screenOrientation="portrait" />
         <activity
             android:name=".cloudprint.CloudPrint"
@@ -120,13 +120,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".loginScreen.StoreName"
-            android:parentActivityName=".home.HomePage"
+            android:parentActivityName=".loginScreen.SignUpAdmin"
             android:screenOrientation="portrait" />
         <activity android:name=".loginScreen.GooglePlus"
             android:screenOrientation="portrait"  />
-
         <activity
-            android:name=".adminMenu.staffMgmt.StaffMgntContent"
+            android:name=".home.staffMgmt.StaffMgntContent"
             android:parentActivityName=".home.HomePage"
             android:screenOrientation="portrait"  />
         <activity
@@ -134,7 +133,7 @@
             android:parentActivityName=".home.HomePage"
             android:screenOrientation="portrait"  />
         <activity
-            android:name=".adminMenu.transactions.Trans"
+            android:name=".home.transactions.Trans"
             android:parentActivityName=".home.HomePage"
             android:screenOrientation="portrait" />
         <activity
@@ -142,40 +141,40 @@
             android:parentActivityName=".home.HomePage"
             android:screenOrientation="portrait"  />
         <activity
-            android:name=".category.Categories"
+            android:name=".home.category.Categories"
             android:parentActivityName=".home.HomePage"
             android:screenOrientation="portrait"  />
         <activity
-            android:name=".category.products.ProSubCat"
-            android:parentActivityName=".category.Categories"
+            android:name=".home.category.products.ProSubCat"
+            android:parentActivityName=".home.category.Categories"
             android:screenOrientation="portrait"  />
         <activity
             android:name=".cart.Cart"
             android:parentActivityName=".home.HomePage"
             android:screenOrientation="portrait"  />
         <activity
-            android:name=".adminMenu.transactions.totalrevenue.TotalRevSelectRange"
-            android:parentActivityName=".adminMenu.transactions.Trans"
+            android:name=".home.transactions.totalrevenue.TotalRevSelectRange"
+            android:parentActivityName=".home.transactions.Trans"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".adminMenu.transactions.todaysales.TodaySales"
-            android:parentActivityName=".adminMenu.transactions.Trans"
+            android:name=".home.transactions.todaysales.TodaySales"
+            android:parentActivityName=".home.transactions.Trans"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".adminMenu.transactions.outofstock.OutOfStock"
-            android:parentActivityName=".adminMenu.transactions.Trans"
+            android:name=".home.transactions.outofstock.OutOfStock"
+            android:parentActivityName=".home.transactions.Trans"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".adminMenu.transactions.totalrevenue.TotalRevViewDetails"
-            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevSelectRange"
+            android:name=".home.transactions.totalrevenue.TotalRevViewDetails"
+            android:parentActivityName=".home.transactions.totalrevenue.TotalRevSelectRange"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".adminMenu.transactions.totalrevenue.filterby.FilterByProdName"
-            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevViewDetails"
+            android:name=".home.transactions.totalrevenue.filterby.FilterByProdName"
+            android:parentActivityName=".home.transactions.totalrevenue.TotalRevViewDetails"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".adminMenu.transactions.totalrevenue.filterby.FilterByStaffId"
-            android:parentActivityName=".adminMenu.transactions.totalrevenue.TotalRevViewDetails"
+            android:name=".home.transactions.totalrevenue.filterby.FilterByStaffId"
+            android:parentActivityName=".home.transactions.totalrevenue.TotalRevViewDetails"
             android:screenOrientation="portrait" />
         <activity
             android:name=".staffMenu.transactions.TransStaff"
@@ -191,7 +190,7 @@
             android:screenOrientation="portrait"  />
         <activity
             android:name=".invoice.Invoice"
-            android:parentActivityName=".Stocks.listStock.ListMyStock"
+            android:parentActivityName=".home.Stocks.listStock.ListMyStock"
             android:screenOrientation="portrait"  />
         <activity
             android:name=".loginScreen.StaffMobile"
@@ -210,12 +209,12 @@
             android:label="@string/title_activity_print_dialog"
             android:screenOrientation="portrait"  />
         <activity
-            android:name=".Stocks.Stocks"
+            android:name=".home.Stocks.Stocks"
             android:parentActivityName=".home.HomePage"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Stocks.listStock.CategoryList"
-            android:parentActivityName=".Stocks.Stocks"
+            android:name=".home.Stocks.listStock.CategoryList"
+            android:parentActivityName=".home.Stocks.Stocks"
             android:screenOrientation="portrait"  />
     </application>
 

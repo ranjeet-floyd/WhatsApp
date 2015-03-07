@@ -26,11 +26,11 @@ import java.util.Date;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.API;
 
 public class StoreName extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -94,7 +94,7 @@ public class StoreName extends ActionBarActivity implements View.OnClickListener
                     etName.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                 } else {
                     tinyDB.putString("StoreName", StoreName);
-                    addAdminSignUpInfoToDatabase();
+                    addAdminSignUpInfoToDBOnServer();
                     /*int result = loginCredAdapter.updateAdminInfo(Mobile, StoreId, StoreName);  //REmove if using api
                     if (result <= 0) {
                         Toast.makeText(this, "Not Updated", Toast.LENGTH_SHORT).show();
@@ -109,7 +109,7 @@ public class StoreName extends ActionBarActivity implements View.OnClickListener
         }
     }
 
-    private void addAdminSignUpInfoToDatabase() {
+    private void addAdminSignUpInfoToDBOnServer() {
         new AsyncTask<String, String, String>() {
             ProgressDialog dialog;
 
@@ -117,7 +117,7 @@ public class StoreName extends ActionBarActivity implements View.OnClickListener
             protected void onPreExecute() {
                 dialog = new ProgressDialog(in.istore.bitblue.app.loginScreen.StoreName.this);
                 dialog.setMessage("Signing up...");
-                dialog.setCancelable(false);
+                dialog.setCancelable(true);
                 dialog.show();
             }
 

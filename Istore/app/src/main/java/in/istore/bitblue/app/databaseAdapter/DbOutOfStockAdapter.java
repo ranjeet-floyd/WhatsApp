@@ -26,21 +26,24 @@ public class DbOutOfStockAdapter {
         return this;
     }
 
-    public long addtoOutOfStockList(String Id, String Name, int RemQuantity, long SuppMobile) {
+    public long addtoOutOfStockList(String Name, String RemQuantity, String MinLimit, String SuppMobile, String StoreId) {
         ContentValues row = new ContentValues();
-        row.put(DBHelper.COL_OUTOFSTOCK_PRODID, Id);
-        row.put(DBHelper.COL_OUTOFSTOCK_PRODNAME, Name);
-        row.put(DBHelper.COL_OUTOFSTOCK_REMAIN_QUANTITY, RemQuantity);
-        row.put(DBHelper.COL_OUTOFSTOCK_SUPPMOBILE, SuppMobile);
+        row.put(DBHelper.OUTOFSTOCK_PRODUCT_NAME_COL, Name);
+        row.put(DBHelper.OUTOFSTOCK_PRODUCT_REMAININGQUANTITY_COL, RemQuantity);
+        row.put(DBHelper.OUTOFSTOCK_PRODUCT_MINQUANTITY_COL, MinLimit);
+        row.put(DBHelper.OUTOFSTOCK_SUPPLIER_MOBILE_COL, SuppMobile);
+        row.put(DBHelper.STOREID_COL, StoreId);
+        row.put(DBHelper.IS_UPDATED, "no");
         openWritableDatabase();
-        return sqLiteDb.insert(DBHelper.TABLE_OUTOFSTOCK_ITEMS, null, row);
+        return sqLiteDb.insert(DBHelper.OUTOFSTOCKITEMS_TABLE, null, row);
     }
 
-    public int updateOutOfStockItem(String Id, int RemQuantity) {
+    public int updateOutOfStockItem(String name, String RemQuantity) {
         ContentValues row = new ContentValues();
-        row.put(DBHelper.COL_OUTOFSTOCK_REMAIN_QUANTITY, RemQuantity);
+        row.put(DBHelper.OUTOFSTOCK_PRODUCT_REMAININGQUANTITY_COL, RemQuantity);
         openWritableDatabase();
-        return sqLiteDb.update(DBHelper.TABLE_OUTOFSTOCK_ITEMS, row, DBHelper.COL_OUTOFSTOCK_PRODID + "='" + Id + "'", null);
+        return sqLiteDb.update(DBHelper.OUTOFSTOCKITEMS_TABLE, row,
+                DBHelper.OUTOFSTOCK_PRODUCT_NAME_COL + "='" + name + "'", null);
     }
 
     public ArrayList<Outofstock> getAllOutOfStockItems() {
@@ -91,9 +94,10 @@ public class DbOutOfStockAdapter {
         } else return 0;
     }
 
-    public boolean isProductAlreadyOutOfStock(String id) {
+    public boolean isProductAlreadyOutOfStock(String Name) {
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_OUTOFSTOCK_ITEMS, DBHelper.OUTOFSTOCK_COLUMNS, DBHelper.COL_OUTOFSTOCK_PRODID + "='" + id + "'", null, null, null, null);
+        Cursor c = sqLiteDb.query(DBHelper.OUTOFSTOCKITEMS_TABLE, DBHelper.OUTOFSTOCK_COLUMNS,
+                DBHelper.OUTOFSTOCK_PRODUCT_NAME_COL + "='" + Name + "'", null, null, null, null);
         return c != null && c.moveToFirst();
     }
 

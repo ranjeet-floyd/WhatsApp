@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context="in.istore.bitblue.app.Stocks.sellItem.SellItem">
+    tools:context="in.istore.bitblue.app.home.Stocks.sellItem.SellItem">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -17,6 +17,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/linearLayout"
+        android:background="@color/material_blue_500" />
 
     <ScrollView
         android:id="@+id/ll_sellitems_form"
@@ -37,7 +43,7 @@
             <ImageView
                 android:id="@+id/iv_sellitems_image"
                 android:layout_width="match_parent"
-                android:layout_height="450dp"
+                android:layout_height="500dp"
                 android:contentDescription="Product Image" />
 
             <View
@@ -201,7 +207,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="@dimen/padd5dp"
             android:layout_weight="1"
-            android:background="@color/material_blue_grey_900"
+            android:background="@drawable/addtocartshadow"
             android:text="@string/addtocart"
             android:textColor="@color/white" />
     </LinearLayout>

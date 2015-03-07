@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "istore.db";
-    public static final int DATABASE_VERSION = 46;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
+    public static final int DATABASE_VERSION = 49
+            ;   //TO UPDATE DATABASE CHANGE THIS VERSION NUMBER
 
     public static final String TABLE_PRODUCT = "product";
     public static final String TABLE_QUANTITY_HISTORY = "quantityhistory";
@@ -37,40 +38,42 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String SUBCATEGORY_TABLE = "Subcategory";
     public static final String SUPPLIER_TABLE = "Supplier";
     public static final String TOTALSTOCKSALES_TABLE = "TotalStockSales";
-    public static final String TRANSACTION_TABLE = "Transaction";
+    public static final String TRANSACTION_TABLE = "Transanction";
+    public static final String USER_CONTACTS = "UserContacts";
+    public static final String IS_UPDATED = "IsUpdated";
+    public static final String STOREID_COL = "StoreId";
 
     //Admin Login Table
     public static final String ADMINID_COL = "ADMINId";
-    public static final String ADMIN_NAME_COL = "AdminName";
-    public static final String ADMIN_MOBILE_COL = "AdminMobile";
-    public static final String ADMIN_PASSWD_COL = "AdminPasswd";
-    public static final String ADMIN_STOREID_COL = "AdminStoreId";
-    public static final String ADMIN_STORENAME_COL = "AdminStoreName";
-    public static final String ADMIN_CREATED_ON_COL = "AdminCreatedOn";
-    public static final String ADMIN_KEY_COL = "AdminKey";
+    public static final String ADMIN_NAME_COL = "Name";
+    public static final String ADMIN_MOBILE_COL = "Mobile";
+    public static final String ADMIN_PASSWD_COL = "Passwd";
+    public static final String ADMIN_STORENAME_COL = "StoreName";
+    public static final String ADMIN_CREATED_ON_COL = "CreatedOn";
+    public static final String ADMIN_KEY_COL = "ADMINKEY";
     public static final String[] ADMIN_LOGIN_COLUMNS = {ADMINID_COL, ADMIN_NAME_COL, ADMIN_MOBILE_COL, ADMIN_PASSWD_COL,
-            ADMIN_STOREID_COL, ADMIN_STORENAME_COL, ADMIN_CREATED_ON_COL, ADMIN_KEY_COL};
+            STOREID_COL, ADMIN_STORENAME_COL, ADMIN_CREATED_ON_COL, ADMIN_KEY_COL, IS_UPDATED};
     public static final String CREATE_ADMIN_LOGIN_TABLE =
             "CREATE TABLE " + ADMIN_LOGIN_TABLE + "(" +
                     ADMINID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     ADMIN_NAME_COL + " TEXT," +
                     ADMIN_MOBILE_COL + " TEXT," +
                     ADMIN_PASSWD_COL + " TEXT," +
-                    ADMIN_STOREID_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
                     ADMIN_STORENAME_COL + " TEXT," +
                     ADMIN_CREATED_ON_COL + " TEXT," +
-                    ADMIN_KEY_COL + " TEXT)";
+                    ADMIN_KEY_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //Cart Table
     public static final String CARTID_COL = "CARTId";
-    public static final String CART_PRODUCT_ID_COL = "ProductId";
-    public static final String CART_PRODUCT_NAME_COL = "ProductName";
-    public static final String CART_PRODUCT_QUANTITY_COL = "ProductQuantity";
-    public static final String CART_PRODUCT_SELLINGPRICE_COL = "ProductSellingPrice";
-    public static final String CART_PRODUCT_TOTALPRICE_COL = "ProductTotalPrice";
-    public static final String CART_STORE_ID_COL = "StoreId";
+    public static final String CART_PRODUCT_ID_COL = "Cid";
+    public static final String CART_PRODUCT_NAME_COL = "Name";
+    public static final String CART_PRODUCT_QUANTITY_COL = "Quantity";
+    public static final String CART_PRODUCT_SELLINGPRICE_COL = "SellingPrice";
+    public static final String CART_PRODUCT_TOTALPRICE_COL = "TotalPrice";
     public static final String[] CART_COLUMNS = {CARTID_COL, CART_PRODUCT_ID_COL, CART_PRODUCT_NAME_COL, CART_PRODUCT_QUANTITY_COL,
-            CART_PRODUCT_SELLINGPRICE_COL, CART_PRODUCT_TOTALPRICE_COL, CART_STORE_ID_COL};
+            CART_PRODUCT_SELLINGPRICE_COL, CART_PRODUCT_TOTALPRICE_COL, STOREID_COL, IS_UPDATED};
     public static final String CREATE_CART_TABLE =
             "CREATE TABLE " + CART_TABLE + "(" +
                     CARTID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -79,85 +82,96 @@ public class DBHelper extends SQLiteOpenHelper {
                     CART_PRODUCT_QUANTITY_COL + " TEXT," +
                     CART_PRODUCT_SELLINGPRICE_COL + " TEXT," +
                     CART_PRODUCT_TOTALPRICE_COL + " TEXT," +
-                    CART_STORE_ID_COL + " TEXT)";
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //Category Table
-    public static final String CATEGORYID_COL = "CATId";
-    public static final String CATEGORY_NAME_COL = "CategoryName";
-    public static final String[] PRODUCTCATEGORY_COLUMNS = {CATEGORYID_COL, CATEGORY_NAME_COL};
+    public static final String CATEGORYID_COL = "CATEGORYId";
+    public static final String CATEGORY_NAME_COL = "Categoryname";
+    public static final String[] PRODUCTCATEGORY_COLUMNS = {CATEGORYID_COL, CATEGORY_NAME_COL, STOREID_COL, IS_UPDATED};
     public static final String CREATE_CATEGORY_TABLE =
             "CREATE TABLE " + CATEGORY_TABLE + "(" +
                     CATEGORYID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CATEGORY_NAME_COL + " TEXT)";
+                    CATEGORY_NAME_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //Customer Purchase Table
     public static final String CUSTOMERPURCHASEID_COL = "CUSTPURId";
-    public static final String CUSTOMERPURCHASE_CUSTOMER_MOBILE_COL = "CustPurMobile";
-    public static final String CUSTOMERPURCHASE_PRODUCT_ID_COL = "CustPurProdId";
-    public static final String CUSTOMERPURCHASE_PRODUCT_NAME_COL = "CustPurProdName";
-    public static final String CUSTOMERPURCHASE_PRODUCT_QUANTITY_COL = "CustPurProdQuantity";
-    public static final String CUSTOMERPURCHASE_PRODUCT_SELLINGPRICE_COL = "CustPurProdSellingPrice";
-    public static final String CUSTOMERPURCHASE_PRODUCT_TOTALPRICE_COL = "CustPurProdTotalPrice";
-    public static final String CUSTOMERPURCHASE_PRODUCT_STAFFID_COL = "CustPurStaffId";
+    public static final String CUSTOMERPURCHASE_CUSTOMER_MOBILE_COL = "Cusmobile";
+    public static final String CUSTOMERPURCHASE_PRODUCT_ID_COL = "ProductId";
+    public static final String CUSTOMERPURCHASE_PRODUCT_NAME_COL = "Cusprodname";
+    public static final String CUSTOMERPURCHASE_PRODUCT_QUANTITY_COL = "Custquantity";
+    public static final String CUSTOMERPURCHASE_PRODUCT_SELLINGPRICE_COL = "Custsellprice";
+    public static final String CUSTOMERPURCHASE_PRODUCT_TOTALPRICE_COL = "Custtotalprice";
+    public static final String CUSTOMERPURCHASE_PRODUCT_STAFFID_COL = "Custstaffid";
     public static final String[] CUSTOMERPURCHASE_COLUMNS = {CUSTOMERPURCHASEID_COL, CUSTOMERPURCHASE_CUSTOMER_MOBILE_COL,
             CUSTOMERPURCHASE_PRODUCT_ID_COL, CUSTOMERPURCHASE_PRODUCT_NAME_COL, CUSTOMERPURCHASE_PRODUCT_QUANTITY_COL,
-            CUSTOMERPURCHASE_PRODUCT_SELLINGPRICE_COL, CUSTOMERPURCHASE_PRODUCT_TOTALPRICE_COL, CUSTOMERPURCHASE_PRODUCT_STAFFID_COL};
+            CUSTOMERPURCHASE_PRODUCT_SELLINGPRICE_COL, CUSTOMERPURCHASE_PRODUCT_TOTALPRICE_COL,
+            CUSTOMERPURCHASE_PRODUCT_STAFFID_COL, STOREID_COL, IS_UPDATED};
     public static final String CREATE_CUSTOMER_PURCHASE_TABLE =
             "CREATE TABLE " + CUSTOMER_PURCHASE_TABLE + "(" +
                     CUSTOMERPURCHASEID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CUSTOMERPURCHASE_CUSTOMER_MOBILE_COL + " TEXT, " +
-                    CUSTOMERPURCHASE_PRODUCT_ID_COL + " TEXT, " +
+                    CUSTOMERPURCHASE_PRODUCT_ID_COL + " TEXT," +
                     CUSTOMERPURCHASE_PRODUCT_NAME_COL + " TEXT," +
                     CUSTOMERPURCHASE_PRODUCT_QUANTITY_COL + " TEXT," +
                     CUSTOMERPURCHASE_PRODUCT_SELLINGPRICE_COL + " TEXT," +
                     CUSTOMERPURCHASE_PRODUCT_TOTALPRICE_COL + " TEXT," +
-                    CUSTOMERPURCHASE_PRODUCT_STAFFID_COL + " TEXT)";
+                    CUSTOMERPURCHASE_PRODUCT_STAFFID_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //Customer Purchase Amount Table
-    public static final String CUSTOMERPURCHASEAMOUNTID_COL = "CustPurAmntId";
-    public static final String CUSTOMERPURCHASEAMOUNT_CUSTOMER_MOBILE_COL = "CustPurAmntCustMobile";
-    public static final String CUSTOMERPURCHASEAMOUNT_PURCHASEAMOUNT_COL = "CustPurAmnt";
-    public static final String[] CUSTOMERPURCHASEAMOUNT_COLUMNS = {CUSTOMERPURCHASEAMOUNTID_COL, CUSTOMERPURCHASEAMOUNT_CUSTOMER_MOBILE_COL,
-            CUSTOMERPURCHASEAMOUNT_PURCHASEAMOUNT_COL};
+    public static final String CUSTOMERPURCHASEAMOUNTID_COL = "CUSId";
+    public static final String CUSTOMERPURCHASEAMOUNT_CUSTOMER_MOBILE_COL = "Custmobile";
+    public static final String CUSTOMERPURCHASEAMOUNT_PURCHASEAMOUNT_COL = "CustpurchaseAmt";
+    public static final String[] CUSTOMERPURCHASEAMOUNT_COLUMNS = {CUSTOMERPURCHASEAMOUNTID_COL,
+            CUSTOMERPURCHASEAMOUNT_CUSTOMER_MOBILE_COL, CUSTOMERPURCHASEAMOUNT_PURCHASEAMOUNT_COL,
+            STOREID_COL, IS_UPDATED};
     public static final String CREATE_CUSTOMER_PURCHASE_AMOUNT_TABLE =
             "CREATE TABLE " + CUSTOMER_PURCHASE_AMOUNT_TABLE + "(" +
                     CUSTOMERPURCHASEAMOUNTID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CUSTOMERPURCHASEAMOUNT_CUSTOMER_MOBILE_COL + " REAL," +
-                    CUSTOMERPURCHASEAMOUNT_PURCHASEAMOUNT_COL + " )";
+                    CUSTOMERPURCHASEAMOUNT_CUSTOMER_MOBILE_COL + " TEXT," +
+                    CUSTOMERPURCHASEAMOUNT_PURCHASEAMOUNT_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //Out Of Stock Items Table
-    public static final String OUTOFSTOCKID_COL = "OOSId";
-    public static final String OUTOFSTOCK_PRODUCT_ID_COL = "OosProdId";
-    public static final String OUTOFSTOCK_PRODUCT_NAME_COL = "OosProdName";
-    public static final String OUTOFSTOCK_PRODUCT_REMAININGQUANTITY_COL = "OosProdRemQuantity";
-    public static final String OUTOFSTOCK_PRODUCT_MINQUANTITY_COL = "OosProdMinQuantity";
-    public static final String OUTOFSTOCK_SUPPLIER_MOBILE_COL = "OosSupplierMobile";
-    public static final String[] OUTOFSTOCKITEMS_COLUMNS = {OUTOFSTOCKID_COL, OUTOFSTOCK_PRODUCT_ID_COL, OUTOFSTOCK_PRODUCT_NAME_COL,
-            OUTOFSTOCK_PRODUCT_REMAININGQUANTITY_COL, OUTOFSTOCK_PRODUCT_MINQUANTITY_COL, OUTOFSTOCK_SUPPLIER_MOBILE_COL};
+    public static final String OUTOFSTOCKID_COL = "OOSPRODId";
+    public static final String OUTOFSTOCK_PRODUCT_NAME_COL = "Oosprodname";
+    public static final String OUTOFSTOCK_PRODUCT_REMAININGQUANTITY_COL = "Remainquantity";
+    public static final String OUTOFSTOCK_PRODUCT_MINQUANTITY_COL = "MinQuantity";
+    public static final String OUTOFSTOCK_SUPPLIER_MOBILE_COL = "Suppmobile";
+    public static final String[] OUTOFSTOCKITEMS_COLUMNS = {OUTOFSTOCKID_COL,
+            OUTOFSTOCK_PRODUCT_NAME_COL, OUTOFSTOCK_PRODUCT_REMAININGQUANTITY_COL, OUTOFSTOCK_PRODUCT_MINQUANTITY_COL,
+            OUTOFSTOCK_SUPPLIER_MOBILE_COL, STOREID_COL, IS_UPDATED};
     public static final String CREATE_OUTOFSTOCK_ITEMS_TABLE =
             "CREATE TABLE " + OUTOFSTOCKITEMS_TABLE + "(" +
                     OUTOFSTOCKID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    OUTOFSTOCK_PRODUCT_ID_COL + " TEXT," +
                     OUTOFSTOCK_PRODUCT_NAME_COL + " TEXT," +
                     OUTOFSTOCK_PRODUCT_REMAININGQUANTITY_COL + " TEXT," +
                     OUTOFSTOCK_PRODUCT_MINQUANTITY_COL + " TEXT," +
-                    OUTOFSTOCK_SUPPLIER_MOBILE_COL + " TEXT)";
+                    OUTOFSTOCK_SUPPLIER_MOBILE_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //Product Table
-    public static final String PRODUCTID_COL = "PId";
-    public static final String PRODUCT_ID_COL = "ProdId";
-    public static final String PRODUCT_CATEGORY_COL = "ProdCategory";
-    public static final String PRODUCT_NAME_COL = "ProdName";
-    public static final String PRODUCT_IMAGE_COL = "ProdImage";
-    public static final String PRODUCT_DESC_COL = "ProdDesc";
-    public static final String PRODUCT_QUANTITY_COL = "ProdQuatity";
-    public static final String PRODUCT_MINLIMIT_COL = "ProdMinLimit";
-    public static final String PRODUCT_COSTPRICE_COL = "ProdCostPrice";
-    public static final String PRODUCT_SELLINGPRICE_COL = "ProdSellingPrice";
-    public static final String PRODUCT_SUPPLIER_COL = "ProdSupplier";
-    public static final String[] PRODUCT_COLOUMNS = {PRODUCTID_COL, PRODUCT_ID_COL, PRODUCT_CATEGORY_COL, PRODUCT_NAME_COL,
+    public static final String PRODUCTID_COL = "PRODUCTId";
+    public static final String PRODUCT_ID_COL = "Id";
+    public static final String PRODUCT_CATEGORY_COL = "Category";
+    public static final String PRODUCT_NAME_COL = "Name";
+    public static final String PRODUCT_IMAGE_COL = "Image";
+    public static final String PRODUCT_DESC_COL = "ProductDesc";
+    public static final String PRODUCT_QUANTITY_COL = "Quatity";
+    public static final String PRODUCT_MINLIMIT_COL = "MinLimit";
+    public static final String PRODUCT_COSTPRICE_COL = "CostPrice";
+    public static final String PRODUCT_SELLINGPRICE_COL = "SellingPrice";
+    public static final String PRODUCT_SUPPLIER_COL = "Supplier";
+    public static final String PRODUCT_ADDEDON_COL = "AddedOn";
+    public static final String[] PRODUCT_COLUMNS = {PRODUCTID_COL, PRODUCT_ID_COL, PRODUCT_CATEGORY_COL, PRODUCT_NAME_COL,
             PRODUCT_IMAGE_COL, PRODUCT_DESC_COL, PRODUCT_QUANTITY_COL, PRODUCT_MINLIMIT_COL, PRODUCT_COSTPRICE_COL,
-            PRODUCT_SELLINGPRICE_COL, PRODUCT_SUPPLIER_COL};
+            PRODUCT_SELLINGPRICE_COL, PRODUCT_SUPPLIER_COL, PRODUCT_ADDEDON_COL, STOREID_COL, IS_UPDATED};
     public static final String CREATE_PRODUCT_TABLE =
             "CREATE TABLE " + PRODUCT_TABLE + "(" +
                     PRODUCTID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -165,29 +179,30 @@ public class DBHelper extends SQLiteOpenHelper {
                     PRODUCT_CATEGORY_COL + " TEXT," +
                     PRODUCT_NAME_COL + " TEXT," +
                     PRODUCT_IMAGE_COL + " TEXT," +
-                    PRODUCT_DESC_COL + " INTEGER," +
-                    PRODUCT_QUANTITY_COL + " INTEGER," +
-                    PRODUCT_MINLIMIT_COL + " REAL," +
-                    PRODUCT_COSTPRICE_COL + " REAL," +
+                    PRODUCT_DESC_COL + " TEXT," +
+                    PRODUCT_QUANTITY_COL + " TEXT," +
+                    PRODUCT_MINLIMIT_COL + " TEXT," +
+                    PRODUCT_COSTPRICE_COL + " TEXT," +
                     PRODUCT_SELLINGPRICE_COL + " TEXT," +
-                    PRODUCT_SUPPLIER_COL + " TEXT)";
+                    PRODUCT_SUPPLIER_COL + " TEXT," +
+                    PRODUCT_ADDEDON_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //Sold Product Table
-    public static final String SOLDPRODUCTID_COL = "SPId";
-    public static final String SOLDPRODUCT_ID_COL = "SoldProdId";
-    public static final String SOLDPRODUCT_NAME_COL = "SoldProdName";
-    public static final String SOLDPRODUCT_SELLINGPRICE_COL = "SoldProdSellingPrice";
-    public static final String SOLDPRODUCT_SOLDQUANTITY_COL = "SoldProdQuantity";
-    public static final String SOLDPRODUCT_SOLDDATE_COL = "SoldProdSoldDate";
-    public static final String SOLDPRODUCT_SELLBY_COL = "SoldProdSellBy";
-    public static final String SOLDPRODUCT_IMAGE_COL = "SoldProdImage";
-    public static final String SOLDPRODUCT_STOREID_COL = "SoldProdStoreId";
-    public static final String SOLDPRODUCT_CUSTOMER_MOBILE_COL = "SoldProdCustMobile";
-    public static final String SOLDPRODUCT_OPTYPE_COL = "SoldProdOptype";
-    public static final String SOLDPRODUCT_DELIVERADDRESS_COL = "SoldProdDeliverAddress";
-    public static final String[] SOLD_PRODUCT_COLUMNS = {SOLDPRODUCTID_COL, SOLDPRODUCT_ID_COL, SOLDPRODUCT_NAME_COL, SOLDPRODUCT_IMAGE_COL,
-            SOLDPRODUCT_SELLINGPRICE_COL, SOLDPRODUCT_SOLDQUANTITY_COL, SOLDPRODUCT_SOLDDATE_COL, SOLDPRODUCT_SELLBY_COL,
-            SOLDPRODUCT_STOREID_COL, SOLDPRODUCT_CUSTOMER_MOBILE_COL, SOLDPRODUCT_OPTYPE_COL, SOLDPRODUCT_DELIVERADDRESS_COL};
+    public static final String SOLDPRODUCTID_COL = "SOLDId";
+    public static final String SOLDPRODUCT_ID_COL = "ItemID";
+    public static final String SOLDPRODUCT_NAME_COL = "Name";
+    public static final String SOLDPRODUCT_SELLINGPRICE_COL = "SellPrice";
+    public static final String SOLDPRODUCT_SOLDQUANTITY_COL = "Soldquantity";
+    public static final String SOLDPRODUCT_SOLDDATE_COL = "SoldDate";
+    public static final String SOLDPRODUCT_IMAGE_COL = "Image";
+    public static final String SOLDPRODUCT_CUSTOMER_MOBILE_COL = "CusMobile";
+    public static final String SOLDPRODUCT_OPTYPE_COL = "OpType";
+    public static final String SOLDPRODUCT_DELIVERADDRESS_COL = "DeliveryAdd";
+    public static final String[] SOLD_PRODUCT_COLUMNS = {SOLDPRODUCTID_COL, SOLDPRODUCT_ID_COL, SOLDPRODUCT_NAME_COL,
+            SOLDPRODUCT_IMAGE_COL, SOLDPRODUCT_SELLINGPRICE_COL, SOLDPRODUCT_SOLDQUANTITY_COL, SOLDPRODUCT_SOLDDATE_COL,
+            SOLDPRODUCT_CUSTOMER_MOBILE_COL, SOLDPRODUCT_OPTYPE_COL, SOLDPRODUCT_DELIVERADDRESS_COL, STOREID_COL, IS_UPDATED};
     public static final String CREATE_SOLDPRODUCT_TABLE =
             "CREATE TABLE " + SOLD_PRODUCT_TABLE + "(" +
                     SOLDPRODUCTID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -197,31 +212,30 @@ public class DBHelper extends SQLiteOpenHelper {
                     SOLDPRODUCT_SELLINGPRICE_COL + " TEXT," +
                     SOLDPRODUCT_SOLDQUANTITY_COL + " TEXT," +
                     SOLDPRODUCT_SOLDDATE_COL + " TEXT," +
-                    SOLDPRODUCT_SELLBY_COL + " TEXT," +
-                    SOLDPRODUCT_STOREID_COL + " TEXT," +
                     SOLDPRODUCT_CUSTOMER_MOBILE_COL + " TEXT," +
                     SOLDPRODUCT_OPTYPE_COL + " TEXT," +
-                    SOLDPRODUCT_DELIVERADDRESS_COL + " TEXT)";
+                    SOLDPRODUCT_DELIVERADDRESS_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //Staff Management Table
-    public static final String STAFFMANAGEMENTID_COL = "STMGNTId";
-    public static final String STAFFMANAGEMENT_STOREID_COL = "StaffMgntStoreId";
-    public static final String STAFFMANAGEMENT_STAFFID_COL = "StaffMgntStaffId";
-    public static final String STAFFMANAGEMENT_STAFFEMAIL_COL = "StaffMgntStaffEmail";
-    public static final String STAFFMANAGEMENT_STAFFNAME_COL = "StaffMgntStaffName";
-    public static final String STAFFMANAGEMENT_STAFFMOBILE_COL = "StaffMgntStaffMobile";
-    public static final String STAFFMANAGEMENT_STAFFADDRESS_COL = "StaffMgntStaffAddress";
-    public static final String STAFFMANAGEMENT_STAFFPASSWORD_COL = "StaffMgntStaffPassword";
-    public static final String STAFFMANAGEMENT_STAFFJOINON_COL = "StaffMgntStaffJoinOn";
-    public static final String STAFFMANAGEMENT_STAFFTOTALSALES_COL = "StaffMgntStaffTotalSales";
-    public static final String STAFFMANAGEMENT_STAFFKEY_COL = "StaffMgntStaffKey";
-    public static final String[] STAFFMANAGEMENT_COLUMNS = {STAFFMANAGEMENTID_COL, STAFFMANAGEMENT_STOREID_COL, STAFFMANAGEMENT_STAFFID_COL,
-            STAFFMANAGEMENT_STAFFEMAIL_COL, STAFFMANAGEMENT_STAFFNAME_COL, STAFFMANAGEMENT_STAFFMOBILE_COL, STAFFMANAGEMENT_STAFFADDRESS_COL,
-            STAFFMANAGEMENT_STAFFPASSWORD_COL, STAFFMANAGEMENT_STAFFJOINON_COL, STAFFMANAGEMENT_STAFFTOTALSALES_COL, STAFFMANAGEMENT_STAFFKEY_COL};
+    public static final String STAFFMANAGEMENTID_COL = "SId";
+    public static final String STAFFMANAGEMENT_STAFFID_COL = "Staffid";
+    public static final String STAFFMANAGEMENT_STAFFEMAIL_COL = "Staffemail";
+    public static final String STAFFMANAGEMENT_STAFFNAME_COL = "Staffname";
+    public static final String STAFFMANAGEMENT_STAFFMOBILE_COL = "Staffmobile";
+    public static final String STAFFMANAGEMENT_STAFFADDRESS_COL = "Staffaddress";
+    public static final String STAFFMANAGEMENT_STAFFPASSWORD_COL = "Staffpasswd";
+    public static final String STAFFMANAGEMENT_STAFFJOINON_COL = "StaffjoinOn";
+    public static final String STAFFMANAGEMENT_STAFFTOTALSALES_COL = "Stafftotsale";
+    public static final String STAFFMANAGEMENT_STAFFKEY_COL = "StaffKey";
+    public static final String[] STAFFMANAGEMENT_COLUMNS = {STAFFMANAGEMENTID_COL, STAFFMANAGEMENT_STAFFID_COL,
+            STAFFMANAGEMENT_STAFFEMAIL_COL, STAFFMANAGEMENT_STAFFNAME_COL, STAFFMANAGEMENT_STAFFMOBILE_COL,
+            STAFFMANAGEMENT_STAFFADDRESS_COL, STAFFMANAGEMENT_STAFFPASSWORD_COL, STAFFMANAGEMENT_STAFFJOINON_COL,
+            STAFFMANAGEMENT_STAFFTOTALSALES_COL, STAFFMANAGEMENT_STAFFKEY_COL, STOREID_COL, IS_UPDATED};
     public static final String CREATE_STAFFMANAGEMENT_TABLE =
             "CREATE TABLE " + STAFF_MANAGEMENT_TABLE + "(" +
                     STAFFMANAGEMENTID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    STAFFMANAGEMENT_STOREID_COL + " TEXT," +
                     STAFFMANAGEMENT_STAFFID_COL + " TEXT," +
                     STAFFMANAGEMENT_STAFFEMAIL_COL + " TEXT," +
                     STAFFMANAGEMENT_STAFFNAME_COL + " TEXT," +
@@ -230,79 +244,87 @@ public class DBHelper extends SQLiteOpenHelper {
                     STAFFMANAGEMENT_STAFFPASSWORD_COL + " TEXT," +
                     STAFFMANAGEMENT_STAFFJOINON_COL + " TEXT," +
                     STAFFMANAGEMENT_STAFFTOTALSALES_COL + " TEXT," +
-                    STAFFMANAGEMENT_STAFFKEY_COL + " TEXT)";
+                    STAFFMANAGEMENT_STAFFKEY_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //Subcategory Table
-    public static final String SUBCATEGORYID_COL = "SCId";
-    public static final String SUBCATEGORY_CATEGORYNAME_COL = "SubcatCatName";
-    public static final String SUBCATEGORY_PRODUCTCATEGORY_NAME_COL = "SubcatProdName";
-    public static final String[] PRODUCTSUBCATEGORY_COLUMNS = {SUBCATEGORYID_COL, SUBCATEGORY_CATEGORYNAME_COL, SUBCATEGORY_PRODUCTCATEGORY_NAME_COL,};
+    public static final String SUBCATEGORYID_COL = "PROSUBCATId";
+    public static final String SUBCATEGORY_CATEGORYNAME_COL = "Categoryname";
+    public static final String SUBCATEGORY_PRODUCTCATEGORY_NAME_COL = "ProsubcatName";
+    public static final String[] PRODUCTSUBCATEGORY_COLUMNS = {SUBCATEGORYID_COL, SUBCATEGORY_CATEGORYNAME_COL,
+            SUBCATEGORY_PRODUCTCATEGORY_NAME_COL, STOREID_COL, IS_UPDATED};
     public static final String CREATE_SUBCATEGORY_TABLE =
             "CREATE TABLE " + SUBCATEGORY_TABLE + "(" +
                     SUBCATEGORYID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     SUBCATEGORY_CATEGORYNAME_COL + " TEXT," +
-                    SUBCATEGORY_PRODUCTCATEGORY_NAME_COL + " TEXT)";
+                    SUBCATEGORY_PRODUCTCATEGORY_NAME_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //Supplier Table
     public static final String SUPPLIERID_COL = "SUPPId";
-    public static final String SUPPLIER_NAME_COL = "SupplierName";
-    public static final String SUPPLIER_MOBILE_COL = "SupplierMobile";
-    public static final String SUPPLIER_ADDRESS_COL = "SupplierAddress";
-    public static final String SUPPLIER_STARTDATE_COL = "SupplierStartDate";
-    public static final String SUPPLIER_STOREID_COL = "SupplierStoreId";
+    public static final String SUPPLIER_NAME_COL = "Suppname";
+    public static final String SUPPLIER_MOBILE_COL = "Suppmobile";
+    public static final String SUPPLIER_ADDRESS_COL = "Suppaddress";
+    public static final String SUPPLIER_STARTDATE_COL = "Suppstartdate";
     public static final String[] SUPPLIER_COLUMNS = {SUPPLIERID_COL, SUPPLIER_NAME_COL, SUPPLIER_MOBILE_COL, SUPPLIER_ADDRESS_COL,
-            SUPPLIER_STARTDATE_COL, SUPPLIER_STOREID_COL};
+            SUPPLIER_STARTDATE_COL, STOREID_COL, IS_UPDATED};
     public static final String CREATE_SUPPLIER_TABLE =
             "CREATE TABLE " + SUPPLIER_TABLE + "(" +
                     SUPPLIERID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     SUPPLIER_NAME_COL + " TEXT," +
                     SUPPLIER_MOBILE_COL + " TEXT," +
                     SUPPLIER_ADDRESS_COL + " TEXT," +
-                    SUPPLIER_STARTDATE_COL + "TEXT," +
-                    SUPPLIER_STOREID_COL + "TEXT)";
+                    SUPPLIER_STARTDATE_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //TotalStockSales Table
-    public static final String TOTALSTOCKSALESID_COL = "TSSId";
-    public static final String TOTALSTOCKSALES_PERDAYSALES_COL = "PerDaySalesAmnt";
-    public static final String TOTALSTOCKSALESID_PERDAYDATE_COL = "Date";
-    public static final String[] TOTALSTOCKSALES_COLUMNS = {TOTALSTOCKSALESID_COL, TOTALSTOCKSALES_PERDAYSALES_COL, TOTALSTOCKSALESID_PERDAYDATE_COL};
+    public static final String TOTALSTOCKSALESID_COL = "STOCKId";
+    public static final String TOTALSTOCKSALES_PERDAYSALES_COL = "PerdaysalesAmount";
+    public static final String TOTALSTOCKSALES_PERDAYDATE_COL = "Perdaydate";
+    public static final String[] TOTALSTOCKSALES_COLUMNS = {TOTALSTOCKSALESID_COL, TOTALSTOCKSALES_PERDAYSALES_COL,
+            TOTALSTOCKSALES_PERDAYDATE_COL, STOREID_COL, IS_UPDATED};
     public static final String CREATE_TOTALSTOCKSALES_TABLE =
             "CREATE TABLE " + TOTALSTOCKSALES_TABLE + "(" +
                     TOTALSTOCKSALESID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     TOTALSTOCKSALES_PERDAYSALES_COL + " TEXT," +
-                    TOTALSTOCKSALESID_PERDAYDATE_COL + " TEXT)";
+                    TOTALSTOCKSALES_PERDAYDATE_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
 
     //Transaction Table
-    public static final String TRANSACTIONID_COL = "TRANId";
-    public static final String TRANSACTION_STOREID_COL = "TranStoreId";
-    public static final String TRANSACTION_STAFFID_COL = "TranStaffId";
-    public static final String TRANSACTION_ADMINID_COL = "TranAdminId";
-    public static final String TRANSACTION_PRODUCT_NAME_COL = "TranProdName";
-    public static final String TRANSACTION_PRODUCT_QUANTITY_COL = "TranProdQuantity";
-    public static final String TRANSACTION_TOTALAMOUNT_COL = "TranTotalAmount";
-    public static final String TRANSACTION_CUSTOMER_MOBILE_COL = "TranCustMobile";
-    public static final String TRANSACTION_SOLDDATE_COL = "TranSoldDate";
-    public static final String TRANSACTION_INVOICENUMBER_COL = "TranInvoiceNum";
-    public static final String TRANSACTION_OPTYPE_COL = "TranOpType";
-    public static final String TRANSACTION_DELIVERYADDRESS_COL = "TranDeliveryAddress";
-    public static final String[] TRANSACTION_COLUMNS = {TRANSACTIONID_COL, TRANSACTION_STOREID_COL, TRANSACTION_STAFFID_COL, TRANSACTION_ADMINID_COL,
-            TRANSACTION_PRODUCT_NAME_COL, TRANSACTION_PRODUCT_QUANTITY_COL, TRANSACTION_TOTALAMOUNT_COL, TRANSACTION_CUSTOMER_MOBILE_COL,
-            TRANSACTION_SOLDDATE_COL, TRANSACTION_INVOICENUMBER_COL, TRANSACTION_OPTYPE_COL, TRANSACTION_DELIVERYADDRESS_COL};
+    public static final String TRANSACTIONID_COL = "TRANSId";
+    public static final String TRANSACTION_STAFFID_COL = "Staffid";
+    public static final String TRANSACTION_ADMINID_COL = "AdminId";
+    public static final String TRANSACTION_PRODUCT_NAME_COL = "ProductName";
+    public static final String TRANSACTION_PRODUCT_QUANTITY_COL = "Quantity";
+    public static final String TRANSACTION_TOTALAMOUNT_COL = "TotalAmount";
+    public static final String TRANSACTION_CUSTOMER_MOBILE_COL = "CusMobile";
+    public static final String TRANSACTION_SOLDDATE_COL = "SoldDate";
+    public static final String TRANSACTION_INVOICENUMBER_COL = "InvoiceNum";
+    public static final String TRANSACTION_OPTYPE_COL = "OpType";
+    public static final String TRANSACTION_DELIVERYADDRESS_COL = "DeliveryAdd";
+    public static final String[] TRANSACTION_COLUMNS = {TRANSACTIONID_COL, TRANSACTION_STAFFID_COL, TRANSACTION_ADMINID_COL,
+            TRANSACTION_PRODUCT_NAME_COL, TRANSACTION_PRODUCT_QUANTITY_COL, TRANSACTION_TOTALAMOUNT_COL,
+            TRANSACTION_CUSTOMER_MOBILE_COL, TRANSACTION_SOLDDATE_COL, TRANSACTION_INVOICENUMBER_COL, TRANSACTION_OPTYPE_COL,
+            TRANSACTION_DELIVERYADDRESS_COL, STOREID_COL, IS_UPDATED};
     public static final String CREATE_TRANSACTION_TABLE =
             "CREATE TABLE " + TRANSACTION_TABLE + "(" +
                     TRANSACTIONID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    TRANSACTION_STOREID_COL + " INTEGER," +
                     TRANSACTION_STAFFID_COL + " TEXT," +
-                    TRANSACTION_ADMINID_COL + " INTEGER," +
-                    TRANSACTION_PRODUCT_NAME_COL + " REAL," +
-                    TRANSACTION_PRODUCT_QUANTITY_COL + " REAL," +
-                    TRANSACTION_TOTALAMOUNT_COL + " INTEGER," +
+                    TRANSACTION_ADMINID_COL + " TEXT," +
+                    TRANSACTION_PRODUCT_NAME_COL + " TEXT," +
+                    TRANSACTION_PRODUCT_QUANTITY_COL + " TEXT," +
+                    TRANSACTION_TOTALAMOUNT_COL + " TEXT," +
                     TRANSACTION_CUSTOMER_MOBILE_COL + " TEXT," +
                     TRANSACTION_SOLDDATE_COL + " TEXT," +
                     TRANSACTION_INVOICENUMBER_COL + " TEXT," +
                     TRANSACTION_OPTYPE_COL + " TEXT," +
-                    TRANSACTION_DELIVERYADDRESS_COL + " TEXT)";
-
+                    TRANSACTION_DELIVERYADDRESS_COL + " TEXT," +
+                    STOREID_COL + " TEXT," +
+                    IS_UPDATED + " TEXT)";
     //-----------------------------------------------------------------------------Old Tables------------------------------------------------------------------------------------------------------------------------------------------------------
     //Product Table Column
     public static final String COL_PROD_ID = "id";
@@ -394,7 +416,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_OUTOFSTOCK_REMAIN_QUANTITY = "remainquantity";
     public static final String COL_OUTOFSTOCK_SUPPMOBILE = "suppmobile";
 
-    public static final String[] PRODUCT_COLUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_CATEGORY, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_MINLIMIT, COL_PROD_COSTPRICE, COL_PROD_SELLINGPRICE, COL_PROD_SUPPLIER, COL_PROD_ADDEDDATE, COL_PROD_FAVORITE};
+    public static final String[] PRODUCT_COLOUMNS = {COL_PROD_ID, COL_PROD_IMAGE, COL_PROD_CATEGORY, COL_PROD_NAME, COL_PROD_DESC, COL_PROD_QUANTITY, COL_PROD_MINLIMIT, COL_PROD_COSTPRICE, COL_PROD_SELLINGPRICE, COL_PROD_SUPPLIER, COL_PROD_ADDEDDATE, COL_PROD_FAVORITE};
     public static final String[] QUANTITY_DATE_COLUMNS = {COL_PROD_ID, COL_PROD_QUANTITY, COL_PROD_ADDEDDATE};
     public static final String[] SOLD_ITEM_COLUMNS = {COL_PROD_ID, COL_PROD_NAME, COL_PROD_IMAGE, COL_PROD_SOLDQUANTITY, COL_PROD_REMAINQUANTITY, COL_PROD_SOLDDATE, COL_PROD_SELLPRICE};
     public static final String[] LOGIN_CRED_ADMIN_COLUMNS = {COL_LOGINCRED_NAME, COL_LOGINCRED_EMAIL, COL_LOGINCRED_MOBNUM, COL_LOGINCRED_PASSWD, COL_LOGINCRED_STOREID, COL_LOGINCRED_CREATION_DATE};
@@ -549,6 +571,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
+/*        //OLD TABLES
         sqLiteDatabase.execSQL(CREATE_TABLE_PRODUCT);
         sqLiteDatabase.execSQL(CREATE_TABLE_QUANTITY_HISTORY);
         sqLiteDatabase.execSQL(CREATE_TABLE_SOLD_ITEMS);
@@ -562,10 +586,10 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_CUSTCARTPURCHASE);
         sqLiteDatabase.execSQL(CREATE_TABLE_CUSTPURCHASEHISTORY);
         sqLiteDatabase.execSQL(CREATE_TABLE_TOTAL_SALES_BY_DATE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_OUTOFSTOCK_ITEMS);
+        sqLiteDatabase.execSQL(CREATE_TABLE_OUTOFSTOCK_ITEMS);*/
 
         //New Tables
-      /*  sqLiteDatabase.execSQL(CREATE_ADMIN_LOGIN_TABLE);
+        sqLiteDatabase.execSQL(CREATE_ADMIN_LOGIN_TABLE);
         sqLiteDatabase.execSQL(CREATE_CART_TABLE);
         sqLiteDatabase.execSQL(CREATE_CATEGORY_TABLE);
         sqLiteDatabase.execSQL(CREATE_CUSTOMER_PURCHASE_TABLE);
@@ -577,12 +601,13 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_SUBCATEGORY_TABLE);
         sqLiteDatabase.execSQL(CREATE_SUPPLIER_TABLE);
         sqLiteDatabase.execSQL(CREATE_TOTALSTOCKSALES_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TRANSACTION_TABLE);*/
+        sqLiteDatabase.execSQL(CREATE_TRANSACTION_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldversion, int newversion) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCT);
+        //OLD TABLES
+       /* sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCT);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_QUANTITY_HISTORY);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_SOLD_ITEMS);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN_CRED_ADMIN);
@@ -595,10 +620,10 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CUST_CART_PURCHASE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CUST_PURCHASE_HISTORY);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_TOTAL_SALES_BY_DATE);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_OUTOFSTOCK_ITEMS);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_OUTOFSTOCK_ITEMS);*/
 
         //New Tables
-/*        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ADMIN_LOGIN_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ADMIN_LOGIN_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CART_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CATEGORY_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_PURCHASE_TABLE);
@@ -610,7 +635,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SUBCATEGORY_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SUPPLIER_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TOTALSTOCKSALES_TABLE);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TRANSACTION_TABLE);*/
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TRANSACTION_TABLE);
         onCreate(sqLiteDatabase);
     }
 }

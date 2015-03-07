@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.category.products.ProSubCat;
+import in.istore.bitblue.app.home.category.products.ProSubCat;
 import in.istore.bitblue.app.pojo.Category;
 
 public class CategoryAdapter extends BaseAdapter implements Filterable {

@@ -3,6 +3,7 @@ package in.istore.bitblue.app.loginScreen;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -23,10 +24,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.Mail;
-import in.istore.bitblue.app.utilities.API;
 
 public class ForgotPass extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -70,9 +71,10 @@ public class ForgotPass extends ActionBarActivity implements View.OnClickListene
 
             @Override
             protected void onPreExecute() {
-                dialog.setMessage("Retrieving Password...");
+                dialog.setTitle("Please Wait");
+                dialog.setMessage("Sending Mail...");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                dialog.setCancelable(false);
+                dialog.setCancelable(true);
                 dialog.show();
             }
 
@@ -107,10 +109,10 @@ public class ForgotPass extends ActionBarActivity implements View.OnClickListene
                 } else if (Password == null) {
                     Toast.makeText(getApplicationContext(), "Mobile Number Does not Exists", Toast.LENGTH_LONG).show();
                 } else {
-                    //sendMailToUser(Email, Password);      //commented due to internet unavailable
-                    String NotificationTitle = "BITSTORE PASSWORD";
+                    sendMailToUser(Email, Password);      //commented due to internet unavailable
+                    /*String NotificationTitle = "BITSTORE PASSWORD";
                     String NotificationMessage = "Your Password is: " + Password;
-                    sendPasswordThroughNotification(NotificationTitle, NotificationMessage);
+                    sendPasswordThroughNotification(NotificationTitle, NotificationMessage);*/
                 }
             }
         }.execute();
@@ -123,12 +125,11 @@ public class ForgotPass extends ActionBarActivity implements View.OnClickListene
             @Override
             protected void onPreExecute() {
                 dialog = new ProgressDialog(ForgotPass.this);
-                dialog.setTitle("");
+                dialog.setTitle("Please Wait");
                 dialog.setMessage("Sending Mail...");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                dialog.setCancelable(false);
+                dialog.setCancelable(true);
                 dialog.show();
-
             }
 
             @Override
@@ -140,6 +141,7 @@ public class ForgotPass extends ActionBarActivity implements View.OnClickListene
             protected void onPostExecute(Boolean result) {
                 dialog.dismiss();
                 if (result != null && result) {
+                    startActivity(new Intent(getApplicationContext(), LoginPage.class));
                     String NotificationTitle = "BITSTORE PASSWORD";
                     String NotificationMessage = "Your Password is: " + Password;
                     sendPasswordThroughNotification(NotificationTitle, NotificationMessage);

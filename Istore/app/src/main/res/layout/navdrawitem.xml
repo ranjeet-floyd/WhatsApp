@@ -8,7 +8,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="0dp"
         android:background="?android:attr/activatedBackgroundIndicator"
         android:orientation="vertical">
 
@@ -23,8 +22,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
-                android:layout_marginRight="@dimen/padd5dp"
-                android:layout_marginLeft="@dimen/padd10dp"/>
+                android:layout_marginLeft="@dimen/padd10dp"
+                android:layout_marginRight="@dimen/padd5dp" />
 
             <TextView
                 android:id="@+id/drawer_itemName"

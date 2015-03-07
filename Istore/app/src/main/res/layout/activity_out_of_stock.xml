@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.adminMenu.transactions.outofstock.OutOfStock">
+    tools:context="in.istore.bitblue.app.home.transactions.outofstock.OutOfStock">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -16,7 +16,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/linearLayout"
+        android:background="@color/material_blue_500" />
     <LinearLayout
         android:id="@+id/ll_outofstock_header"
         android:layout_width="match_parent"

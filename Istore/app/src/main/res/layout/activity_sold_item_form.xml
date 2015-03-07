@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_dark_material_dark"
-    tools:context="in.istore.bitblue.app.Stocks.listSoldStock.SoldItemForm">
+    android:background="@color/white"
+    tools:context="in.istore.bitblue.app.home.Stocks.listSoldStock.SoldItemForm">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -24,7 +24,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/linearLayout"
         android:layout_marginBottom="50dp"
-        android:background="@color/myWindowBackground">
+        android:background="@color/white">
 
         <ScrollView
             android:id="@+id/ll_one"
@@ -171,15 +171,18 @@
 
                         <Button
                             android:id="@+id/b_solditem_inc"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="@dimen/padd5dp"
+                            android:background="@drawable/blackbuttonshadow"
                             android:text="+"
                             android:textStyle="bold" />
 
                         <Button
                             android:id="@+id/b_solditem_dec"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/blackbuttonshadow"
                             android:text="-"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -220,6 +223,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginLeft="1dp"
         android:layout_marginTop="@dimen/padd5dp"
         android:background="@color/myWindowBackground"
         android:orientation="horizontal">
@@ -229,9 +233,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@null"
+            android:background="@drawable/addtocartshadow"
             android:text="@string/addtocart"
-            android:textColor="@color/material_blue_300"
+            android:textColor="@color/white"
             android:textStyle="bold" />
     </LinearLayout>
 

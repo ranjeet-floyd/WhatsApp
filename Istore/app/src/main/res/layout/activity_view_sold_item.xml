@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary_dark_material_dark"
-    tools:context="in.istore.bitblue.app.Stocks.listSoldStock.ViewSoldItem">
+    tools:context="in.istore.bitblue.app.home.Stocks.listSoldStock.ViewSoldItem">
 
     <LinearLayout
         android:id="@+id/linearLayout"

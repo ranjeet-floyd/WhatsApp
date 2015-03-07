@@ -167,7 +167,7 @@ public class ViewCustForStaff extends Fragment {
                         lvViewCust = (ListView) view.findViewById(R.id.lv_viewCustForStaff);
                         lvViewCust.setAdapter(custAdapter);
                     } else
-                        Toast.makeText(getActivity(), "No Customers Available", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "No Customers Available", Toast.LENGTH_SHORT).show();
                 }
             }
         }.execute();

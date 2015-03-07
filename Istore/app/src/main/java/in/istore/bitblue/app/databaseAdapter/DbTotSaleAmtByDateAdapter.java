@@ -26,40 +26,37 @@ public class DbTotSaleAmtByDateAdapter {
         return this;
     }
 
-    public long insertTodaySales(float TotalSalesAmount) {
+    public long insertTodaySales(String TotalSalesAmount, String StoreId) {
         Date date = new Date();
         String todayDate = DateUtil.convertToStringDateOnly(date);
         ContentValues insertAmount = new ContentValues();
-        insertAmount.put(DBHelper.COL_TOTALSALES_PERDAY_SALESAMOUNT, TotalSalesAmount + getTodaySales());
-        insertAmount.put(DBHelper.COL_TOTALSALES_PERDAY_DATE, todayDate);
+        insertAmount.put(DBHelper.TOTALSTOCKSALES_PERDAYSALES_COL,
+                Float.parseFloat(TotalSalesAmount) + Float.parseFloat(getTodaySales()));
+        insertAmount.put(DBHelper.TOTALSTOCKSALES_PERDAYDATE_COL, todayDate);
+        insertAmount.put(DBHelper.STOREID_COL, StoreId);
+        insertAmount.put(DBHelper.IS_UPDATED, "no");
 
         ContentValues updateAmount = new ContentValues();
-        updateAmount.put(DBHelper.COL_TOTALSALES_PERDAY_SALESAMOUNT, TotalSalesAmount + getTodaySales());
+        updateAmount.put(DBHelper.TOTALSTOCKSALES_PERDAYSALES_COL, TotalSalesAmount + getTodaySales());
 
         openWritableDatabase();
-        long result = 0;
-        if (isAlreadyExists(todayDate)) {
-            //update
-            result = sqLiteDb.update(DBHelper.TABLE_TOTAL_SALES_BY_DATE, updateAmount, DBHelper.COL_TOTALSALES_PERDAY_DATE + "='" + todayDate + "'", null);
-        } else {
-            //insert
-            result = sqLiteDb.insert(DBHelper.TABLE_TOTAL_SALES_BY_DATE, null, insertAmount);
-        }
-        return result;
+        if (isAlreadyExists(todayDate))
+            return sqLiteDb.update(DBHelper.TOTALSTOCKSALES_TABLE, updateAmount,
+                    DBHelper.TOTALSTOCKSALES_PERDAYDATE_COL + "='" + todayDate + "'", null);
+        else
+            return sqLiteDb.insert(DBHelper.TOTALSTOCKSALES_TABLE, null, insertAmount);
     }
 
-    public float getTodaySales() {
+    public String getTodaySales() {
         Date date = new Date();
         String todayDate = DateUtil.convertToStringDateOnly(date);
-        float TodaySales = 0;
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_TOTAL_SALES_BY_DATE, DBHelper.TOTALSALES_BYDATE_COLUMNS,
-                DBHelper.COL_TOTALSALES_PERDAY_DATE + "='" + todayDate + "'", null, null, null, null);
+        Cursor c = sqLiteDb.query(DBHelper.TOTALSTOCKSALES_TABLE, DBHelper.TOTALSTOCKSALES_COLUMNS,
+                DBHelper.TOTALSTOCKSALES_PERDAYDATE_COL + "='" + todayDate + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
-            TodaySales = c.getFloat(c.getColumnIndexOrThrow(DBHelper.COL_TOTALSALES_PERDAY_SALESAMOUNT));
-            return TodaySales;
+            return c.getString(c.getColumnIndexOrThrow(DBHelper.TOTALSTOCKSALES_PERDAYSALES_COL));
         } else {
-            return 0;
+            return null;
         }
     }
 

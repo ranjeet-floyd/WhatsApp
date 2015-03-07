@@ -22,7 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout"
-        android:layout_marginTop="@dimen/padd10dp"
         android:orientation="vertical">
 
         <TextView
@@ -77,7 +76,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="123456789"
+                        android:text=""
                         android:textColor="@color/black" />
 
                     <TextView
@@ -92,7 +91,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="1234"
+                        android:text=""
                         android:textColor="@color/black" />
                 </LinearLayout>
 
@@ -121,13 +120,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="03/02/2015"
+                        android:text=""
                         android:textColor="@color/black" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="1.1"
                         android:text="Staff Id:"
                         android:textColor="@color/black" />
 
@@ -136,7 +135,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="11"
+                        android:text=""
                         android:textColor="@color/black" />
                 </LinearLayout>
 
@@ -165,7 +164,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="1234567890"
+                        android:text=""
                         android:textColor="@color/black" />
                 </LinearLayout>
 
@@ -194,7 +193,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Mumbai"
+                        android:text=""
                         android:textColor="@color/black" />
                 </LinearLayout>
 

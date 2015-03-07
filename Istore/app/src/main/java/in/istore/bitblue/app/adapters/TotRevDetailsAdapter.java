@@ -64,7 +64,7 @@ public class TotRevDetailsAdapter extends BaseAdapter {
         holder.quantity.setText(String.valueOf(totRevDetails.getQuantity()));
         holder.purchaseamount.setText(String.valueOf(totRevDetails.getPurchaseAmnt()));
         holder.mobile.setText(String.valueOf(totRevDetails.getMobile()));
-        holder.purchaseDate.setText(DateUtil.getDateInDD_MM_YYYY(totRevDetails.getDate()));
+        holder.purchaseDate.setText(DateUtil.getDateInDD_MM_YY(totRevDetails.getDate()));
         return listRow;
     }
 

@@ -25,9 +25,9 @@ import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.home.HomePage;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.API;
 
 public class ChangePassword extends ActionBarActivity implements View.OnClickListener {
 
@@ -180,17 +180,20 @@ public class ChangePassword extends ActionBarActivity implements View.OnClickLis
                     Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
                     clearField(allEditTexts);
                 } else if (AdminEmail != null) {
-                    Toast.makeText(getApplicationContext(), "Password Changed", Toast.LENGTH_LONG).show();
-
+                    Toast.makeText(getApplicationContext(), "Password Changed", Toast.LENGTH_SHORT).show();
                     String NotificationTitle = "BITSTORE PASSWORD";
-                    String NotificationMessage = "Your Password is: " + NewPass;
+                    String NotificationMessage = "Your new Password is: " + NewPass;
                     sendPasswordThroughNotification(NotificationTitle, NotificationMessage);
+                    startActivity(new Intent(getApplicationContext(), HomePage.class));
 
                 } else if (Status.equals("1")) {
-                    Toast.makeText(getApplicationContext(), "Password Changed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Password Changed", Toast.LENGTH_SHORT).show();
+                    String NotificationTitle = "BITSTORE PASSWORD";
+                    String NotificationMessage = "Your new Password is: " + NewPass;
+                    sendPasswordThroughNotification(NotificationTitle, NotificationMessage);
                     startActivity(new Intent(getApplicationContext(), HomePage.class));
                 } else if (Status.equals("2")) {
-                    Toast.makeText(getApplicationContext(), "Password Change Failed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Password Change Failed", Toast.LENGTH_SHORT).show();
                 }
             }
         }.execute();

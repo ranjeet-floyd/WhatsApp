@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ public class TodaySalesStaff extends ActionBarActivity {
     private Toolbar toolbar;
     private TextView toolTitle;
     private ListView lvtodaysalesstaff;
+    private ProgressBar progressBar;
 
     private float TodaySalesStaff;
     private long StaffId;
@@ -66,6 +69,7 @@ public class TodaySalesStaff extends ActionBarActivity {
         // TodaySalesStaff = preftransactionstaff.getFloat("TodaySales", 0);
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        progressBar = (ProgressBar) findViewById(R.id.ll_progressbar);
         setSupportActionBar(toolbar);
         toolTitle.setText("Today's Total Sales: Rs " + TodaySaleForStaff);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -96,10 +100,11 @@ public class TodaySalesStaff extends ActionBarActivity {
 
             @Override
             protected void onPreExecute() {
-                dialog.setMessage("Getting Revenue Details...");
+             /*   dialog.setMessage("Getting Revenue Details...");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.setCancelable(false);
-                dialog.show();
+                dialog.show();*/
+                progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -127,7 +132,8 @@ public class TodaySalesStaff extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(String Response) {
-                dialog.dismiss();
+                //dialog.dismiss();
+                progressBar.setVisibility(View.INVISIBLE);
                 if (Response == null) {
                     Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
                 } else if (Response.equals("error")) {

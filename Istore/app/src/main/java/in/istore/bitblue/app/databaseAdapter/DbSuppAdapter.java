@@ -26,28 +26,29 @@ public class DbSuppAdapter {
         return this;
     }
 
-    public long insertSuppInfo(String Name, long Mobile, String Address, String Joindate) {
+    public long addNewSupplier(String Name, String Mobile, String Address, String Joindate, String StoreId) {
         ContentValues row = new ContentValues();
-        row.put(DBHelper.COL_SUPPINFO_NAME, Name);
-        row.put(DBHelper.COL_SUPPINFO_MOBILE, Mobile);
-        row.put(DBHelper.COL_SUPPINFO_ADDRESS, Address);
-        row.put(DBHelper.COL_SUPPINFO_STARTING_DATE, Joindate);
-
+        row.put(DBHelper.SUPPLIER_NAME_COL, Name);
+        row.put(DBHelper.SUPPLIER_MOBILE_COL, Mobile);
+        row.put(DBHelper.SUPPLIER_ADDRESS_COL, Address);
+        row.put(DBHelper.SUPPLIER_STARTDATE_COL, Joindate);
+        row.put(DBHelper.STOREID_COL, StoreId);
+        row.put(DBHelper.IS_UPDATED, "no");
         openWritableDatabase();
-        long result = sqLiteDb.insert(DBHelper.TABLE_SUPPINFO, null, row);
+        long result = sqLiteDb.insert(DBHelper.SUPPLIER_TABLE, null, row);
         return result;
     }
 
-    public ArrayList<Supplier> getAllSuppInfo() {
+    public ArrayList<Supplier> getAllSuppliers() {
         ArrayList<Supplier> supplierArrayList = new ArrayList<Supplier>();
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_SUPPINFO, DBHelper.SUPPINFO_COLUMNS,
+        Cursor c = sqLiteDb.query(DBHelper.SUPPLIER_TABLE, DBHelper.SUPPLIER_COLUMNS,
                 null, null, null, null, null);
         if (c != null && c.moveToFirst()) {
             do {
                 Supplier supplier = new Supplier();
-                supplier.setName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUPPINFO_NAME)));
-                supplier.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_SUPPINFO_MOBILE)));
+                supplier.setName(c.getString(c.getColumnIndexOrThrow(DBHelper.SUPPLIER_NAME_COL)));
+                supplier.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.SUPPLIER_MOBILE_COL)));
                 supplierArrayList.add(supplier);
             } while (c.moveToNext());
             return supplierArrayList;
@@ -59,11 +60,11 @@ public class DbSuppAdapter {
     public ArrayList<String> getAllSupplierNames() {
         ArrayList<String> supplierArrayList = new ArrayList<String>();
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_SUPPINFO, DBHelper.SUPPINFO_COLUMNS,
+        Cursor c = sqLiteDb.query(DBHelper.SUPPLIER_TABLE, DBHelper.SUPPLIER_COLUMNS,
                 null, null, null, null, null);
         if (c != null && c.moveToFirst()) {
             do {
-                supplierArrayList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_SUPPINFO_NAME)));
+                supplierArrayList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.SUPPLIER_NAME_COL)));
             } while (c.moveToNext());
             return supplierArrayList;
         } else {
@@ -81,5 +82,17 @@ public class DbSuppAdapter {
             return 0;
         }
     }
+
+    public boolean isSupplierExists(String Mobile) {
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.SUPPLIER_TABLE, DBHelper.SUPPLIER_COLUMNS,
+                DBHelper.SUPPLIER_MOBILE_COL + "='" + Mobile + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 }

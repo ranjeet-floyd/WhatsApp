@@ -3,13 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.category.Categories">
+    tools:context="in.istore.bitblue.app.home.category.Categories">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/abc_action_bar_default_height_material"
-        android:background="@color/material_blue_500">
+        android:layout_height="@dimen/abc_action_bar_default_height_material">
 
         <include
             android:id="@+id/toolbar_actionbar"
@@ -48,7 +47,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/padd5dp"
             android:layout_marginRight="@dimen/padd5dp"
-            android:listSelector="@color/material_blue_100"/>
+            android:listSelector="@color/material_blue_100" />
     </LinearLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu

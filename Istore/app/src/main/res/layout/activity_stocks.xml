@@ -2,14 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.Stocks.Stocks">
+    tools:context="in.istore.bitblue.app.home.Stocks.Stocks">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
         <include
             android:id="@+id/toolbar_actionbar"
             layout="@layout/toolbar"
@@ -23,8 +22,8 @@
         android:layout_below="@+id/linearLayout"
         android:gravity="center"
         android:orientation="vertical"
-        android:weightSum="4">
-
+        android:weightSum="4"
+        android:alpha="0.8">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,14 +32,12 @@
             android:layout_weight="1"
             android:orientation="horizontal"
             android:paddingTop="@dimen/padd10dp">
-
-
             <Button
                 android:id="@+id/b_stocks_list_my_stock"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@color/material_brown_300"
+                android:background="@drawable/liststockshadow"
                 android:text="@string/listmystock" />
         </LinearLayout>
 
@@ -52,14 +49,12 @@
             android:layout_marginRight="@dimen/padd5dp"
             android:layout_weight="1"
             android:paddingTop="@dimen/padd10dp">
-
-
             <Button
                 android:id="@+id/b_stocks_view_sold_items"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@color/material_blue_300"
+                android:background="@drawable/viewsolditemshadow"
                 android:text="@string/viewsolditems" />
         </LinearLayout>
 
@@ -71,16 +66,14 @@
             android:layout_marginRight="@dimen/padd5dp"
             android:layout_weight="1"
             android:paddingTop="@dimen/padd10dp">
-
             <Button
                 android:id="@+id/b_stocks_add_items"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@color/material_yellow_300"
+                android:background="@drawable/addtemshadow"
                 android:text="@string/additems" />
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -91,14 +84,12 @@
             android:layout_marginRight="@dimen/padd5dp"
             android:layout_weight="1"
             android:paddingTop="@dimen/padd10dp">
-
-
             <Button
                 android:id="@+id/b_stocks_sell_items"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@color/material_green_500"
+                android:background="@drawable/sellitemshadow"
                 android:text="@string/sellitems" />
         </LinearLayout>
 

@@ -16,7 +16,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/linearLayout"
+        android:background="@color/dark_grey" />
     <LinearLayout
         android:id="@+id/ll_todaysales_header"
         android:layout_width="match_parent"

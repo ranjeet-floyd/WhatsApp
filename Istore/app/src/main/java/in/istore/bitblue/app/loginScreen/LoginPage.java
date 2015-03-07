@@ -57,10 +57,10 @@ import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
 import in.istore.bitblue.app.home.HomePage;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.API;
 
 public class LoginPage extends Activity implements View.OnClickListener {
 
@@ -190,11 +190,9 @@ public class LoginPage extends Activity implements View.OnClickListener {
             case R.id.b_login_signup:
                 clearField(allEditTexts);
                 startActivity(new Intent(this, SignUpAdmin.class));
-                overridePendingTransition(R.anim.right_in, R.anim.left_out);
                 break;
             case R.id.b_login_forgotpass:
                 startActivity(new Intent(this, ForgotPass.class));
-                overridePendingTransition(R.anim.right_in, R.anim.left_out);
                 break;
             case R.id.b_login_login:
                 if (etmobNum.getText().toString().equals("")) {

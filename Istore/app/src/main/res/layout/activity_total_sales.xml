@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.adminMenu.transactions.totalrevenue.TotalRevSelectRange">
+    tools:context="in.istore.bitblue.app.home.transactions.totalrevenue.TotalRevSelectRange">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -16,6 +16,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/linearLayout"
+        android:background="@color/material_blue_500" />
 
     <LinearLayout
         android:id="@+id/ll_viewRevenue"
@@ -36,13 +42,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/padd10dp"
             android:layout_marginTop="@dimen/padd10dp"
             android:background="@color/material_blue_500" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="" />
     </LinearLayout>
 
     <LinearLayout
@@ -71,7 +73,7 @@
             android:layout_marginRight="5dp"
             android:text="to"
             android:textColor="@color/black"
-            android:textSize="20dp" />
+            android:textSize="18dp" />
 
         <Button
             android:id="@+id/b_totrevenue_to"
@@ -98,11 +100,14 @@
             android:id="@+id/b_totalrevenue_viewrevenue"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:background="@color/material_blue_grey_900"
-            android:text="OK" />
+            android:background="@drawable/button_shadow"
+            android:paddingLeft="@dimen/padd5dp"
+            android:paddingRight="@dimen/padd5dp"
+            android:text="View Revenue" />
     </LinearLayout>
 
-    <LinearLayout  android:id="@+id/ll_totrev_revenuedetail"
+    <LinearLayout
+        android:id="@+id/ll_totrev_revenuedetail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/ll_viewdetails"
@@ -209,7 +214,7 @@
                     android:id="@+id/tv_totrev_selectedRangeRev"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="20000"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -226,10 +231,10 @@
                 android:id="@+id/b_totrevenue_viewrevdetails"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:background="@color/material_blue_grey_900"
-                android:paddingLeft="@dimen/padd5dp"
-                android:paddingRight="@dimen/padd5dp"
-                android:text="View Revenue Details" />
+                android:background="@drawable/button_shadow"
+                android:paddingLeft="@dimen/padd10dp"
+                android:paddingRight="@dimen/padd10dp"
+                android:text="View Details" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

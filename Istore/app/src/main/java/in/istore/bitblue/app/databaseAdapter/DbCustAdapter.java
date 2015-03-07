@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -27,14 +26,15 @@ public class DbCustAdapter {
         return this;
     }
 
-    public long insertCustPurchaseInfo(long Mobile, float PurchaseAmount) {
-
-        ContentValues updaterow = new ContentValues(); //if mobile number present update purchase amt
+    public long insertCustPurchaseInfo(String Mobile, String PurchaseAmount, String StoreId) {
+        ContentValues updaterow = new ContentValues();
         updaterow.put(DBHelper.COL_CUSTPURCHASE_AMOUNT, PurchaseAmount);
 
-        ContentValues insertrow = new ContentValues(); //if not present make an entry for mobile and amount
+        ContentValues insertrow = new ContentValues();
         insertrow.put(DBHelper.COL_CUSTPURCHASE_MOBILE, Mobile);
         insertrow.put(DBHelper.COL_CUSTPURCHASE_AMOUNT, PurchaseAmount);
+        insertrow.put(DBHelper.STOREID_COL, StoreId);
+        insertrow.put(DBHelper.IS_UPDATED, "no");
         openWritableDatabase();
         long result = 0;
         if (isCustAlreadyExist(Mobile)) {
@@ -42,19 +42,14 @@ public class DbCustAdapter {
         } else {
             result = sqLiteDb.insert(DBHelper.TABLE_CUSTINFO, null, insertrow);
         }
-        Log.e("Customer Db Result: ", String.valueOf(result));
         return result;
     }
 
-    public boolean isCustAlreadyExist(long Mobile) {
+    public boolean isCustAlreadyExist(String Mobile) {
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_CUSTINFO, DBHelper.CUSTPURCHASE_COLUMNS,
-                DBHelper.COL_CUSTPURCHASE_MOBILE + "='" + Mobile + "'", null, null, null, null);
-        if (c != null && c.moveToFirst()) {
-            return true;
-        } else {
-            return false;
-        }
+        Cursor c = sqLiteDb.query(DBHelper.CUSTOMER_PURCHASE_AMOUNT_TABLE, DBHelper.CUSTOMERPURCHASEAMOUNT_COLUMNS,
+                DBHelper.CUSTOMERPURCHASEAMOUNT_CUSTOMER_MOBILE_COL + "='" + Mobile + "'", null, null, null, null);
+        return c != null && c.moveToFirst();
     }
 
     public ArrayList<Customer> getAllCustomerPurchaseAmount() {

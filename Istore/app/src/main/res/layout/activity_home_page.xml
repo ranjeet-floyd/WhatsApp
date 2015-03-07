@@ -24,11 +24,18 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/linearLayout"
+            android:background="@color/black" />
+
         <FrameLayout
             android:id="@+id/fl_homepage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/linearLayout">
+            android:layout_below="@+id/linearLayout"
+            android:layout_marginTop="@dimen/padd15dp">
 
             <in.istore.bitblue.app.home.dragGrid.DynamicGridView
                 android:id="@+id/dynamic_grid"
@@ -41,7 +48,6 @@
                 android:numColumns="@integer/column_count"
                 android:verticalSpacing="@dimen/padd5dp" />
         </FrameLayout>
-
     </RelativeLayout>
 
     <include layout="@layout/nav_draw_fragment" />

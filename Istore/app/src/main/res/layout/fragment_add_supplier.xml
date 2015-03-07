@@ -6,124 +6,129 @@
     android:paddingRight="@dimen/padd20dp"
     tools:context="in.istore.bitblue.app.adminMenu.suppInfo.AddSupplier">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padd10dp"
-            android:layout_marginTop="@dimen/padd20dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Name:"
-                android:textColor="@color/material_blue_500"
-                android:textSize="20sp" />
+                android:layout_marginBottom="@dimen/padd10dp"
+                android:layout_marginTop="@dimen/padd20dp"
+                android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/et_addsupp_name"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Name:"
+                    android:textColor="@color/material_blue_500"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/et_addsupp_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Supplier Name"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:textColor="@color/material_blue_grey_500"
+                    android:textColorHint="@color/grey" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Supplier Name"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:textColor="@color/material_blue_grey_500"
-                android:textColorHint="@color/grey" />
+                android:layout_marginBottom="@dimen/padd10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mobile Number:"
+                    android:textColor="@color/material_blue_500"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/et_addsupp_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Supplier Mobile"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+
+                    android:textColor="@color/material_blue_grey_500"
+                    android:textColorHint="@color/grey" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padd10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Address:"
+                    android:textColor="@color/material_blue_500"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/et_addsupp_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Supplier Address"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:textColor="@color/material_blue_grey_500"
+                    android:textColorHint="@color/grey" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padd20dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="left|center"
+                    android:text="Started from:"
+                    android:textColor="@color/material_blue_500"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/b_addsupp_joindate"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/tabshadow"
+                    android:text="select date" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/b_addsupp_addsupp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/tabshadow"
+                    android:paddingLeft="@dimen/padd5dp"
+                    android:paddingRight="@dimen/padd5dp"
+                    android:text="Add Supplier" />
+            </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padd10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Mobile Number:"
-                android:textColor="@color/material_blue_500"
-                android:textSize="20sp" />
-
-            <EditText
-                android:id="@+id/et_addsupp_mobile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Supplier Mobile"
-                android:imeOptions="actionNext"
-                android:inputType="number"
-
-                android:textColor="@color/material_blue_grey_500"
-                android:textColorHint="@color/grey" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padd10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Address:"
-                android:textColor="@color/material_blue_500"
-                android:textSize="20sp" />
-
-            <EditText
-                android:id="@+id/et_addsupp_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Supplier Address"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:textColor="@color/material_blue_grey_500"
-                android:textColorHint="@color/grey" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padd20dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="left|center"
-                android:text="Started from:"
-                android:textColor="@color/material_blue_500"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/b_addsupp_joindate"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:background="@drawable/tabshadow"
-                android:text="select date" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/b_addsupp_addsupp"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:background="@drawable/tabshadow"
-                android:paddingLeft="@dimen/padd5dp"
-                android:paddingRight="@dimen/padd5dp"
-                android:text="Add Supplier" />
-        </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </FrameLayout>

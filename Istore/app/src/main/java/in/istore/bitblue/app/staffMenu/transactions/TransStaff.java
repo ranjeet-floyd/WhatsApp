@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,20 +23,21 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.adminMenu.transactions.outofstock.OutOfStock;
 import in.istore.bitblue.app.databaseAdapter.DbCustPurHistAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbOutOfStockAdapter;
+import in.istore.bitblue.app.home.transactions.outofstock.OutOfStock;
 import in.istore.bitblue.app.staffMenu.transactions.todaysales.TodaySalesStaff;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.API;
 
 public class TransStaff extends ActionBarActivity implements View.OnClickListener {
     private Toolbar toolbar;
     private TextView toolTitle, tvTodaySalesStaff, tvOutOfStock;
     private Button bTodaySales, bOutofStock;
+    private ProgressBar progressBar;
 
     private float TodaySales;
     private int OutOfStockItems, StoreId;
@@ -67,6 +69,7 @@ public class TransStaff extends ActionBarActivity implements View.OnClickListene
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        progressBar = (ProgressBar) toolbar.findViewById(R.id.ll_progressbar);
         setSupportActionBar(toolbar);
         toolTitle.setText("Transaction Menu");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -111,10 +114,11 @@ public class TransStaff extends ActionBarActivity implements View.OnClickListene
 
             @Override
             protected void onPreExecute() {
-                dialog.setMessage("Fetching Details...");
+             /*   dialog.setMessage("Fetching Details...");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.setCancelable(false);
-                dialog.show();
+                dialog.show();*/
+                progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -122,9 +126,9 @@ public class TransStaff extends ActionBarActivity implements View.OnClickListene
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("key", StaffKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
-                nameValuePairs.add(new BasicNameValuePair("FromDate",TodayDate ));
-                nameValuePairs.add(new BasicNameValuePair("todate",TodayDate ));
-                nameValuePairs.add(new BasicNameValuePair("StaffId ",String.valueOf(StaffId) ));
+                nameValuePairs.add(new BasicNameValuePair("FromDate", TodayDate));
+                nameValuePairs.add(new BasicNameValuePair("todate", TodayDate));
+                nameValuePairs.add(new BasicNameValuePair("StaffId ", String.valueOf(StaffId)));
 
                 String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_SUM_OF_TOTAL_REVENUE_FOR_STAFF_BETWEEN_RANGE, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
@@ -144,7 +148,7 @@ public class TransStaff extends ActionBarActivity implements View.OnClickListene
 
             @Override
             protected void onPostExecute(String Response) {
-                dialog.dismiss();
+                //dialog.dismiss();
                 if (Response == null) {
                     Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
                 } else if (Response.equals("error")) {
@@ -152,9 +156,8 @@ public class TransStaff extends ActionBarActivity implements View.OnClickListene
                 } else if (TodSale == null) {
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
-                    tvTodaySalesStaff.setText(TodSale);
+                    tvTodaySalesStaff.setText(getResources().getString(R.string.rs) + "  " + TodSale);
                     tinyDB.putString("TodaySalesStaff", TodSale);
-
                 }
             }
 
@@ -167,10 +170,10 @@ public class TransStaff extends ActionBarActivity implements View.OnClickListene
 
             @Override
             protected void onPreExecute() {
-                dialog.setMessage("Fetching Details...");
+               /* dialog.setMessage("Fetching Details...");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.setCancelable(false);
-                dialog.show();
+                dialog.show();*/
             }
 
             @Override
@@ -196,7 +199,8 @@ public class TransStaff extends ActionBarActivity implements View.OnClickListene
 
             @Override
             protected void onPostExecute(String Response) {
-                dialog.dismiss();
+                //dialog.dismiss();
+                progressBar.setVisibility(View.INVISIBLE);
                 if (Response == null) {
                     Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
                 } else if (Response.equals("error")) {
@@ -204,7 +208,7 @@ public class TransStaff extends ActionBarActivity implements View.OnClickListene
                 } else if (OutOfStock == null) {
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
-                    tvOutOfStock.setText(String.valueOf(OutOfStock));
+                    tvOutOfStock.setText(String.valueOf(OutOfStock) + " " + "ITEM(S)");
                     tinyDB.putString("OutOfStockItem", OutOfStock);
                 }
             }

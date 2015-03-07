@@ -28,21 +28,24 @@ public class DbSoldItemAdapter {
         return this;
     }
 
-    public long insertSoldItemQuantityDetail(String Id, byte[] Image, String Name, int SoldQuantity, int RemQuantity, float sellPrice) {
+    public long insertSoldItemQuantityDetail(String Id, String Image, String Name, String SellPrice,
+                                             String SoldQuantity, String CusMobile,
+                                             String Optype, String DeliveryAddress, String StoreId) {
         Date date = new Date();
         String todayDate = DateUtil.convertToStringDateAndTime(date);
         ContentValues row = new ContentValues();
-        row.put(DBHelper.COL_PROD_ID, Id);
-        row.put(DBHelper.COL_PROD_IMAGE, Image);
-        row.put(DBHelper.COL_PROD_NAME, Name);
-        row.put(DBHelper.COL_PROD_SOLDQUANTITY, SoldQuantity);
-        row.put(DBHelper.COL_PROD_REMAINQUANTITY, RemQuantity);
-        row.put(DBHelper.COL_PROD_SOLDDATE, todayDate);   //Insert current date in Unix Time format.
-        row.put(DBHelper.COL_PROD_SELLPRICE, sellPrice);
-
+        row.put(DBHelper.SOLDPRODUCT_ID_COL, Id);
+        row.put(DBHelper.SOLDPRODUCT_IMAGE_COL, Image);
+        row.put(DBHelper.SOLDPRODUCT_NAME_COL, Name);
+        row.put(DBHelper.SOLDPRODUCT_SELLINGPRICE_COL, SellPrice);
+        row.put(DBHelper.SOLDPRODUCT_SOLDQUANTITY_COL, SoldQuantity);
+        row.put(DBHelper.SOLDPRODUCT_SOLDDATE_COL, todayDate);
+        row.put(DBHelper.SOLDPRODUCT_CUSTOMER_MOBILE_COL, CusMobile);
+        row.put(DBHelper.SOLDPRODUCT_OPTYPE_COL, Optype);
+        row.put(DBHelper.SOLDPRODUCT_DELIVERADDRESS_COL, DeliveryAddress);
+        row.put(DBHelper.STOREID_COL, StoreId);
         openWritableDatabase();
-        long result = sqLiteDb.insert(DBHelper.TABLE_SOLD_ITEMS, null, row);
-        return result;
+        return sqLiteDb.insert(DBHelper.SOLD_PRODUCT_TABLE, null, row);
     }
 
     public Product getSoldProductDetails(String Id) {
@@ -65,7 +68,7 @@ public class DbSoldItemAdapter {
         }
 
         Cursor cprodetalis = sqLiteDb.query(DBHelper.TABLE_PRODUCT, DBHelper.PRODUCT_COLUMNS,
-                DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null,null);
+                DBHelper.COL_PROD_ID + "='" + Id + "'", null, null, null, null);
 
         if (cprodetalis != null && cprodetalis.moveToFirst()) {
             product.setImage(cprodetalis.getBlob(1));

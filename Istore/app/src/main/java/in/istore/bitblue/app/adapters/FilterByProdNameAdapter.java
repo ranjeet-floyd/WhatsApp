@@ -61,7 +61,7 @@ public class FilterByProdNameAdapter extends BaseAdapter {
         holder.quantity.setText(String.valueOf(soldProduct.getItemSoldQuantity()));
         holder.totalsales.setText(String.valueOf(soldProduct.getItemTotalAmnt()));
         holder.custmobile.setText(String.valueOf(soldProduct.getMobile()));
-        holder.date.setText(DateUtil.getDateInDD_MM_YYYY(soldProduct.getDate()));
+        holder.date.setText(DateUtil.getDateInDD_MM_YY(soldProduct.getDate()));
         listRow.setTag(holder);
 
         return listRow;

@@ -69,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Mobile Number"
-                android:inputType="phone"
+                android:inputType="number"
                 android:textColor="@color/material_blue_grey_500"
                 android:textColorHint="@color/grey" />
         </LinearLayout>

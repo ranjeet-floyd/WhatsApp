@@ -52,11 +52,11 @@ import in.istore.bitblue.app.databaseAdapter.DbCartAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.home.HomePage;
 import in.istore.bitblue.app.pojo.CartItem;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.API;
 
 
 public class Invoice extends ActionBarActivity {
@@ -98,7 +98,7 @@ public class Invoice extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         toolTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolTitle.setText("Invoice");
+        toolTitle.setText("");
     }
 
     private void initViews() {
@@ -126,6 +126,10 @@ public class Invoice extends ActionBarActivity {
         tvTotalBillPay = (TextView) findViewById(R.id.tv_invoicefooter_totalbill);
         tvdeliveryAddress = (TextView) findViewById(R.id.tv_invoice_deliveryAddress);
         lldeliverAddress = (LinearLayout) findViewById(R.id.ll_invoice_deliverAddress);
+
+        findViewById(R.id.ll_invoice).setVisibility(View.GONE);
+        findViewById(R.id.ll_invoice_one).setVisibility(View.GONE);
+        findViewById(R.id.footer_layout).setVisibility(View.GONE);
         StoreId = globalVariable.getStoreId();
         tinyDB = new TinyDB(this);
         StoreName = tinyDB.getString("StoreName");
@@ -222,11 +226,14 @@ public class Invoice extends ActionBarActivity {
                         }
                     }
                     if (invoiceArrayList != null && invoiceArrayList.size() > 0) {
+                        findViewById(R.id.ll_invoice).setVisibility(View.VISIBLE);
+                        findViewById(R.id.ll_invoice_one).setVisibility(View.VISIBLE);
+                        findViewById(R.id.footer_layout).setVisibility(View.VISIBLE);
                         tvTotalBillPay.setText(String.valueOf(totalPayAmount));
                         invoiceAdapter = new InvoiceAdapter(getApplicationContext(), invoiceArrayList);
                         lvProductList.setAdapter(invoiceAdapter);
                     } else
-                        Toast.makeText(getApplicationContext(), "No Product Available", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(getApplicationContext(), HomePage.class));
                 }
             }
         }.execute();
@@ -243,9 +250,12 @@ public class Invoice extends ActionBarActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_print:
-
-                clearAllPurchases();
-                showCloudPrintDialog();
+                if (invoiceArrayList == null || invoiceArrayList.size() == 0) {
+                    Toast.makeText(getApplicationContext(), "Nothing to print", Toast.LENGTH_SHORT).show();
+                } else {
+                    clearAllPurchases();
+                    showCloudPrintDialog();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -325,7 +335,7 @@ public class Invoice extends ActionBarActivity {
             createHeadings(cb, 100, 780, "InVoice Number: " + invoiceNumber, 10);
             createHeadings(cb, 400, 780, "Store Id: " + StoreId, 10);
             createHeadings(cb, 100, 760, "Date: " + todayDate, 10);
-            createHeadings(cb, 400, 760, "Store Name: " + StoreName, 10);
+            // createHeadings(cb, 400, 760, "Store Name: " + StoreName, 10);
             createHeadings(cb, 100, 740, "Customer Number: " + Mobile, 10);
             if (DeliverAddress != null && !(DeliverAddress.equals("")))
                 createHeadings(cb, 100, 720, "Delivery Address: " + DeliverAddress, 10);

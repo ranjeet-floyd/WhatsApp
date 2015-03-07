@@ -53,7 +53,8 @@ public class ViewCustForStaffAdapter extends BaseAdapter {
             holder = (ViewHolder) listRow.getTag();
         SoldProduct soldProduct = soldprodArrayList.get(position);
         holder.mobile.setText(String.valueOf(soldProduct.getMobile()));
-        holder.amount.setText(String.valueOf(soldProduct.getItemTotalAmnt()));
+        holder.amount.setText(context.getResources().getString(R.string.rs)
+                + " " + String.valueOf(soldProduct.getItemTotalAmnt()));
         return listRow;
     }
 

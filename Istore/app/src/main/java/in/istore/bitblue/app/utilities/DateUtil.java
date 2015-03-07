@@ -98,4 +98,24 @@ public class DateUtil {
             return null;
         }
     }
+
+    public static String getDateInDD_MM_YY(String date_in_yyyy_mm_dd) {
+        String yyyy_mm_dd = "yyyy-MM-dd'T'HH:mm:ss";
+        String dd_mm_yy = "dd/MM/yy";
+
+        Date date = null;
+        SimpleDateFormat formatter = null;
+
+        try {
+            date = new SimpleDateFormat(yyyy_mm_dd).parse(date_in_yyyy_mm_dd);
+            formatter = new SimpleDateFormat(dd_mm_yy);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (formatter != null) {
+            return formatter.format(date);
+        } else {
+            return null;
+        }
+    }
 }

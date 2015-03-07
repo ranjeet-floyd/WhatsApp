@@ -23,31 +23,23 @@
         android:layout_height="@dimen/abc_action_bar_default_height_material"
         android:layout_below="@+id/linearLayout"
         android:orientation="horizontal"
-        android:weightSum="3">
+        android:weightSum="2">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:layout_weight="0.9"
-            android:gravity="center"
-            android:text="Total Pay Amount:"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1.4"
-            android:gravity="center"
-            android:text="@string/rs"
+            android:gravity="right"
+            android:text="Total Pay Amount: "
             android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/tv_cart_totalpayamount"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.8"
-            android:gravity="center"
-            android:text="0"
+            android:layout_weight="1.1"
+            android:gravity="left|center"
+            android:text="1000000"
             android:textColor="@color/black" />
     </LinearLayout>
 
@@ -63,4 +55,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
+
 </RelativeLayout>

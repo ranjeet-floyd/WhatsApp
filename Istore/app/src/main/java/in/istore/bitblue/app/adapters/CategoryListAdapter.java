@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.Stocks.listStock.ListMyStock;
+import in.istore.bitblue.app.home.Stocks.listStock.ListMyStock;
 import in.istore.bitblue.app.pojo.Category;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 

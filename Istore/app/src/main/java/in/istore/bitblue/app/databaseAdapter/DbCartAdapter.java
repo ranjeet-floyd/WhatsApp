@@ -26,17 +26,21 @@ public class DbCartAdapter {
         return this;
     }
 
-    public long addItemToCart(String Id, String Name, int Quantity, float SellingPrice, float Total) {
-        ContentValues row = new ContentValues();
-        row.put(DBHelper.COL_CARTITEM_ID, Id);
-        row.put(DBHelper.COL_CARTITEM_NAME, Name);
-        row.put(DBHelper.COL_CARTITEM_QUANTITY, Quantity);
-        row.put(DBHelper.COL_CARTITEM_SELLINGPRICE, SellingPrice);
-        row.put(DBHelper.COL_CARTITEM_TOTALPRICE, (Quantity * SellingPrice));
+    public long addItemToCart(String Id, String Name, String Quantity, String SellingPrice, String TotalPrice, String StoreId) {
+        if (isAlreadyinCart(Id))
+            return updateCartItemQuantityandTotalPrice(Id, Quantity, SellingPrice);
+        else
+            return addProductToCart(Id, Name, Quantity, SellingPrice, TotalPrice, StoreId);
+    }
 
-        openWritableDatabase();
-        long result = sqLiteDb.insert(DBHelper.TABLE_CART, null, row);
-        return result;
+    public String getCurrentQuantity(String Id) {
+        Cursor c = sqLiteDb.query(DBHelper.CART_TABLE, DBHelper.CART_COLUMNS,
+                DBHelper.CART_PRODUCT_ID_COL + "='" + Id + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            return c.getString(c.getColumnIndexOrThrow(DBHelper.CART_PRODUCT_QUANTITY_COL));
+        } else {
+            return null;
+        }
     }
 
     public ArrayList<CartItem> getAllCartItems() {
@@ -62,22 +66,20 @@ public class DbCartAdapter {
 
     public boolean isAlreadyinCart(String id) {
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_CART, DBHelper.CARTITEM_COLUMNS,
-                DBHelper.COL_CARTITEM_ID + "='" + id + "'", null, null, null, null);
-        if (c != null && c.moveToFirst()) {
-            return true;
-        } else {
-            return false;
-        }
+        Cursor c = sqLiteDb.query(DBHelper.CART_TABLE, DBHelper.CART_COLUMNS,
+                DBHelper.CART_PRODUCT_ID_COL + "='" + id + "'", null, null, null, null);
+        return c != null && c.moveToFirst();
     }
 
-    public int updateCartItemQuantityandAmount(String Id, String Name, int Quantity, float totalAmount) {
+    public int updateCartItemQuantityandTotalPrice(String Id, String AddedQuantity, String SellingPrice) {
+        String CurrentQuantity = getCurrentQuantity(Id);
+        String TotalQuantity = String.valueOf(Integer.parseInt(CurrentQuantity) + Integer.parseInt(AddedQuantity));
+        String TotalAmount = String.valueOf(Float.parseFloat(SellingPrice) * Integer.parseInt(AddedQuantity));
         ContentValues row = new ContentValues();
-        row.put(DBHelper.COL_CARTITEM_QUANTITY, Quantity);
-        row.put(DBHelper.COL_CARTITEM_TOTALPRICE, totalAmount);
+        row.put(DBHelper.CART_PRODUCT_QUANTITY_COL, TotalQuantity);
+        row.put(DBHelper.CART_PRODUCT_TOTALPRICE_COL, TotalAmount);
         openWritableDatabase();
-        int result = sqLiteDb.update(DBHelper.TABLE_CART, row, DBHelper.COL_CARTITEM_ID + "='" + Id, null);
-        return result;
+        return sqLiteDb.update(DBHelper.CART_TABLE, row, DBHelper.CART_PRODUCT_ID_COL + "='" + Id, null);
     }
 
     public float getTotalPayAmount() {
@@ -93,19 +95,17 @@ public class DbCartAdapter {
         }
     }
 
-    public long insertEachCartItem(String Id, long Mobile, String Name, int Quantity, float SellingPrice, float Total, long StaffId) {
+    public long addProductToCart(String Id, String Name, String Quantity, String SellingPrice, String TotalPrice, String StoreId) {
         ContentValues row = new ContentValues();
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_ID, Id);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_MOBILE, Mobile);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_PROD_NAME, Name);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY, Quantity);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_PROD_SELLING_PRICE, SellingPrice);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE, Total);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_STAFF_ID, StaffId);
-
+        row.put(DBHelper.CART_PRODUCT_ID_COL, Id);
+        row.put(DBHelper.CART_PRODUCT_NAME_COL, Name);
+        row.put(DBHelper.CART_PRODUCT_QUANTITY_COL, Quantity);
+        row.put(DBHelper.CART_PRODUCT_SELLINGPRICE_COL, SellingPrice);
+        row.put(DBHelper.CART_PRODUCT_TOTALPRICE_COL, TotalPrice);
+        row.put(DBHelper.STOREID_COL, StoreId);
+        row.put(DBHelper.IS_UPDATED, "no");
         openWritableDatabase();
-        long result = sqLiteDb.insert(DBHelper.TABLE_CUST_CART_PURCHASE, null, row);
-        return result;
+        return sqLiteDb.insert(DBHelper.CART_TABLE, null, row);
     }
 
     //To empty cart once the cart is sold
@@ -121,5 +121,4 @@ public class DbCartAdapter {
         int result = sqLiteDb.delete(DBHelper.TABLE_CUST_CART_PURCHASE, null, null);
         return result;
     }
-
 }

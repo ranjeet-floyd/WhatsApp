@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.adminMenu.transactions.totalrevenue.TotalRevViewDetails">
+    tools:context="in.istore.bitblue.app.home.transactions.totalrevenue.TotalRevViewDetails">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -18,12 +18,18 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/linearLayout"
+        android:background="@color/material_blue_500" />
+
     <LinearLayout
         android:id="@+id/ll_totrevdetails_rangerevenue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout"
-        android:layout_marginBottom="@dimen/padd20dp"
+        android:layout_marginBottom="@dimen/padd10dp"
         android:layout_marginTop="@dimen/padd5dp"
         android:gravity="center"
         android:orientation="horizontal"
@@ -124,9 +130,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="Date"
-            android:layout_gravity="end"
-            android:gravity="end"
             android:textColor="@color/black" />
     </LinearLayout>
 
@@ -161,7 +166,7 @@
             android:id="@+id/fab_totrevdetails_staffid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_sort_by_size"
+            android:src="@drawable/ic_filter"
             fab:fab_colorNormal="@color/material_blue_100"
             fab:fab_colorPressed="@color/material_blue_grey_100"
             fab:fab_title="Filter By Staff Id" />
@@ -170,7 +175,7 @@
             android:id="@+id/fab_totrevdetails_product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_sort_by_size"
+            android:src="@drawable/ic_filter"
             fab:fab_colorNormal="@color/material_blue_100"
             fab:fab_colorPressed="@color/material_blue_grey_100"
             fab:fab_title="Filter By Product Name" />

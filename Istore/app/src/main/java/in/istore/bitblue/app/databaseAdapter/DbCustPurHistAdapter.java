@@ -30,23 +30,20 @@ public class DbCustPurHistAdapter {
         return this;
     }
 
-    public long addToSoldHistory(String Id, long Mobile, String Name, int Quantity, float SellingPrice, float Total, long StaffId) {
-        Date date = new Date();
-        String purchaseDate = DateUtil.convertToStringDateOnly(date);
+    public long insertIntoCustomerPurchase(String Id, String Mobile, String Name, String Quantity,
+                                           String SellingPrice, String Total, String PersonId, String StoreId) {
         ContentValues row = new ContentValues();
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_ID, Id);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_MOBILE, Mobile);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_PROD_NAME, Name);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_PROD_QUANTITY, Quantity);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_PROD_SELLING_PRICE, SellingPrice);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_PROD_TOTAL_PRICE, Total);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_STAFF_ID, StaffId);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_PURCHASE_DATE, purchaseDate);/*
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_OPTYPE, Optype);
-        row.put(DBHelper.COL_CUSTCARTPURCHASE_DELIVERYADDRESS, DeliveryAdd);*/
-
+        row.put(DBHelper.CUSTOMERPURCHASE_PRODUCT_ID_COL, Id);
+        row.put(DBHelper.CUSTOMERPURCHASE_CUSTOMER_MOBILE_COL, Mobile);
+        row.put(DBHelper.CUSTOMERPURCHASE_PRODUCT_NAME_COL, Name);
+        row.put(DBHelper.CUSTOMERPURCHASE_PRODUCT_QUANTITY_COL, Quantity);
+        row.put(DBHelper.CUSTOMERPURCHASE_PRODUCT_SELLINGPRICE_COL, SellingPrice);
+        row.put(DBHelper.CUSTOMERPURCHASE_PRODUCT_TOTALPRICE_COL, Total);
+        row.put(DBHelper.CUSTOMERPURCHASE_PRODUCT_STAFFID_COL, PersonId);
+        row.put(DBHelper.STOREID_COL, StoreId);
+        row.put(DBHelper.IS_UPDATED, "no");
         openWritableDatabase();
-        return sqLiteDb.insert(DBHelper.TABLE_CUST_PURCHASE_HISTORY, null, row);
+        return sqLiteDb.insert(DBHelper.CUSTOMER_PURCHASE_TABLE, null, row);
     }
 
     public ArrayList<SoldProduct> getPurchaseHistoryFor(String prodName) {

@@ -26,20 +26,21 @@ public class DbStaffAdapter {
         return this;
     }
 
-    public long insertStaffInfo(int StoreId, int StaffId, int AdminId, String Name, long Mobile, String Passwd, String Address, String Joindate) {
+    public long addNewStaff(String StoreId, String StaffId, String StaffEmail, String Name, String Mobile, String Passwd, String Address, String JoinDate, String StaffTotSales) {
         ContentValues row = new ContentValues();
-        row.put(DBHelper.COL_STAFFMGNT_STOREID, StoreId);
-        row.put(DBHelper.COL_STAFFMGNT_STAFFID, StaffId);
-        row.put(DBHelper.COL_STAFFMGNT_ADMINID, AdminId);
-        row.put(DBHelper.COL_STAFFMGNT_NAME, Name);
-        row.put(DBHelper.COL_STAFFMGNT_MOBNUM, Mobile);
-        row.put(DBHelper.COL_STAFFMGNT_PASSWD, Passwd);
-        row.put(DBHelper.COL_STAFFMGNT_ADDRESS, Address);
-        row.put(DBHelper.COL_STAFFMGNT_STAFFEMAIL, " ");
-        row.put(DBHelper.COL_STAFFMGNT_JOIN_DATE, Joindate);
-
+        row.put(DBHelper.STOREID_COL, StoreId);
+        row.put(DBHelper.STAFFMANAGEMENT_STAFFID_COL, StaffId);
+        row.put(DBHelper.STAFFMANAGEMENT_STAFFEMAIL_COL, StaffEmail);
+        row.put(DBHelper.STAFFMANAGEMENT_STAFFNAME_COL, Name);
+        row.put(DBHelper.STAFFMANAGEMENT_STAFFMOBILE_COL, Mobile);
+        row.put(DBHelper.STAFFMANAGEMENT_STAFFADDRESS_COL, Address);
+        row.put(DBHelper.STAFFMANAGEMENT_STAFFPASSWORD_COL, Passwd);
+        row.put(DBHelper.STAFFMANAGEMENT_STAFFJOINON_COL, JoinDate);
+        row.put(DBHelper.STAFFMANAGEMENT_STAFFTOTALSALES_COL, StaffTotSales);
+        row.put(DBHelper.IS_UPDATED, "no");
+        //row.put(DBHelper.STAFFMANAGEMENT_STAFFKEY_COL, StaffKey);
         openWritableDatabase();
-        return sqLiteDb.insert(DBHelper.TABLE_STAFFMGNT, null, row);
+        return sqLiteDb.insert(DBHelper.STAFF_MANAGEMENT_TABLE, null, row);
     }
 
     public long updateStaffSales(long StaffId, float TotalSalesAmount) {
@@ -62,18 +63,18 @@ public class DbStaffAdapter {
         }
     }
 
-    public ArrayList<Staff> getAllStaffInfo(int StoreId) {
+    public ArrayList<Staff> getAllStaffsOnLocal(String StoreId) {
         ArrayList<Staff> staffArrayList = new ArrayList<Staff>();
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_STAFFMGNT, DBHelper.STAFFMGNT_COLUMNS,
-                DBHelper.COL_STAFFMGNT_STOREID + "='" + StoreId + "'", null, null, null, null);
+        Cursor c = sqLiteDb.query(DBHelper.STAFF_MANAGEMENT_TABLE, DBHelper.STAFFMANAGEMENT_COLUMNS,
+                DBHelper.STOREID_COL + "='" + StoreId + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
             do {
                 Staff staff = new Staff();
-                staff.setStaffId(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_STAFFID)));
-                staff.setName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_NAME)));
-                staff.setMobile(c.getLong(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_MOBNUM)));
-                staff.setTotalSales(c.getInt(c.getColumnIndexOrThrow(DBHelper.COL_STAFFMGNT_TOTALSALES)));
+                staff.setStaffId(c.getString(c.getColumnIndexOrThrow(DBHelper.STAFFMANAGEMENT_STAFFID_COL)));
+                staff.setName(c.getString(c.getColumnIndexOrThrow(DBHelper.STAFFMANAGEMENT_STAFFNAME_COL)));
+                staff.setMobile(c.getString(c.getColumnIndexOrThrow(DBHelper.STAFFMANAGEMENT_STAFFMOBILE_COL)));
+                staff.setTotalSales(c.getString(c.getColumnIndexOrThrow(DBHelper.STAFFMANAGEMENT_STAFFTOTALSALES_COL)));
                 staffArrayList.add(staff);
             } while (c.moveToNext());
             return staffArrayList;
@@ -103,6 +104,17 @@ public class DbStaffAdapter {
         Cursor c = sqLiteDb.query(DBHelper.TABLE_STAFFMGNT, DBHelper.STAFFMGNT_COLUMNS,
                 DBHelper.COL_STAFFMGNT_MOBNUM + "=" + Mobile + " AND " +
                         DBHelper.COL_STAFFMGNT_PASSWD + "='" + Passwd + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isStaffExists(String Mobile) {
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.STAFF_MANAGEMENT_TABLE, DBHelper.STAFFMANAGEMENT_COLUMNS,
+                DBHelper.STAFFMANAGEMENT_STAFFMOBILE_COL + "='" + Mobile + "'", null, null, null, null);
         if (c != null && c.moveToFirst()) {
             return true;
         } else {

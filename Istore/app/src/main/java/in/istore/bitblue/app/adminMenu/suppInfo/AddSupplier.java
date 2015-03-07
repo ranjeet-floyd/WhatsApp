@@ -26,11 +26,11 @@ import java.util.Date;
 import in.istore.bitblue.app.R;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbSuppAdapter;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.DatePickerFragment;
 import in.istore.bitblue.app.utilities.DateUtil;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
-import in.istore.bitblue.app.utilities.API;
 
 public class AddSupplier extends Fragment {
 
@@ -96,38 +96,85 @@ public class AddSupplier extends Fragment {
                     etAddress.setHintTextColor(getResources().getColor(R.color.material_red_A400));
                     return;
                 }
-                
+
                 SuppName = etName.getText().toString();
                 SuppMobile = Long.parseLong(etMobile.getText().toString());
                 SuppAddress = etAddress.getText().toString();
                 Date date = new Date();
                 SuppStartDate = DateUtil.convertToStringDateOnly(date);
                 StoreId = globalVariable.getStoreId();
-                /*long result = suppAdapter.insertSuppInfo(name, mobile, address, startDate);           //Remove if using api
+                /*long result = suppAdapter.insertSuppInfo(name, mobile, address, startDate);
                 if (result <= 0) {
                     Toast.makeText(getActivity(), "Record Not Added", Toast.LENGTH_SHORT).show();
 
                 } else {
                     clearField(allEditTexts);
-                }*/                                                                                     //
-
-                addSupplierInfoToDatabase();
+                }*/
+                addSupplierInfoOnServer();
+                //addSupplierInfoOnLocal();
             }
 
         });
     }
 
-    private void addSupplierInfoToDatabase() {
+    private void addSupplierInfoOnLocal() {
         new AsyncTask<String, String, String>() {
-
             ProgressDialog dialog = new ProgressDialog(getActivity());
 
             @Override
             protected void onPreExecute() {
-                dialog.setMessage("Adding Supplier...");
+              /*  dialog.setMessage("Adding Supplier...");
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.setCancelable(false);
                 dialog.show();
+                Toast.makeText(getActivity(), "Adding Supplier", Toast.LENGTH_SHORT).show();*/
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                if (isSupplierAlreadyPresent(String.valueOf(SuppMobile)))
+                    return "alreadyExists";
+                else {
+                    long result = suppAdapter.addNewSupplier(SuppName, String.valueOf(SuppMobile), SuppAddress, startDate, String.valueOf(StoreId));
+                    if (result > 0)
+                        return "addedSupplier";
+                    else
+                        return "failedToAdd";
+                }
+            }
+
+
+            @Override
+            protected void onPostExecute(String Response) {
+                dialog.dismiss();
+                if (Response.equals("alreadyExists")) {
+                    Toast.makeText(getActivity(), "Supplier Already Exists", Toast.LENGTH_SHORT).show();
+                } else if (Response.equals("failedToAdd")) {
+                    Toast.makeText(getActivity(), "Failed to add", Toast.LENGTH_SHORT).show();
+                } else if (Response.equals("addedSupplier")) {
+                    Toast.makeText(getActivity(), SuppName + " Added", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }.execute();
+
+    }
+
+    private boolean isSupplierAlreadyPresent(String SupplierMobile) {
+        return suppAdapter.isSupplierExists(String.valueOf(SupplierMobile));
+    }
+
+    private void addSupplierInfoOnServer() {
+        new AsyncTask<String, String, String>() {
+            ProgressDialog dialog = new ProgressDialog(getActivity());
+
+            @Override
+            protected void onPreExecute() {
+                /*dialog.setMessage("Adding Supplier...");
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();*/
+                // Toast.makeText(getActivity(), "Adding Supplier", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -154,7 +201,6 @@ public class AddSupplier extends Fragment {
                 }
                 return Response;
             }
-
 
             @Override
             protected void onPostExecute(String Response) {
@@ -205,7 +251,6 @@ public class AddSupplier extends Fragment {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-
             bDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
             startDate = bDate.getText().toString();
         }

@@ -20,9 +20,8 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.Stocks.sellItem.SellItem;
+import in.istore.bitblue.app.home.Stocks.sellItem.SellItem;
 import in.istore.bitblue.app.pojo.Product;
-import in.istore.bitblue.app.utilities.DateUtil;
 
 public class ListStockAdapter extends BaseAdapter implements Filterable {
 
@@ -65,13 +64,14 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
             holder.quantity = (TextView) listRow.findViewById(R.id.tv_listitem_quantity);
             holder.image = (ImageView) listRow.findViewById(R.id.iv_listitem_img);
             holder.name = (TextView) listRow.findViewById(R.id.tv_listitem_name);
-            holder.date = (TextView) listRow.findViewById(R.id.tv_listitem_date);
+            holder.sellprice = (TextView) listRow.findViewById(R.id.tv_listitem_sellprice);
             listRow.setTag(holder);
         } else {
             holder = (ViewHolder) listRow.getTag();
         }
         final Product product = productArrayList.get(position);
 
+        //byte[] outImage = ImageUtil.convertBase64ImagetoByteArrayImage(product.getProdImage());
         byte[] outImage = product.getImage();
         if (outImage != null) {
             ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
@@ -81,7 +81,7 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
         holder.category.setText(product.getCategory());
         holder.quantity.setText(String.valueOf(product.getQuantity()));
         holder.name.setText(product.getName());
-        holder.date.setText(DateUtil.getDateInDD_MM_YYYY(product.getAddedDate()));
+        holder.sellprice.setText(context.getResources().getString(R.string.rs) + " " + product.getSellprice());
 
         //This is used to select clicked listItem and get its details
         listRow.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +149,7 @@ public class ListStockAdapter extends BaseAdapter implements Filterable {
     }
 
     private static class ViewHolder {
-        TextView category, name, date, quantity;
+        TextView category, name, sellprice, quantity;
         ImageView image;
     }
 }

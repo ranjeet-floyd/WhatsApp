@@ -3,16 +3,14 @@
     style="@style/ToolBarStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/hptoolbarshadow"
     android:minHeight="@dimen/abc_action_bar_default_height_material">
-
     <TextView
         android:id="@+id/toolbar_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/material_brown_500"
-        android:textSize="25sp"
+        android:textColor="@color/black"
+        android:textSize="28sp"
         android:text=""
         android:textStyle="bold|italic" />
 </android.support.v7.widget.Toolbar>

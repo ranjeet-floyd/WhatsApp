@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padd10dp"
             android:hint="Enter Mobile Number"
-            android:inputType="phone"
+            android:inputType="number"
             android:textColor="@color/material_blue_grey_500"
             android:textColorHint="@color/grey" />
 

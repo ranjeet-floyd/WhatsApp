@@ -2,11 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.adminMenu.staffMgmt.ViewStaff">
+    tools:context="in.istore.bitblue.app.home.staffMgmt.ViewStaff">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"    android:alpha="0.9"
+        >
 
         <LinearLayout
             android:id="@+id/ll_header"
@@ -23,21 +24,21 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.1"
                 android:text="ID"
-                android:textColor="@color/black" />
+                android:textColor="@color/dark_grey" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Name"
-                android:textColor="@color/black" />
+                android:textColor="@color/dark_grey" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
                 android:text="Mobile No"
-                android:textColor="@color/black" />
+                android:textColor="@color/dark_grey" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -46,7 +47,7 @@
                 android:layout_gravity="end"
                 android:gravity="end"
                 android:text="Total Sales"
-                android:textColor="@color/black" />
+                android:textColor="@color/dark_grey" />
         </LinearLayout>
 
         <ListView

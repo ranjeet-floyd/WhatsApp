@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.Stocks.sellItem.SellItemsMenu">
+    tools:context="in.istore.bitblue.app.home.Stocks.sellItem.SellItemsMenu">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linearLayout"
         android:orientation="vertical">
 
         <include
@@ -20,8 +20,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padd20dp"
+            android:gravity="center"
+            android:text="Select an existing Product to Sell"
+            android:textColor="@color/black" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -36,15 +44,18 @@
                 <Button
                     android:id="@+id/b_sell_items_barcode"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/blackbuttonshadow"
+                    android:paddingLeft="@dimen/padd5dp"
+                    android:paddingRight="@dimen/padd5dp"
                     android:text="Search using Barcode" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -57,13 +68,16 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <Button
                     android:id="@+id/b_sell_items_fromlist"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/blackbuttonshadow"
+                    android:paddingLeft="@dimen/padd5dp"
+                    android:paddingRight="@dimen/padd5dp"
                     android:text="Select From List" />
             </LinearLayout>
         </LinearLayout>

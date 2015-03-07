@@ -88,11 +88,11 @@ public class SoldItemAdapter extends BaseAdapter implements Filterable {
         String deliverAddress = product.getDeliverAddress();
         if (deliverAddress == null || deliverAddress.equals("null")) {
             holder.lldeliverAddress.setVisibility(View.GONE);
-            notifyDataSetChanged();
         } else {
             holder.lldeliverAddress.setVisibility(View.VISIBLE);
             holder.deliverAddress.setText(deliverAddress);
         }
+        notifyDataSetChanged();
 
        /* listRow.setOnClickListener(new View.OnClickListener() {
 

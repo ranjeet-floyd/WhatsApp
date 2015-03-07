@@ -26,23 +26,24 @@ public class DbCategoryAdapter {
         return this;
     }
 
-    public long addNewCategory(String Name) {
+    public long addNewCategory(String Name, String StoreId) {
         ContentValues row = new ContentValues();
-        row.put(DBHelper.COL_CATEGORY_NAME, Name);
+        row.put(DBHelper.CATEGORY_NAME_COL, Name);
+        row.put(DBHelper.STOREID_COL, StoreId);
+        row.put(DBHelper.IS_UPDATED, "no");
         openWritableDatabase();
-        long result = sqLiteDb.insert(DBHelper.TABLE_CATEGORY, null, row);
-        return result;
+        return sqLiteDb.insert(DBHelper.CATEGORY_TABLE, null, row);
     }
 
     public ArrayList<Category> getAllCategories() {
         ArrayList<Category> categoryArrayList = new ArrayList<Category>();
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_CATEGORY, DBHelper.CATEGORY_COLUMNS,
+        Cursor c = sqLiteDb.query(DBHelper.CATEGORY_TABLE, DBHelper.PRODUCTCATEGORY_COLUMNS,
                 null, null, null, null, null);
         if (c != null && c.moveToFirst()) {
             do {
                 Category category = new Category();
-                category.setCategoryName(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CATEGORY_NAME)));
+                category.setCategoryName(c.getString(c.getColumnIndexOrThrow(DBHelper.CATEGORY_NAME_COL)));
                 categoryArrayList.add(category);
             } while (c.moveToNext());
             return categoryArrayList;
@@ -65,16 +66,34 @@ public class DbCategoryAdapter {
     public ArrayList<String> getAllCategoryNames() {
         ArrayList<String> categoryNameList = new ArrayList<String>();
         openWritableDatabase();
-        Cursor c = sqLiteDb.query(DBHelper.TABLE_CATEGORY, DBHelper.CATEGORY_COLUMNS,
+        Cursor c = sqLiteDb.query(DBHelper.CATEGORY_TABLE, DBHelper.PRODUCTCATEGORY_COLUMNS,
                 null, null, null, null, null);
         if (c != null && c.moveToFirst()) {
             do {
-                categoryNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.COL_CATEGORY_NAME)));
+                categoryNameList.add(c.getString(c.getColumnIndexOrThrow(DBHelper.CATEGORY_NAME_COL)));
             } while (c.moveToNext());
             return categoryNameList;
         } else {
             return null;
         }
 
+    }
+
+    public ArrayList<Category> fetchPendingRowsToUpdate() {
+        ArrayList<Category> categoryArrayList = new ArrayList<Category>();
+        openWritableDatabase();
+        Cursor c = sqLiteDb.query(DBHelper.CATEGORY_TABLE, DBHelper.PRODUCTCATEGORY_COLUMNS,
+                DBHelper.IS_UPDATED + "='" + "no" + "'", null, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                Category category = new Category();
+                category.setCategoryName(c.getString(c.getColumnIndexOrThrow(DBHelper.CATEGORY_NAME_COL)));
+                category.setStoreId(c.getString(c.getColumnIndexOrThrow(DBHelper.STOREID_COL)));
+                categoryArrayList.add(category);
+            } while (c.moveToNext());
+            return categoryArrayList;
+        } else {
+            return null;
+        }
     }
 }

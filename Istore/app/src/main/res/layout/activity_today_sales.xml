@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.istore.bitblue.app.adminMenu.transactions.todaysales.TodaySales">
+    tools:context="in.istore.bitblue.app.home.transactions.todaysales.TodaySales">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -16,6 +16,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/linearLayout"
+        android:background="@color/material_blue_500" />
 
     <LinearLayout
         android:id="@+id/ll_todaysales_header"
@@ -32,35 +38,35 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Id"
-            android:textColor="@color/black" />
+            android:textColor="@color/dark_grey" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Name"
-            android:textColor="@color/black" />
+            android:textColor="@color/dark_grey" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Qty."
-            android:textColor="@color/black" />
+            android:textColor="@color/dark_grey" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Amnt"
-            android:textColor="@color/black" />
+            android:textColor="@color/dark_grey" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Cust No"
-            android:textColor="@color/black" />
+            android:textColor="@color/dark_grey" />
 
     </LinearLayout>
 

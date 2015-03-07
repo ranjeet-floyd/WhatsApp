@@ -56,14 +56,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.Stocks.Stocks;
+import in.istore.bitblue.app.home.Stocks.Stocks;
 import in.istore.bitblue.app.adapters.NavDrawAdapter;
 import in.istore.bitblue.app.adminMenu.custInfo.CusInfoContent;
-import in.istore.bitblue.app.adminMenu.staffMgmt.StaffMgntContent;
+import in.istore.bitblue.app.home.staffMgmt.StaffMgntContent;
 import in.istore.bitblue.app.adminMenu.suppInfo.SuppInfoContent;
-import in.istore.bitblue.app.adminMenu.transactions.Trans;
+import in.istore.bitblue.app.home.transactions.Trans;
 import in.istore.bitblue.app.cart.Cart;
-import in.istore.bitblue.app.category.Categories;
+import in.istore.bitblue.app.home.category.Categories;
 import in.istore.bitblue.app.cloudprint.CloudPrint;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
@@ -80,10 +80,10 @@ import in.istore.bitblue.app.pojo.GridItems;
 import in.istore.bitblue.app.pojo.GridItemsList;
 import in.istore.bitblue.app.staffMenu.custInfo.CusInfoForStaffContent;
 import in.istore.bitblue.app.staffMenu.transactions.TransStaff;
+import in.istore.bitblue.app.utilities.API;
 import in.istore.bitblue.app.utilities.GlobalVariables;
 import in.istore.bitblue.app.utilities.JSONParser;
 import in.istore.bitblue.app.utilities.TinyDB;
-import in.istore.bitblue.app.utilities.API;
 
 public class HomePage extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Toolbar toolbar;
@@ -151,7 +151,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
         Mobile = preflogin.getLong("Mobile", 0);
         dbStaffAdapter = new DbStaffAdapter(this);
-        StaffId = dbStaffAdapter.getStaffId(Mobile);
+       // StaffId = dbStaffAdapter.getStaffId(Mobile);
 
         if (UserType != null) {
             if (UserType.equals("Admin")) {
@@ -557,7 +557,6 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         startActivity(new Intent(this, LoginPage.class));
         finish();
     }
-
 
     private void signOutFromGplus() {
         if (responseGmail == 1000) {
