@@ -133,7 +133,7 @@ public class StaffMobile extends ActionBarActivity implements View.OnClickListen
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("MobileNumber", String.valueOf(Mobile)));
                 nameValuePairs.add(new BasicNameValuePair("EmailId", Email));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_STAFF_EMAIL, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_ADD_STAFF_EMAIL, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -200,7 +200,7 @@ public class StaffMobile extends ActionBarActivity implements View.OnClickListen
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("Mobile", String.valueOf(Mobile)));
                 nameValuePairs.add(new BasicNameValuePair("Pass", Password));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_LOGIN, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_LOGIN, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

@@ -210,7 +210,7 @@ public class EditItemForm extends ActionBarActivity implements View.OnClickListe
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("CategoryName", CategoryName));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALL_SUBCATEGORIES, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_ALL_SUBCATEGORIES, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -279,7 +279,7 @@ public class EditItemForm extends ActionBarActivity implements View.OnClickListe
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("Storeid", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("AdminKey", Key));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_SUPPLIER_INFO, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_SUPPLIER_INFO, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -453,7 +453,7 @@ public class EditItemForm extends ActionBarActivity implements View.OnClickListe
                 nameValuePairs.add(new BasicNameValuePair("AddedOn", AddedOn));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_UPDATE_PRODUCTDETAILS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_UPDATE_PRODUCTDETAILS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

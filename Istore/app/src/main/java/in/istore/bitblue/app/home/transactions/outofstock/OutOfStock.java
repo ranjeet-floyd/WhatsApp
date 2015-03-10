@@ -109,7 +109,7 @@ public class OutOfStock extends ActionBarActivity {
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_OUTOFSTOCKITEMS, nameValuePairs);      //check the API Path
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_OUTOFSTOCKITEMS, nameValuePairs);      //check the API Path
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

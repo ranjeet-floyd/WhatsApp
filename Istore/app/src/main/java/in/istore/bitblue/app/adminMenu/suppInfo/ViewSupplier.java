@@ -119,7 +119,7 @@ public class ViewSupplier extends Fragment {
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("Storeid", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_SUPPLIER_INFO, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_SUPPLIER_INFO, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

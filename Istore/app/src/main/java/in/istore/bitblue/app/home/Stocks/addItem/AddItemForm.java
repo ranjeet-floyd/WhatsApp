@@ -55,16 +55,15 @@ import in.istore.bitblue.app.utilities.Store;
 import in.istore.bitblue.app.utilities.TinyDB;
 
 public class AddItemForm extends ActionBarActivity implements View.OnClickListener {
+    private static final int CAPTURE_PIC_REQ = 1111;
     private Toolbar toolbar;
     private Button bCaptureImage, bScanBarcode, bSubmit, bCancel, bUpdate;
     private EditText etbarcode, etdesc, etquantity, etminlimit, etcostprice, etsellprice;
     private ImageView ivProdImage;
     private AutoCompleteTextView actvcategory, actvProdName, actvsupplier;
-
     private ArrayList<String> categoryNameList = new ArrayList<>();
     private ArrayList<String> proSubCatNameList = new ArrayList<>();
     private ArrayList<String> suppNameList = new ArrayList<>();
-
     private DbCategoryAdapter dbCategoryAdapter;
     private DbProSubCatAdapter dbProSubCatAdapter;
     private DbSuppAdapter dbSuppAdapter;
@@ -78,13 +77,35 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
     private JSONArray jsonArray;
     private JSONObject jsonObject;
     private ArrayList<NameValuePair> nameValuePairs;
-
     private byte[] byteThumbnailArray, byteImage, prodImage;
     private int proImgCount = 1, iquantity, iminlimit, StoreId;
     private float fcostprice, fsellprice;
     private String scanContent, imagePath, id, categoryName, name, desc, quantity, minlimit, costprice, sellprice, supplier, Key, UserType, AddedOn, Status;
-    private static final int CAPTURE_PIC_REQ = 1111;
     private boolean isExistingProduct;
+
+    //Get the URI of Image
+    public static Uri getImageContentUri(Context context, File imageFile) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.Media._ID},
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[]{filePath}, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor
+                    .getColumnIndex(MediaStore.MediaColumns._ID));
+            return Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -376,7 +397,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("CategoryName", CategoryName));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALL_SUBCATEGORIES, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_ALL_SUBCATEGORIES, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -391,7 +412,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
 
             @Override
             protected void onPostExecute(String Response) {
-               // dialog.dismiss();
+                // dialog.dismiss();
                 if (Response == null) {
                     Toast.makeText(getApplicationContext(), "Response null", Toast.LENGTH_LONG).show();
                 } else if (Response.equals("error")) {
@@ -445,7 +466,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("Storeid", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_SUPPLIER_INFO, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_SUPPLIER_INFO, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -809,7 +830,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 nameValuePairs.add(new BasicNameValuePair("AddedOn", AddedOn));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("Key", Key));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_PRODUCT, nameValuePairs);
+                String Response = jsonParser.makeAndroidHttpClientRequest(API.BITSTORE_ADD_PRODUCT, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -870,7 +891,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 nameValuePairs.add(new BasicNameValuePair("Sellingprice", sellprice));
                 nameValuePairs.add(new BasicNameValuePair("Supplier", supplier));
                 nameValuePairs.add(new BasicNameValuePair("AddedOn", AddedOn));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_UPDATE_PRODUCTDETAILS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_UPDATE_PRODUCTDETAILS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -931,7 +952,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                     bitmapImage = (Bitmap) intent.getExtras().get("data");
                     ivProdImage.setImageBitmap(bitmapImage);
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+                    bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
                     prodImage = bytes.toByteArray();
 
                  /*   //getExternalFilesDir("") will locate the storage for this app
@@ -987,7 +1008,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 nameValuePairs.add(new BasicNameValuePair("CategoryName", categoryName));
                 nameValuePairs.add(new BasicNameValuePair("Name", prodName));
                 nameValuePairs.add(new BasicNameValuePair("PId", prodID));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_CHECK_EXISTINGPRODUCTID, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_CHECK_EXISTINGPRODUCTID, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -1062,7 +1083,7 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
                 nameValuePairs.add(new BasicNameValuePair("CategoryName", categoryName));
                 nameValuePairs.add(new BasicNameValuePair("Name", prodname));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_PRODUCTDETAILS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_PRODUCTDETAILS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -1123,30 +1144,6 @@ public class AddItemForm extends ActionBarActivity implements View.OnClickListen
             }
         }.execute();
 
-    }
-
-    //Get the URI of Image
-    public static Uri getImageContentUri(Context context, File imageFile) {
-        String filePath = imageFile.getAbsolutePath();
-        Cursor cursor = context.getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[]{MediaStore.Images.Media._ID},
-                MediaStore.Images.Media.DATA + "=? ",
-                new String[]{filePath}, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            int id = cursor.getInt(cursor
-                    .getColumnIndex(MediaStore.MediaColumns._ID));
-            return Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id);
-        } else {
-            if (imageFile.exists()) {
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.DATA, filePath);
-                return context.getContentResolver().insert(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            } else {
-                return null;
-            }
-        }
     }
 
     //Get location of image in the storage

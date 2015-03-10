@@ -15,8 +15,7 @@
         android:layout_height="match_parent"
         android:layout_weight="0.8"
         android:text="Supplier"
-        android:textColor="@color/dark_grey"
-        android:textSize="20sp" />
+        android:textColor="@color/dark_grey" />
 
     <TextView
         android:id="@+id/tv_view_supp_mobile"
@@ -24,8 +23,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center|left"
-        android:textColor="@color/dark_grey"
-        android:textSize="20sp" />
+        android:textColor="@color/dark_grey" />
 
     <ImageView
         android:layout_width="match_parent"

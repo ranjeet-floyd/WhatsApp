@@ -82,7 +82,7 @@ public class ForgotPass extends ActionBarActivity implements View.OnClickListene
             protected String doInBackground(String... strings) {
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("Mobile", Mobile));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_FORGOT_PASSWORD, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_FORGOT_PASSWORD, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

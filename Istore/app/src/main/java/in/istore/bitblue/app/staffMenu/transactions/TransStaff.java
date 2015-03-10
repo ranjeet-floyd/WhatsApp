@@ -130,7 +130,7 @@ public class TransStaff extends ActionBarActivity implements View.OnClickListene
                 nameValuePairs.add(new BasicNameValuePair("todate", TodayDate));
                 nameValuePairs.add(new BasicNameValuePair("StaffId ", String.valueOf(StaffId)));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_SUM_OF_TOTAL_REVENUE_FOR_STAFF_BETWEEN_RANGE, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_SUM_OF_TOTAL_REVENUE_FOR_STAFF_BETWEEN_RANGE, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -181,7 +181,7 @@ public class TransStaff extends ActionBarActivity implements View.OnClickListene
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("key", StaffKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_OUTOFSTOCK_ITEMS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_OUTOFSTOCK_ITEMS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

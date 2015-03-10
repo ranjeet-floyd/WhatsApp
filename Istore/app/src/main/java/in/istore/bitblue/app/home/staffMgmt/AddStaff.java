@@ -194,7 +194,7 @@ public class AddStaff extends Fragment {
                 nameValuePairs.add(new BasicNameValuePair("StaffjoinOn", joinDate));
                 nameValuePairs.add(new BasicNameValuePair("Stafftotsale", String.valueOf(StaffTotSales)));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_STAFF_SIGN_UP, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_STAFF_SIGN_UP, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

@@ -121,7 +121,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("AdminKey", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_TOTAL_REVENUE, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -172,7 +172,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                 nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TODAY_SALES, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_TODAY_SALES, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -223,7 +223,7 @@ public class Trans extends ActionBarActivity implements View.OnClickListener {
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_OUTOFSTOCK_ITEMS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_OUTOFSTOCK_ITEMS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

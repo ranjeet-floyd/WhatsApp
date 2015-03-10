@@ -163,7 +163,7 @@ public class FilterByProdName extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("productName", prodName));
                 nameValuePairs.add(new BasicNameValuePair("StaffId", ""));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_SUM_OF_TOTAL_REVENUE_FOR_PRODUCT_BETWEEN_RANGE, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_SUM_OF_TOTAL_REVENUE_FOR_PRODUCT_BETWEEN_RANGE, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -219,7 +219,7 @@ public class FilterByProdName extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("AdminId", ""));
                 nameValuePairs.add(new BasicNameValuePair("ProductName", prodName));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_PRODNAME, nameValuePairs);      //check the API Path
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_PRODNAME, nameValuePairs);      //check the API Path
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -293,7 +293,7 @@ public class FilterByProdName extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_PRODUCTNAMES, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_PRODUCTNAMES, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

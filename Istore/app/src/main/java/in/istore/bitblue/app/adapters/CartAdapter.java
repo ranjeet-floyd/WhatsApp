@@ -58,7 +58,7 @@ public class CartAdapter extends BaseAdapter {
         holder.itemId.setText(cartItem.getItemId());
         holder.itemName.setText(cartItem.getItemName());
         holder.itemSoldQuan.setText(String.valueOf(cartItem.getItemSoldQuantity()));
-        holder.itemTotAmnt.setText(String.valueOf(cartItem.getItemTotalAmnt()));
+        holder.itemTotAmnt.setText(context.getResources().getString(R.string.rs) + " " + String.valueOf(cartItem.getItemTotalAmnt()));
 
         listRow.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

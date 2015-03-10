@@ -158,7 +158,7 @@ public class TotalRevViewDetails extends ActionBarActivity implements View.OnCli
                 nameValuePairs.add(new BasicNameValuePair("AdminId", ""));
                 nameValuePairs.add(new BasicNameValuePair("ProductName", ""));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_ALL_STAFFANDPRODUCTS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_ALL_STAFFANDPRODUCTS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

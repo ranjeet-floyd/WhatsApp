@@ -37,6 +37,5 @@
         android:layout_gravity="end"
         android:layout_weight="1"
         android:gravity="end"
-        android:text="12000"
         android:textColor="@color/dark_grey" />
 </LinearLayout>

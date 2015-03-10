@@ -131,7 +131,7 @@ public class CategoryList extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALL_CATEGORIES, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_ALL_CATEGORIES, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

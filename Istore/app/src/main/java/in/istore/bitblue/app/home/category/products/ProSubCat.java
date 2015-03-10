@@ -200,7 +200,7 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_SUBCATEGORY, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_ADD_SUBCATEGORY, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -307,7 +307,7 @@ public class ProSubCat extends ActionBarActivity implements View.OnClickListener
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("CategoryName", CategoryName));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALL_SUBCATEGORIES, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_ALL_SUBCATEGORIES, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

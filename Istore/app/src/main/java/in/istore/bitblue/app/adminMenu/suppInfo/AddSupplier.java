@@ -186,7 +186,7 @@ public class AddSupplier extends Fragment {
                 nameValuePairs.add(new BasicNameValuePair("Suppstartdate", SuppStartDate));
                 nameValuePairs.add(new BasicNameValuePair("Storeid", String.valueOf(StoreId)));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_SUPPLIER, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_ADD_SUPPLIER, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

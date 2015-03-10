@@ -404,7 +404,7 @@ public class ListMyStock extends ActionBarActivity
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("CategoryName", CategoryName));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALLPRODUCTS_FORCATEGORY, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_ALLPRODUCTS_FORCATEGORY, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

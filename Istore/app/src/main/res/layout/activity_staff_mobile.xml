@@ -17,56 +17,61 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout"
-        android:layout_marginTop="@dimen/padd50dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/padd40dp"
-        android:paddingRight="@dimen/padd40dp">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linearLayout">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/padd20dp"
-            android:gravity="center"
-            android:text="If You Are Owner/Admin Skip this step"
-            android:textColor="@color/material_blue_300" />
-
-        <Button
-            android:id="@+id/b_staffmobile_skip"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/padd40dp"
-            android:layout_marginBottom="@dimen/padd70dp"
-            android:background="@drawable/button_shadow"
-            android:text="Skip" />
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Staff Mobile Number:"
-            android:textColor="@color/myPrimaryColor" />
-
-        <EditText
-            android:id="@+id/et_staffmobile_mobile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Mobile Number"
-            android:inputType="number"
-            android:textColor="@color/material_blue_grey_500"
-            android:textColorHint="@color/grey" />
-
-        <Button
-            android:id="@+id/b_staffmobile_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_gravity="end"
-            android:layout_marginTop="@dimen/padd30dp"
-            android:background="@drawable/button_shadow"
+            android:layout_marginTop="@dimen/padd50dp"
             android:gravity="center"
-            android:text="Submit" />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/padd40dp"
+            android:paddingRight="@dimen/padd40dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/padd20dp"
+                android:gravity="center"
+                android:text="If You Are Owner/Admin Skip this step"
+                android:textColor="@color/material_blue_300" />
+
+            <Button
+                android:id="@+id/b_staffmobile_skip"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/padd40dp"
+                android:layout_marginBottom="@dimen/padd70dp"
+                android:background="@drawable/button_shadow"
+                android:text="Skip" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Staff Mobile Number:"
+                android:textColor="@color/myPrimaryColor" />
+
+            <EditText
+                android:id="@+id/et_staffmobile_mobile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Mobile Number"
+                android:inputType="number"
+                android:textColor="@color/material_blue_grey_500"
+                android:textColorHint="@color/grey" />
+
+            <Button
+                android:id="@+id/b_staffmobile_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/padd30dp"
+                android:background="@drawable/button_shadow"
+                android:gravity="center"
+                android:text="Submit" />
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

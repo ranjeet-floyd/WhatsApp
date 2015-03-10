@@ -197,7 +197,7 @@ public class Cart extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_CART_ITEMS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_CART_ITEMS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -435,7 +435,7 @@ public class Cart extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("Key", Key));
                 nameValuePairs.add(new BasicNameValuePair("DeliveryAdd", DeliveryAddress));
                 nameValuePairs.add(new BasicNameValuePair("InvoiceNum", String.valueOf(InVoiceNum)));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_SOLDITEM, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_ADD_SOLDITEM, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

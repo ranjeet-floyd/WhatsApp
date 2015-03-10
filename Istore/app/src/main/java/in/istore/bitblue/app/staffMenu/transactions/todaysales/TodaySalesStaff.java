@@ -117,7 +117,7 @@ public class TodaySalesStaff extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("StaffId", String.valueOf(StaffId)));
                 nameValuePairs.add(new BasicNameValuePair("AdminId", ""));
                 nameValuePairs.add(new BasicNameValuePair("ProductName", ""));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TODAY_SALES_FORSTAFF, nameValuePairs);      //check the API Path
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_TODAY_SALES_FORSTAFF, nameValuePairs);      //check the API Path
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

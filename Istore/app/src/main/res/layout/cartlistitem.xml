@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,20 +42,20 @@
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
-                        android:text="Name"
+                        android:text=""
                         android:textAllCaps="true"
                         android:textColor="@color/myPrimaryColor"
-                        android:textSize="20sp"
+                        android:textSize="14sp"
                         android:textStyle="bold|italic" />
 
                     <TextView
                         android:id="@+id/tv_cartlistitem_id"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:text=""
                         android:textColor="@color/myPrimaryColor"
-                        android:textSize="20sp"
+                        android:textSize="14sp"
                         android:textStyle="bold|italic" />
                 </LinearLayout>
 
@@ -75,7 +76,7 @@
                         android:id="@+id/tv_cartlistitem_soldquantity"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:text=""
                         android:textColor="@color/myPrimaryColor" />
                 </LinearLayout>
@@ -84,27 +85,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/padd5dp"
-                    android:weightSum="3">
+                    android:weightSum="2">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0.5"
                         android:text="Total: "
-                        android:textColor="@color/myPrimaryColor" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.4"
-                        android:text="@string/rs"
                         android:textColor="@color/myPrimaryColor" />
 
                     <TextView
                         android:id="@+id/tv_cartlistitem_totalamount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:text=""
                         android:textColor="@color/myPrimaryColor" />
                 </LinearLayout>

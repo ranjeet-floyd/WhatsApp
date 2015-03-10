@@ -163,7 +163,7 @@ public class TotalRevSelectRange extends ActionBarActivity implements View.OnCli
                 nameValuePairs.add(new BasicNameValuePair("FromDate", from));
                 nameValuePairs.add(new BasicNameValuePair("todate", to));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_RANGE, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_TOTAL_REVENUE_FOR_RANGE, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

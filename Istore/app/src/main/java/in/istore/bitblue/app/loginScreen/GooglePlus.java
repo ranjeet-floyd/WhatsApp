@@ -226,7 +226,7 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
             protected String doInBackground(String... strings) {
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("EmailId", Gemail));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_CHECK_EMAIL_EXISTS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_CHECK_EMAIL_EXISTS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -281,7 +281,6 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
         if (requestCode == RC_SIGN_IN) {
             if (responseCode != RESULT_OK) {
                 signInClicked = false;
-                Toast.makeText(this, "Login Failed. Check Network", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(this, LoginPage.class));
             }
             intentInProgress = false;
@@ -405,7 +404,7 @@ public class GooglePlus extends Activity implements GoogleApiClient.ConnectionCa
                 nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("Mobile", String.valueOf(Mobile)));
                 nameValuePairs.add(new BasicNameValuePair("Pass", Password));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_LOGIN, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_LOGIN, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

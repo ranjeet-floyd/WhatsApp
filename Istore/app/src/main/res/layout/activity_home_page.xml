@@ -3,8 +3,8 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/homepagebg"
     android:fitsSystemWindows="false"
+    android:background="@drawable/homepagebg"
     tools:context=".HomePage">
 
     <RelativeLayout
@@ -33,7 +33,7 @@
         <FrameLayout
             android:id="@+id/fl_homepage"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/linearLayout"
             android:layout_marginTop="@dimen/padd15dp">
 

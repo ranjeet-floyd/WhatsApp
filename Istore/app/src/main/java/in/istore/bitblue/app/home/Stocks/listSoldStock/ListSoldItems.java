@@ -348,7 +348,7 @@ public class ListSoldItems extends ActionBarActivity implements View.OnClickList
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_ALLSOLDPRODUCTS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_ALLSOLDPRODUCTS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

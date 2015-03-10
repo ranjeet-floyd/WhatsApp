@@ -343,7 +343,7 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                 nameValuePairs.add(new BasicNameValuePair("Quantity", sellQuantity));
                 nameValuePairs.add(new BasicNameValuePair("Sellingprice", String.valueOf(prodSellPrice)));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_TO_CART, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_ADD_TO_CART, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -400,7 +400,7 @@ public class SoldItemForm extends ActionBarActivity implements View.OnClickListe
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("PId", id));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_PRODUCTDETAILS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_PRODUCTDETAILS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

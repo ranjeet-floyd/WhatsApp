@@ -118,7 +118,7 @@ public class ViewCustForStaff extends Fragment {
                 nameValuePairs.add(new BasicNameValuePair("StaffId", String.valueOf(StaffId)));
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_VIEW_STAFF_CUSTOMERS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_VIEW_STAFF_CUSTOMERS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

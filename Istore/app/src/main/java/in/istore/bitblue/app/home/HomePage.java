@@ -56,21 +56,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.istore.bitblue.app.R;
-import in.istore.bitblue.app.home.Stocks.Stocks;
 import in.istore.bitblue.app.adapters.NavDrawAdapter;
 import in.istore.bitblue.app.adminMenu.custInfo.CusInfoContent;
-import in.istore.bitblue.app.home.staffMgmt.StaffMgntContent;
 import in.istore.bitblue.app.adminMenu.suppInfo.SuppInfoContent;
-import in.istore.bitblue.app.home.transactions.Trans;
 import in.istore.bitblue.app.cart.Cart;
-import in.istore.bitblue.app.home.category.Categories;
 import in.istore.bitblue.app.cloudprint.CloudPrint;
 import in.istore.bitblue.app.databaseAdapter.DbLoginCredAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbProductAdapter;
 import in.istore.bitblue.app.databaseAdapter.DbStaffAdapter;
+import in.istore.bitblue.app.home.Stocks.Stocks;
+import in.istore.bitblue.app.home.category.Categories;
 import in.istore.bitblue.app.home.dragGrid.DynamicGridView;
 import in.istore.bitblue.app.home.dragGrid.GridDynamicAdapter;
 import in.istore.bitblue.app.home.foldingdrawer.FoldingDrawerLayout;
+import in.istore.bitblue.app.home.staffMgmt.StaffMgntContent;
+import in.istore.bitblue.app.home.transactions.Trans;
 import in.istore.bitblue.app.invoice.Invoice;
 import in.istore.bitblue.app.loginScreen.ChangePassword;
 import in.istore.bitblue.app.loginScreen.LoginPage;
@@ -151,7 +151,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
 
         Mobile = preflogin.getLong("Mobile", 0);
         dbStaffAdapter = new DbStaffAdapter(this);
-       // StaffId = dbStaffAdapter.getStaffId(Mobile);
+        // StaffId = dbStaffAdapter.getStaffId(Mobile);
 
         if (UserType != null) {
             if (UserType.equals("Admin")) {
@@ -196,8 +196,10 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             Name = preflogin.getString("Name", "");
             tvuserName.setText(globalVariable.getAdminName());
             tvuserEmail.setText(globalVariable.getAdminEmail());
-            bitmap = BitmapFactory.decodeFile(tinyDB.getString("googleFilePath"));
-            ivuserPic.setImageBitmap(bitmap);
+            if (tinyDB.getString("googleFilePath") != null && !(tinyDB.getString("googleFilePath").equals(""))) {
+                bitmap = BitmapFactory.decodeFile(tinyDB.getString("googleFilePath"));
+                ivuserPic.setImageBitmap(bitmap);
+            }
 
             Flogout.setVisibility(View.GONE);
             Glogout.setVisibility(View.GONE);
@@ -205,8 +207,10 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
             Name = preflogin.getString("Name", "");
             tvuserName.setText(globalVariable.getStaffName());
             tvuserEmail.setText(globalVariable.getStaffEmail() == null || globalVariable.getStaffEmail().equals("null") ? "" : globalVariable.getStaffEmail());
-            bitmap = BitmapFactory.decodeFile(tinyDB.getString("googleFilePath"));
-            ivuserPic.setImageBitmap(bitmap);
+            if (tinyDB.getString("googleFilePath") != null && !(tinyDB.getString("googleFilePath").equals(""))) {
+                bitmap = BitmapFactory.decodeFile(tinyDB.getString("googleFilePath"));
+                ivuserPic.setImageBitmap(bitmap);
+            }
             Flogout.setVisibility(View.GONE);
             Glogout.setVisibility(View.GONE);
         }
@@ -325,7 +329,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         while (phones.moveToNext()) {
             allContactNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            addContactsToDb();
+            //addContactsToDb();
         }
         phones.close();
     }
@@ -349,7 +353,7 @@ public class HomePage extends ActionBarActivity implements View.OnClickListener,
                 nameValuePairs.add(new BasicNameValuePair("ContactNum", allContactNumber));
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("ID", String.valueOf(UserId)));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_USER_CONTACT, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_ADD_USER_CONTACT, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

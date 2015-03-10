@@ -145,7 +145,7 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("PId", id));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_PRODUCTDETAILS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_PRODUCTDETAILS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -177,9 +177,8 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
                     Toast.makeText(getApplicationContext(), "---", Toast.LENGTH_LONG).show();
                 } else {
                     //set all textviews
-                    BitmapFactory.Options options = new BitmapFactory.Options();
                     if (prodImage != null)
-                        bitmap = BitmapFactory.decodeByteArray(prodImage, 0, prodImage.length, options);
+                        bitmap = BitmapFactory.decodeByteArray(prodImage, 0, prodImage.length);
                     etname.setText(prodName);
                     etbarcode.setText(prodId);
                     etquantity.setText(String.valueOf(prodQuantity));
@@ -246,7 +245,7 @@ public class ViewStockItems extends ActionBarActivity implements View.OnClickLis
                 nameValuePairs.add(new BasicNameValuePair("PId", id));
                 nameValuePairs.add(new BasicNameValuePair("Quantity", String.valueOf(addedquantity)));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADD_PRODUCT_QUANTITY, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_ADD_PRODUCT_QUANTITY, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

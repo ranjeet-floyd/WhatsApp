@@ -195,7 +195,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
                 nameValuePairs.add(new BasicNameValuePair("CategoryName", categoryName));
                 nameValuePairs.add(new BasicNameValuePair("Name", prodName));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_PRODUCTDETAILS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_PRODUCTDETAILS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
@@ -235,7 +235,7 @@ public class SellItem extends ActionBarActivity implements View.OnClickListener 
                     tvname.setText(name);
                     tvbarcode.setText(productId);
                     tvdesc.setText(prodDesc);
-                    tvsellprice.setText(String.valueOf(prodSellPrice));
+                    tvsellprice.setText(getResources().getString(R.string.rs) + " " + String.valueOf(prodSellPrice));
                     ivProdImage.setImageBitmap(bitmap);
                 }
             }

@@ -145,10 +145,10 @@ public class ChangePassword extends ActionBarActivity implements View.OnClickLis
                 nameValuePairs.add(new BasicNameValuePair("NPass", NewPass));
                 if (UserType.equals("Admin")) {
                     nameValuePairs.add(new BasicNameValuePair("AdminKey", Key));
-                    Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADMIN_CHANGE_PASSWORD, nameValuePairs);
+                    Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_ADMIN_CHANGE_PASSWORD, nameValuePairs);
                 } else if (UserType.equals("Staff")) {
                     nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
-                    Response = jsonParser.makeHttpPostRequest(API.BITSTORE_STAFF_CHANGE_PASSWORD, nameValuePairs);
+                    Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_STAFF_CHANGE_PASSWORD, nameValuePairs);
                 }
                 if (Response == null || Response.equals("error")) {
                     return Response;

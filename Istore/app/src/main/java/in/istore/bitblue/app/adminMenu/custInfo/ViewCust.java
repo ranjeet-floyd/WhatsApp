@@ -112,7 +112,7 @@ public class ViewCust extends Fragment {
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("key", AdminKey));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_VIEW_ALLCUSTOMERS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_VIEW_ALLCUSTOMERS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

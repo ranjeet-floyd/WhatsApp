@@ -128,7 +128,7 @@ public class ViewSoldItem extends ActionBarActivity {
                 nameValuePairs.add(new BasicNameValuePair("key", Key));
                 nameValuePairs.add(new BasicNameValuePair("ItemId", id));
 
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_GET_SOLDPRODUCTDETAILS, nameValuePairs);
+                String Response = jsonParser.makeHttpUrlConnectionRequest(API.BITSTORE_GET_SOLDPRODUCTDETAILS, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {

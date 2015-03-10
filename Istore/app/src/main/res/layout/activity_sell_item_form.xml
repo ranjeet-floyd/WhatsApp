@@ -65,7 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1.7"
+                    android:layout_weight="1"
                     android:text="Name: "
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -74,7 +74,7 @@
                     android:id="@+id/tv_sellitems_prod_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
+                    android:layout_weight="1"
                     android:text=""
                     android:textAllCaps="true"
                     android:textColor="@color/black"
@@ -93,7 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1.7"
+                    android:layout_weight="1"
                     android:text="Id: "
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -102,7 +102,7 @@
                     android:id="@+id/tv_sellitems_barcode_prod_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.4"
+                    android:layout_weight="1"
                     android:text=""
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -113,25 +113,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padd10dp"
                 android:orientation="horizontal"
-                android:weightSum="3">
+                android:weightSum="2">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/padd5dp"
-                    android:layout_weight="1.3"
+                    android:layout_weight="1"
                     android:text="Price: "
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/padd5dp"
-                    android:layout_weight="1.4"
-                    android:text="@string/rs"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -142,7 +132,7 @@
                     android:layout_marginEnd="@dimen/padd10dp"
                     android:layout_marginRight="@dimen/padd10dp"
                     android:layout_marginTop="@dimen/padd10dp"
-                    android:layout_weight="0.5"
+                    android:layout_weight="1"
                     android:text=""
                     android:textColor="@color/black"
                     android:textSize="20sp" />

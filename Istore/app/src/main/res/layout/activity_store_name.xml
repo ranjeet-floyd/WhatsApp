@@ -18,39 +18,44 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/padd30dp"
-        android:paddingRight="@dimen/padd30dp">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerInParent="true">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Store Name:"
-            android:textColor="@color/myPrimaryColor"
-            android:textSize="20sp" />
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/padd30dp"
+            android:paddingRight="@dimen/padd30dp">
 
-        <EditText
-            android:id="@+id/et_storename_storename"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Name of Your Store"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:textColor="@color/material_blue_grey_500"
-            android:textColorHint="@color/grey" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Store Name:"
+                android:textColor="@color/myPrimaryColor"
+                android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/b_storename_done"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_gravity="right"
-            android:layout_marginTop="@dimen/padd30dp"
-            android:background="@drawable/button_shadow"
-            android:text="Done" />
-    </LinearLayout>
+            <EditText
+                android:id="@+id/et_storename_storename"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Name of Your Store"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:textColor="@color/material_blue_grey_500"
+                android:textColorHint="@color/grey" />
 
+            <Button
+                android:id="@+id/b_storename_done"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="@dimen/padd30dp"
+                android:background="@drawable/button_shadow"
+                android:text="Done" />
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

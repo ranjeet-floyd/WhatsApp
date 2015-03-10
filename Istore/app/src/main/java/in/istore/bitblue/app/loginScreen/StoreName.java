@@ -132,7 +132,7 @@ public class StoreName extends ActionBarActivity implements View.OnClickListener
                 nameValuePairs.add(new BasicNameValuePair("StoreId", String.valueOf(StoreId)));
                 nameValuePairs.add(new BasicNameValuePair("Storename", StoreName));
                 nameValuePairs.add(new BasicNameValuePair("CreatedOn", CreatedOn));
-                String Response = jsonParser.makeHttpPostRequest(API.BITSTORE_ADMIN_SIGN_UP, nameValuePairs);
+                String Response = jsonParser.makeAndroidHttpClientRequest(API.BITSTORE_ADMIN_SIGN_UP, nameValuePairs);
                 if (Response == null || Response.equals("error")) {
                     return Response;
                 } else {
